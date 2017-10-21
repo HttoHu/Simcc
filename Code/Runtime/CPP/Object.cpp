@@ -1,15 +1,14 @@
 #include "../HPP/Object.hpp"
 using namespace yt::Runtime;
-
-Object yt::Runtime::Object::copy() const
+Value yt::Runtime::Value::copy() const
 {
-	Object ret;
+	Value ret;
 	ret.data = data;
 	ret.user_count = new size_t(1);
 	return ret;
 }
 
-void yt::Runtime::Object::_check()
+void yt::Runtime::Value::_check()
 {
 	if (*user_count == 0)
 	{
@@ -20,7 +19,7 @@ void yt::Runtime::Object::_check()
 
 void yt::Test::object_test()
 {
-	Object ob2;
-	Object obj(pos(1,23));
+	Value ob2;
+	Value obj(pos(1,23));
 	ob2 = obj;
 }

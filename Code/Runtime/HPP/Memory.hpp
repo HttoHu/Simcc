@@ -9,7 +9,7 @@ namespace yt
 		class Stack{
 		public:
 		private:
-			static std::vector<size_t> reference_stack;
+			
 		};
 	}
 }

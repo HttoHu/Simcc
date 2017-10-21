@@ -1,6 +1,7 @@
 #include "..\Lexer\HPP\Lexer.hpp"
 #include "..\Runtime\HPP\Object.hpp"
 #include <fstream>
+#include <time.h>
 using namespace yt::Runtime;
 std::string get_file_content(const std::string & filename)
 {
@@ -13,11 +14,12 @@ int lexer_test()
 {
 	try
 	{
+		time_t s = clock();
 		std::string str = get_file_content("Text.txt");
 		yt::Lexer::Lexer lex(str);
 		lex.init_token_stream();
-		std::cout << "lexer completed.";
-		lex.debug();
+		std::cout << "lexer completed.\n"<<"Time:"<< double(clock()-s)/CLK_TCK<<"s";
+		//lex.debug();
 	}
 	catch (const std::exception & e)
 	{

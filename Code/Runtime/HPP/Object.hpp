@@ -1,21 +1,22 @@
 #pragma once
 #include <string>
+#include "../../Parser/HPP/Type.hpp"
 namespace yt
 {
 	namespace Runtime
 	{
-		class Object {
+		class Value {
 		public:
-			Object() :data(nullptr), user_count(new size_t(1)) {}
+			Value() :data(nullptr), user_count(new size_t(1)) {}
 			template <typename ValueType>
-			Object(const ValueType& vt) : data(new ValueType(vt)), user_count(new size_t(1)) {}
-			Object(const char * c_str) :Object(std::string(c_str)) {}
-			Object(const Object & obj) {
+			Value(const ValueType& vt) : data(new ValueType(vt)), user_count(new size_t(1)) {}
+			Value(const char * c_str) :Value(std::string(c_str)) {}
+			Value(const Value & obj) {
 				++*obj.user_count;
 				data = obj.data;
 				user_count = obj.user_count;
 			}
-			Object& operator= (const Object & obj) {
+			Value& operator= (const Value & obj) {
 				++*obj.user_count;
 				--*user_count;
 				_check();
@@ -23,12 +24,12 @@ namespace yt
 				data = obj.data;
 				return *this;
 			}
-			~Object() {
+			~Value() {
 				--*user_count;
 				_check();
 			}
 			//=========================
-			Object copy()const;
+			Value copy()const;
 			template <typename ValueType>
 			ValueType & get_value()
 			{
@@ -38,6 +39,42 @@ namespace yt
 			void _check();
 			void *data;
 			size_t *user_count;
+		};
+		class Object
+		{
+		public:
+			Object(const Parser::Type& t) :type(t) {
+				value = set_value(t);
+				for (const auto & a : t.private_members)
+					private_member_table.insert({ a.first,new Object(*a.second) });
+				for (const auto & a : t.public_members)
+					public_member_table.insert({ a.first,new Object(*a.second) });
+			};
+		private:
+			Value *set_value(const Parser::Type &t)
+			{
+				switch (t.type_structure)
+				{
+				case Parser::Type::INT:
+					return new Value((int32_t)0);
+				case Parser::Type::DOUBLE:
+					return new Value((double_t)0.0);
+				case Parser::Type::CHAR:
+					return new Value((char)' ');
+				case Parser::Type::STRING:
+					return new Value(std::string(0));
+				case Parser::Type::LONG:
+					return new Value((int64_t)0);
+				case Parser::Type::BOOL:
+					return new Value((bool)false);
+				default:
+					return nullptr;
+				}
+			}
+			Parser::Type type;
+			std::unordered_map<std::string, Object*> private_member_table;
+			std::unordered_map<std::string, Object*> public_member_table;
+			Value *value;
 		};
 	}
 	namespace Test

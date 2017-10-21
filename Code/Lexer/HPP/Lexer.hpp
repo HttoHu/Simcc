@@ -1,10 +1,10 @@
 #pragma once
 #include "Id.hpp"
-#include "Value.hpp"
+#include "Literal.hpp"
 #include "EndLine.hpp"
 #include <string>
 #include <deque>
-typedef std::deque<yt::Lexer::Token*> TokenStream;
+typedef std::vector<yt::Lexer::Token*> TokenStream;
 namespace yt
 {
 	namespace Lexer

@@ -221,6 +221,9 @@ void yt::Lexer::Lexer::init_token_stream()
 			read_symbol();
 		else if (isalpha(content[index]) || content[index] == '_')
 			read_word();
-
+		else
+		{
+			throw std::runtime_error(std::string(1, content[index]) + " unkonwn char");
+		}
 	}
 }
