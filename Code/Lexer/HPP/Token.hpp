@@ -18,16 +18,17 @@ namespace yt
 			Symbol,
 			Id,
 			Assign, Ge, Gt, Le, Lt, Ne, Eq,
-			Add, Sub, Mul, Div,
+			Add, Sub, Mul, Div,PP, MM,
 			True, False,
 			TTag,
-			MemberPoint,
+			MemberPoint,Function,
 			Place, //::
 			And, Or, // && ,||
 			Lk, Rk,// ( and )
 			BlockBegin, BlockEnd, // { }
 			LSB, RSB,// [ ]
 			Comma,// ,
+			Endl,
 			EndStmt,
 		};
 		std::unordered_map<std::string, Tag>& keyword_map();
@@ -40,6 +41,16 @@ namespace yt
 			{
 				switch (tag)
 				{
+				case Function:
+					return "<function>";
+				case TTag:
+					return "<Tag>";
+				case PP:
+					return "<++>";
+				case MM:
+					return "<-->";
+				case Endl:
+					return "<endline>\n";
 				case Assign:
 					return "< = >";
 				case Eq:
@@ -107,8 +118,11 @@ namespace yt
 				case yt::Lexer::MemberPoint:
 					return "<.>";
 				case yt::Lexer::Comma:
+					return "<,>";
+				case yt::Lexer::EndStmt:
 					return "<;>";
 				default:
+					return "<unknown>";
 					break;
 				}
 			}

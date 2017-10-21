@@ -20,6 +20,8 @@ std::unordered_map<std::string, Tag>& yt::Lexer::symbol_map()
 		{ "{",Tag::BlockBegin },{ "}",Tag::BlockEnd },{ "(",Tag::Lk },{ ")",Tag::Rk },
 		{ "::",Tag::Place },{ "=",Tag::Assign },{ ">",Tag::Gt },{ "<",Tag::Lt },
 		{ ">=",Tag::Ge },{ "<=",Tag::Le },{ "==",Tag::Eq },{ "!=",Tag::Ne },
+		{",",Tag::Comma},{";",Tag::EndStmt},{".",Tag::MemberPoint},
+		{":",Tag::TTag},{"++",Tag::PP},{"--",Tag::MM},{"#",Tag::Function}
 	};
 	return ret;
 }

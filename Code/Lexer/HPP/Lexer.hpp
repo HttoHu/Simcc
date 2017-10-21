@@ -1,6 +1,7 @@
 #pragma once
 #include "Id.hpp"
 #include "Value.hpp"
+#include "EndLine.hpp"
 #include <string>
 #include <deque>
 typedef std::deque<yt::Lexer::Token*> TokenStream;
@@ -11,7 +12,9 @@ namespace yt
 		class Lexer
 		{
 		public:
-			Lexer(const std::string & str):content(str){}
+			Lexer(const std::string & str):content(str){
+				token_stream.push_back(new EndLine);
+			}
 			void read_string();
 			void read_char();
 			void read_number();

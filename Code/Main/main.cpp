@@ -16,7 +16,7 @@ int lexer_test()
 		std::string str = get_file_content("Text.txt");
 		yt::Lexer::Lexer lex(str);
 		lex.init_token_stream();
-		std::cout << "parse completed.";
+		std::cout << "lexer completed.";
 		lex.debug();
 	}
 	catch (const std::exception & e)
@@ -26,5 +26,8 @@ int lexer_test()
 	std::cin.get();
 	return 0;
 }
-int object_test()
+int main()
+{
+	lexer_test();
+}
 

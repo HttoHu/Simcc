@@ -5,7 +5,7 @@ bool _is_operator(char ch)
 	switch (ch)
 	{
 	case '+':case '-':case '*':case '/':case '&':case '|':case ':':case'=':case'<':case'>':case'[':case']':case'(':case')':
-	case'{':case'}':
+	case'{':case'}':case';':case ',':case '.':case'!':case'#':
 		return true;
 	default:
 		return false;
@@ -19,13 +19,13 @@ void Lexer::read_string() {
 		throw std::runtime_error("a string-literal must start with\"");
 	for (; content[index] != '\"'; index++)
 	{
-		if (index>=content.size())
+		if (index >= content.size())
 		{
 			throw std::runtime_error("string-literal isn't matched");
 		}
 		if (content[index] == '\\')
 		{
-			if(index>=content.size()-1)
+			if (index >= content.size() - 1)
 			{
 				throw std::runtime_error("string-literal isn't matched");
 			}
@@ -144,7 +144,7 @@ void yt::Lexer::Lexer::read_number()
 void yt::Lexer::Lexer::read_word()
 {
 	std::string word;
-	while ((isalnum(content[index]) || content[index] == '_')&&index<content.size())
+	while ((isalnum(content[index]) || content[index] == '_') && index < content.size())
 	{
 		word += content[index++];
 	}
@@ -159,18 +159,18 @@ void yt::Lexer::Lexer::read_word()
 }
 void yt::Lexer::Lexer::read_symbol()
 {
-	std::string tmp(1,content[index]);
-	if (index<content.size()-1&&_is_operator(content[index+1]))
+	std::string tmp(1, content[index]);
+	if (index < content.size() - 1 && _is_operator(content[index + 1]))
 	{
-		tmp += content[index+1];
+		tmp += content[index + 1];
 	}
 	auto result = symbol_map().find(tmp);
 	if (result == symbol_map().end())
 	{
-		token_stream.push_back(new Token(symbol_map().find(std::string(1, content[index]))->second));
+		token_stream.push_back(new Token(symbol_map().find(std::string(1, content[index++]))->second));
 		return;
 	}
-	index+=tmp.size();
+	index += tmp.size();
 	token_stream.push_back(new Token(result->second));
 }
 void Lexer::debug()
@@ -185,20 +185,42 @@ void yt::Lexer::Lexer::init_token_stream()
 {
 	while (index < content.size())
 	{
-		if (isdigit(content[index]))
-			read_number();
-		else if (content[index] == '\'')
-			read_char();
-		else if (content[index] == '\"')
-			read_string();
-		else if (_is_operator(content[index]))
-			read_symbol();
-		else if (isalpha(content[index]))
-			read_word();
-		else if (content[index] == ' ')
+		switch (content[index])
 		{
+		case '\'':
+			read_char();
+			continue;
+		case '\n':
+			token_stream.push_back(new EndLine());
 			index++;
 			continue;
+		case '\"':
+			read_string();
+			continue;
+		case '/':
+			index++;
+			if (!content[index] == '/')
+				index--;
+			else
+			{
+				while (index!=content.size()&&content[index++] != '\n')
+					index++;
+				continue;
+			}
+			break;
+		case '\t':
+		case ' ':
+			index++;
+			continue;
+		default:
+			break;
 		}
+		if (isdigit(content[index]))
+			read_number();
+		else if (_is_operator(content[index]))
+			read_symbol();
+		else if (isalpha(content[index]) || content[index] == '_')
+			read_word();
+
 	}
 }
