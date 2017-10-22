@@ -226,4 +226,5 @@ void yt::Lexer::Lexer::init_token_stream()
 			throw std::runtime_error(std::string(1, content[index]) + " unkonwn char");
 		}
 	}
+	token_stream.push_back(new EndLine());
 }
