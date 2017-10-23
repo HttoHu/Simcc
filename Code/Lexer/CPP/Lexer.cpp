@@ -199,8 +199,11 @@ void yt::Lexer::Lexer::init_token_stream()
 			continue;
 		case '/':
 			index++;
-			if (!content[index] == '/')
+			if (content[index] != '/')
+			{
 				index--;
+				break;
+			}
 			else
 			{
 				while (index!=content.size()&&content[index++] != '\n')

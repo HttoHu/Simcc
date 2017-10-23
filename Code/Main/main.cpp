@@ -1,7 +1,4 @@
-#include "..\Lexer\HPP\Lexer.hpp"
-#include "..\Runtime\HPP\Object.hpp"
-#include "..\Parser\HPP\Environment.hpp"
-#include "..\Parser\HPP\Expression.hpp"
+#include "..\Parser\HPP\CreateObject.hpp"
 #include <fstream>
 #include <time.h>
 using namespace yt::Runtime;
@@ -39,14 +36,13 @@ int expression_test()
 		yt::Lexer::Lexer lex(str);
 		lex.init_token_stream();
 		//lex.debug();
-		for (int i=0;i<10000;i++)
+		yt::Parser::Environment ev(&lex.token_stream);
+		for (int i=0;i<100000;i++)
 		{
-			yt::Parser::Environment ev(&lex.token_stream);
-			ev.current_pos++;
+			ev.current_pos=1;
 			yt::Parser::Expression expr(&ev);
 			expr.CreateExpressionStack();
 			expr.Translate();
-			expr.GetResult()->to_string();
 			expr.debug();
 		}
 		std::cout << "\ncompleted.\n" << "Time:" << double(clock() - s) / CLK_TCK << "s\n press any key to exit";
@@ -58,12 +54,24 @@ int expression_test()
 	std::cin.get();
 	return 0;
 }
+void create_basic_object_test()
+{
+	time_t s = clock();
+	std::string str = get_file_content("Text.txt");
+	yt::Lexer::Lexer lex(str);
+	lex.init_token_stream();
+	lex.debug();
+	yt::Parser::Environment ev(&lex.token_stream);
+	ev.current_pos++;
+	yt::Parser::CreateBasicTypeObject cto(&ev);
+	cto.execute();
+	ev.stack_block.debug();
+}
 int main()
 {
 	try
 	{
-
-		expression_test();
+		create_basic_object_test();
 		std::cin.get();
 		return 0;
 	}

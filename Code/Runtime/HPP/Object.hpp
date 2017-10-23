@@ -91,9 +91,7 @@ namespace yt
 				}
 			}
 			virtual ~ObjectBase() {
-				//std::cout << "BOOB!";
 				delete data;
-				//std::cout << "???\n";
 			}
 			template <typename T>
 			T& get_value()
@@ -110,6 +108,7 @@ namespace yt
 			virtual ObjectBase* Sub(const ObjectBase *obj1);
 			virtual ObjectBase* Mul(const ObjectBase *obj1);
 			virtual ObjectBase* Div(const ObjectBase *obj1);
+			VType type;
 		private:
 			//=================== 这些都不露面啦=====================
 			ObjectBase operator+ (const ObjectBase&v)const;
@@ -122,8 +121,8 @@ namespace yt
 			ObjectBase operator!=(const ObjectBase&v)const;
 			ObjectBase operator>(const ObjectBase&v)const;
 			ObjectBase operator<(const ObjectBase&v)const;
-			VType type;
 			void *data;
+
 		};
 		class Object:ObjectBase
 		{
