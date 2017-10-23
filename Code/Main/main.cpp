@@ -20,8 +20,36 @@ int lexer_test()
 		std::string str = get_file_content("Text.txt");
 		yt::Lexer::Lexer lex(str);
 		lex.init_token_stream();
-		std::cout << "lexer completed.\n"<<"Time:"<< double(clock()-s)/CLK_TCK<<"s";
+		std::cout << "lexer completed.\n" << "Time:" << double(clock() - s) / CLK_TCK << "s";
 		//lex.debug();
+	}
+	catch (const std::exception & e)
+	{
+		std::cout << e.what();
+	}
+	std::cin.get();
+	return 0;
+}
+int expression_test()
+{
+	try
+	{
+		time_t s = clock();
+		std::string str = get_file_content("Text.txt");
+		yt::Lexer::Lexer lex(str);
+		lex.init_token_stream();
+		//lex.debug();
+		for (int i=0;i<10000;i++)
+		{
+			yt::Parser::Environment ev(&lex.token_stream);
+			ev.current_pos++;
+			yt::Parser::Expression expr(&ev);
+			expr.CreateExpressionStack();
+			expr.Translate();
+			expr.GetResult()->to_string();
+			expr.debug();
+		}
+		std::cout << "\ncompleted.\n" << "Time:" << double(clock() - s) / CLK_TCK << "s\n press any key to exit";
 	}
 	catch (const std::exception & e)
 	{
@@ -34,24 +62,14 @@ int main()
 {
 	try
 	{
-		time_t s = clock();
-		std::string str = get_file_content("Text.txt");
-		yt::Lexer::Lexer lex(str);
-		lex.init_token_stream();
-		yt::Parser::Environment ev(&lex.token_stream);
-		ev.current_pos++;
-		yt::Parser::Expression expr(&ev);
-		expr.CreateExpressionStack();
-		expr.Translate();
-		std::cout << "Result:" << expr.GetResult()->to_string() << std::endl;
-		expr.debug();
-		std::cout << "\ncompleted.\n" << "Time:" << double(clock() - s) / CLK_TCK << "s\n press any key to exit";
+
+		expression_test();
+		std::cin.get();
+		return 0;
 	}
-	catch (const std::exception & e)
+	catch (std::exception& e)
 	{
 		std::cout << e.what();
 	}
-	std::cin.get();
-	return 0;
 }
 

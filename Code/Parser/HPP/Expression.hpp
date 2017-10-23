@@ -3,6 +3,7 @@
 #include "../../Runtime/HPP/Object.hpp"
 #include "../../Lexer/HPP/Literal.hpp"
 #include <stack>
+#include <memory>
 /*
 * 思路 : 语法分析我啥都没写哩.
 * 首先我们构造一个Expression 类, 
@@ -18,10 +19,16 @@ namespace yt
 		public:
 			enum Operator
 			{
-				Add, Sub, Mul, Div, Lk, Rk, Value
+				Add, Sub, Mul, Div, Lk, Rk, Value = 10
 			};
-			_Eunit(Runtime::ObjectBase * o) :obj(o), op(Value) {}
-			_Eunit(Operator oper) :op(oper), obj(nullptr) {}
+			_Eunit(Runtime::ObjectBase *o) :obj(o), op(Value) {}
+			_Eunit(Operator oper) :op(oper), obj(nullptr) 
+			{
+			}
+			void destroData()
+			{
+				delete obj;
+			}
 			std::string to_string()const
 			{
 				if (obj)
@@ -66,7 +73,7 @@ namespace yt
 						tmpStack.push_back(GetObjectValue());
 						continue;
 					case Lexer::Add:
-						tmpStack.push_back(_Eunit::Add);
+						tmpStack.push_back(_Eunit(_Eunit::Operator::Add));
 						environment->current_pos++;
 						continue;
 					case Lexer::Sub:
@@ -117,22 +124,23 @@ namespace yt
 			// remember to delete it
 			Runtime::ObjectBase* GetObjectValue() 
 			{
-				return nullptr;
+				return new Runtime::ObjectBase(1);
 			}
 			Runtime::ObjectBase* GetResult()
 			{
 				for (size_t i = 0; i < outPut.size(); i++)
 				{
-					debug();
-					std::cout << std::endl;
 					switch (outPut[i].op)
 					{
 					case _Eunit::Add:
 					{
 						int tmp_index = i - 2;
 						_Eunit need_to_push = outPut[tmp_index].obj->Add(outPut[i - 1].obj);
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin()+(tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
 						outPut.insert(outPut.begin() + (tmp_index), need_to_push);
 						i = 0;
@@ -142,8 +150,11 @@ namespace yt
 					{
 						int tmp_index = i - 2;
 						_Eunit need_to_push = outPut[tmp_index].obj->Sub(outPut[i - 1].obj);
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
 						outPut.insert(outPut.begin() + (tmp_index), need_to_push);
 						i = 0;
@@ -153,8 +164,11 @@ namespace yt
 					{
 						int tmp_index = i - 2;
 						_Eunit need_to_push = outPut[tmp_index].obj->Mul(outPut[i - 1].obj);
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
 						outPut.insert(outPut.begin() + (tmp_index), need_to_push);
 						i = 0;
@@ -164,8 +178,11 @@ namespace yt
 					{
 						int tmp_index = i - 2;
 						_Eunit need_to_push = outPut[tmp_index].obj->Div(outPut[i - 1].obj);
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
+						outPut[tmp_index].destroData();
 						outPut.erase(outPut.begin() + (tmp_index));
 						outPut.insert(outPut.begin() + (tmp_index), need_to_push);
 						i = 0;
@@ -221,9 +238,17 @@ namespace yt
 			}
 			void debug()
 			{
+				return;
 				for (auto & a : outPut)
 				{
 					std::cout << a.to_string();
+				}
+			}
+			~Expression()
+			{
+				for (auto &a : outPut)
+				{
+					a.destroData();
 				}
 			}
 		private:

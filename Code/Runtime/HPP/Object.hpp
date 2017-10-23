@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include "../../Parser/HPP/Type.hpp"
 namespace yt
 {
@@ -90,7 +91,9 @@ namespace yt
 				}
 			}
 			virtual ~ObjectBase() {
+				//std::cout << "BOOB!";
 				delete data;
+				//std::cout << "???\n";
 			}
 			template <typename T>
 			T& get_value()
