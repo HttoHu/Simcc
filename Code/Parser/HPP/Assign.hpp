@@ -13,7 +13,7 @@ namespace yt
 			void execute()override
 			{
 				Lexer::Token *id = next_token();
-				match(next_token()->get_tag());
+				match(Lexer::Tag::Assign);
 				Expression expr(environment);
 				*environment->stack_block.find_variable(id) = *expr.GetResult();
 			}

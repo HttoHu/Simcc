@@ -13,8 +13,6 @@ void yt::Parser::CreateBasicTypeObject::CreateObject()
 	if (match(Lexer::Tag::Assign))
 	{
 		Expression value(environment);
-		value.CreateExpressionStack();
-		value.Translate();
 		Runtime::ObjectBase* obj = nullptr;
 		Runtime::ObjectBase* tmp = value.GetResult();
 		switch (t)

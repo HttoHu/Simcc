@@ -24,12 +24,12 @@ namespace yt
 					case Tag::SChar:
 					case Tag::SLong:
 						(new CreateBasicTypeObject(environment))->execute();
-						
 						break;
 					case Tag::Id:
 						(new Assign(environment))->execute();
 						break;
 					case Tag::Endl:
+						next_token();
 						break;
 					default:
 						throw std::runtime_error("runtime_error11");

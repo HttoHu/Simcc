@@ -26,7 +26,7 @@ ObjectBase * yt::Runtime::Stack::find_variable(yt::Lexer::Token*tok )
 		}
 		current++;
 	}
-	throw std::runtime_error("unknow variable");
+	throw std::runtime_error(tok->to_string()+"unknow variable");
 }
 void yt::Runtime::Stack::push(const std::string & vname, ObjectBase *obj)
 {

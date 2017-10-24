@@ -1,74 +1,101 @@
 #include "../HPP/Expression.hpp"
 using namespace yt::Parser;
 
-void yt::Parser::Expression::CreateExpressionStack()
+yt::Parser::Expression::Expression(Environment * env):environment(env)
 {
-	Lexer::Token *currentTok = environment->token_stream->operator[](environment->current_pos);
-	while (currentTok->get_tag() != Lexer::Endl)
+	std::vector<Lexer::Token* >operatorStack;
+	while (1)
 	{
-		Lexer::Token *currentTok = environment->token_stream->operator[](environment->current_pos);
-		switch (currentTok->get_tag())
+		switch (this_token()->get_tag())
 		{
-		case Lexer::Id:
-			tmpStack.push_back(GetObjectValue());
-			environment->current_pos++;
-			continue;
-		case Lexer::Add:
-			tmpStack.push_back(_Eunit(_Eunit::Operator::Add));
-			environment->current_pos++;
-			continue;
-		case Lexer::Sub:
-			tmpStack.push_back(_Eunit::Sub);
-			environment->current_pos++;
-			continue;
-		case Lexer::Div:
-			tmpStack.push_back(_Eunit::Div);
-			environment->current_pos++;
-			continue;
-		case Lexer::Mul:
-			tmpStack.push_back(_Eunit::Mul);
-			environment->current_pos++;
-			continue;
-		case Lexer::Tag::TLiteralInt:
-			tmpStack.push_back(new Runtime::ObjectBase(*(int32_t*)currentTok->get_value()));
-			environment->current_pos++;
-			continue;
 		case Lexer::Tag::TLiteralDouble:
-			tmpStack.push_back(new Runtime::ObjectBase(*(double*)currentTok->get_value()));
-			environment->current_pos++;
-			continue;
-		case Lexer::Tag::TLiteralChar:
-			tmpStack.push_back(new Runtime::ObjectBase(*(char*)currentTok->get_value()));
-			environment->current_pos++;
-			continue;
 		case Lexer::Tag::TLiteralString:
-			tmpStack.push_back(new Runtime::ObjectBase(*(std::string*)currentTok->get_value()));
-			environment->current_pos++;
-			continue;
+		case Lexer::Tag::TLiteralInt:
 		case Lexer::Tag::TLiteralLong:
-			tmpStack.push_back(new Runtime::ObjectBase(*(std::int64_t*)currentTok->get_value()));
-			environment->current_pos++;
-			continue;
+		case Lexer::Tag::TLiteralChar:
+			//  字面值总是先压入输入中.
+			count_stack.push_back(this_token());
+			break;
 		case Lexer::Tag::Lk:
-			tmpStack.push_back(_Eunit::Lk);
-			environment->current_pos++;
-			continue;
+			// '(' 总是被压入栈中
+			operatorStack.push_back(this_token());
+			break;
+		case Lexer::Tag::Add:
+		case Lexer::Tag::Sub:
+		case Lexer::Tag::Mul:
+		case Lexer::Tag::Div:
+		case Lexer::Tag::Assign:
+			//顶部遇到了比自己厉害的, 然后就pass-pass, 直到比自己差点的. 
+			//当然一样厉害的还是pass 不敢打啊.'('除外啦. 毕竟它走他也不走 它只认')'
+			while (!operatorStack.empty() && operatorStack.back()->get_tag() != Lexer::Tag::Lk&&get_priority(this_token()->get_tag()) <= get_priority(operatorStack.back()->get_tag()))
+			{
+				count_stack.push_back(operatorStack.back());
+				operatorStack.pop_back();
+			}
+			operatorStack.push_back(this_token());
+			break;
 		case Lexer::Tag::Rk:
-			tmpStack.push_back(_Eunit::Rk);
-			environment->current_pos++;
-			continue;
+			while (operatorStack.back()->get_tag() != Lexer::Tag::Lk)
+			{
+				count_stack.push_back(operatorStack.back());
+				operatorStack.pop_back();
+			}
+			operatorStack.pop_back();
+			break;
+		case Lexer::Tag::MM:
+		case Lexer::Tag::PP:
+		case Lexer::Tag::Id:
+			skip();
+			break;
 		default:
-			return;
+			while (!operatorStack.empty())
+			{
+				count_stack.push_back(operatorStack.back());
+				operatorStack.pop_back();
+			}
+			environment->current_pos++;
+			return ;
 		}
+		environment->current_pos++;
+	}
+
+}
+
+void yt::Parser::Expression::skip()
+{
+	bool is_func;
+redo:	switch (this_token()->get_tag())
+	{
+	case Lexer::Tag::PP:
+	case Lexer::Tag::MM:
+		count_stack.push_back(next_token());
+		goto redo;
+	case Lexer::Tag::Id:
+		// 如果是个函数的话
+		if (this_token()->get_tag() == Lexer::Tag::Lk)
+		{
+			throw std::runtime_error("void yt::Parser::Expression::skip() not compleleted ");
+			// args_parse;
+			// 等我把函数模块写完后回头来完善这个地方.
+		}
+		else if (this_token()->get_tag() == Lexer::Tag::PP || this_token()->get_tag() == Lexer::Tag::PP)
+		{
+			count_stack.push_back(this_token());
+		}
+		else
+		{
+			count_stack.push_back(this_token());
+		}
+		break;
+	default:
+		return;
+		throw std::runtime_error("\nError:"+this_token()->to_string()+"runtime_error12");
 	}
 }
 
-yt::Runtime::ObjectBase * yt::Parser::Expression::GetObjectValue()
-{
-	return environment->stack_block.find_variable(environment->token_stream->operator[](environment->current_pos));
-}
 yt::Runtime::ObjectBase * yt::Parser::Expression::GetResult()
 {
+	/*
 	for (size_t i = 0; i < outPut.size(); i++)
 	{
 		switch (outPut[i].op)
@@ -137,54 +164,12 @@ yt::Runtime::ObjectBase * yt::Parser::Expression::GetResult()
 		}
 	}
 	return outPut.front().obj;
+	*/
 }
-
-void yt::Parser::Expression::Translate()
-{
-	for (auto & a : tmpStack)
-	{
-		switch (a.op)
-		{
-		case _Eunit::Value:
-			//  变量总是先压入输入中.
-			outPut.push_back(a);
-			break;
-		case _Eunit::Lk:
-			// '(' 总是被压入栈中
-			operatorStack.push_back(a);
-			break;
-		case _Eunit::Add:
-		case _Eunit::Sub:
-		case _Eunit::Mul:
-		case _Eunit::Div:
-			//顶部遇到了比自己厉害的, 然后就pass-pass, 直到比自己差点的. 
-			//当然一样厉害的还是pass 不敢打啊.'('除外啦. 毕竟它走他也不走 它只认')'
-			while (!operatorStack.empty() && operatorStack.back().op != _Eunit::Lk&&get_priority(a) <= get_priority(operatorStack.back()))
-				pop_top();
-			operatorStack.push_back(a);
-			break;
-		case _Eunit::Rk:
-			while (operatorStack.back().op != _Eunit::Lk)
-			{
-				pop_top();
-			}
-			operatorStack.pop_back();
-			break;
-		default:
-			throw std::runtime_error("runtime error5");
-		}
-	}
-	while (!operatorStack.empty())
-	{
-		pop_top();
-	}
-}
-
 void yt::Parser::Expression::debug()
 {
-	return;
-	for (auto & a : outPut)
+	for (auto & a :count_stack)
 	{
-		std::cout << a.to_string();
+		std::cout << a->to_string();
 	}
 }

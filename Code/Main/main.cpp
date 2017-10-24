@@ -38,14 +38,14 @@ int expression_test()
 		lex.init_token_stream();
 		//lex.debug();
 		yt::Parser::Environment ev(&lex.token_stream);
-		for (int i = 0; i < 100000; i++)
-		{
+		//for (int i = 0; i < 100000; i++)
+		//{
 			ev.current_pos = 1;
 			yt::Parser::Expression expr(&ev);
-			expr.CreateExpressionStack();
-			expr.Translate();
+			//expr.CreateExpressionStack();
+			//expr.Translate();
 			expr.debug();
-		}
+		//}
 		std::cout << "\ncompleted.\n" << "Time:" << double(clock() - s) / CLK_TCK << "s\n press any key to exit";
 	}
 	catch (const std::exception & e)
@@ -86,18 +86,15 @@ void assign_test()
 	yt::Parser::Environment ev(&lex.token_stream);
 	yt::Parser::Parser parser(&ev);
 	parser.execute();
-	//ev.stack_block.debug();
-	std::cin.get();
-	std::cin.get();
-	std::cin.get();
+	std::cout << "\n";
+	ev.stack_block.debug();
 }
 int main()
 {
 	try
 	{
-		assign_test();
+		expression_test();
 		std::cin.get();
-
 	}
 	catch (std::exception& e)
 	{
