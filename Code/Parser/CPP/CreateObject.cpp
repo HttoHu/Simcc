@@ -25,17 +25,14 @@ void yt::Parser::CreateBasicTypeObject::CreateObject()
 			break;
 		case Lexer::Tag::SDouble:
 			obj = new Runtime::ObjectBase(tmp->to_double());
-			delete tmp;
 			environment->stack_block.push(id->to_string(), obj);
 			break;
 		case Lexer::Tag::SString:
 			obj = new Runtime::ObjectBase(tmp->to_string());
-			delete tmp;
 			environment->stack_block.push(id->to_string(), obj);
 			break;
 		case Lexer::Tag::SChar:
 			obj = new Runtime::ObjectBase(tmp->get_value<char>());
-			delete tmp;
 			environment->stack_block.push(id->to_string(), obj);
 			break;
 		default:

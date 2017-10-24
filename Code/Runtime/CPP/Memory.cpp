@@ -6,6 +6,10 @@ void yt::Runtime::Stack::newBlock()
 }
 void yt::Runtime::Stack::endBlock()
 {
+	for (const auto & a : stack_memory.front())
+	{
+		delete a.second;
+	}
 	stack_memory.pop_front();
 }
 ObjectBase * yt::Runtime::Stack::find_variable(yt::Lexer::Token*tok )
