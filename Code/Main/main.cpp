@@ -40,11 +40,12 @@ int expression_test()
 		yt::Parser::Environment ev(&lex.token_stream);
 		//for (int i = 0; i < 100000; i++)
 		//{
-			ev.current_pos = 1;
-			yt::Parser::Expression expr(&ev);
-			//expr.CreateExpressionStack();
-			//expr.Translate();
-			expr.debug();
+		ev.current_pos = 1;
+		yt::Parser::Expression expr(&ev);
+		//expr.CreateExpressionStack();
+		//expr.Translate();
+		expr.debug();
+		std::cout << expr.GetResult()->to_string();
 		//}
 		std::cout << "\ncompleted.\n" << "Time:" << double(clock() - s) / CLK_TCK << "s\n press any key to exit";
 	}
@@ -63,18 +64,16 @@ void create_basic_object_test()
 	lex.init_token_stream();
 	lex.debug();
 	yt::Parser::Environment ev(&lex.token_stream);
-
-	while (1)
-	{
-		ev.stack_block.newBlock();
-		ev.current_pos=1;
-		yt::Parser::CreateBasicTypeObject cto(&ev);
-		cto.execute();
-		ev.stack_block.endBlock();
-
-		//ev.stack_block.
-	}
+	ev.stack_block.newBlock();
+	ev.current_pos = 1;
+	yt::Parser::CreateBasicTypeObject cto(&ev);
+	cto.execute();
+	ev.current_pos++;
+	//std::cout<<"\n\nend"<<ev.token_stream->operator[](ev.current_pos)->to_string();
+	yt::Parser::CreateBasicTypeObject cto2(&ev);
+	cto2.execute();
 	ev.stack_block.debug();
+	ev.stack_block.endBlock();
 }
 void assign_test()
 {
@@ -91,9 +90,14 @@ void assign_test()
 }
 int main()
 {
+	/* Text.txt ÄÚÈÝ
+	*
+	int a=23;
+	int b=2*a;
+	*/
 	try
 	{
-		expression_test();
+		create_basic_object_test();
 		std::cin.get();
 	}
 	catch (std::exception& e)

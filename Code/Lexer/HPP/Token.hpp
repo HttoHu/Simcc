@@ -9,7 +9,7 @@ namespace yt
 	{
 		enum Tag
 		{
-			SInt,SDouble,SLong,SChar,SString,
+			SInt,SDouble,SLong,SChar,SString,SBool,
 			TLiteralInt, TLiteralLong, TLiteralDouble, TLiteralChar, TLiteralString,
 			TWhile, TFor, TBreak, TContinue,
 			TIf, TSwitch, TElse, TElif, TCase, TGoto,
@@ -42,8 +42,14 @@ namespace yt
 			{
 				switch (tag)
 				{
+				case True:
+					return "<true>";
+				case False:
+					return "<false>";
+				case SBool:
+					return "<bool>";
 				case SInt:
-					return "<int>";
+					return "<int32_t>";
 				case SLong:
 					return "<long>";
 				case SString:

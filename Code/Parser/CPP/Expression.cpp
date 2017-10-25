@@ -8,6 +8,8 @@ yt::Parser::Expression::Expression(Environment * env):environment(env)
 	{
 		switch (this_token()->get_tag())
 		{
+		case Lexer::True:
+		case Lexer::False:
 		case Lexer::Tag::TLiteralDouble:
 		case Lexer::Tag::TLiteralString:
 		case Lexer::Tag::TLiteralInt:
@@ -20,6 +22,14 @@ yt::Parser::Expression::Expression(Environment * env):environment(env)
 			// '(' 总是被压入栈中
 			operatorStack.push_back(this_token());
 			break;
+
+		case Lexer::Tag::Ne:
+		case Lexer::Tag::Ge:
+		case Lexer::Tag::Eq:
+		case Lexer::Tag::Gt:
+		case Lexer::Tag::Le:
+		case Lexer::Tag::Lt:
+		case Lexer::Tag::Or:
 		case Lexer::Tag::Add:
 		case Lexer::Tag::Sub:
 		case Lexer::Tag::Mul:
@@ -53,7 +63,6 @@ yt::Parser::Expression::Expression(Environment * env):environment(env)
 				count_stack.push_back(operatorStack.back());
 				operatorStack.pop_back();
 			}
-			environment->current_pos++;
 			return ;
 		}
 		environment->current_pos++;
@@ -95,81 +104,105 @@ redo:	switch (this_token()->get_tag())
 
 yt::Runtime::ObjectBase * yt::Parser::Expression::GetResult()
 {
-	/*
-	for (size_t i = 0; i < outPut.size(); i++)
+	using namespace yt::Lexer;
+	std::deque<Runtime::ObjectBase*> tmpStack;
+	for (size_t i = 0; i < count_stack.size(); i++)
 	{
-		switch (outPut[i].op)
+		switch (count_stack[i]->get_tag())
 		{
-		case _Eunit::Add:
+		case TLiteralChar:
+			tmpStack.push_front(new Runtime::ObjectBase(*(char*)count_stack[i]->get_value()));
+			break;
+		case TLiteralDouble:
+			tmpStack.push_front(new Runtime::ObjectBase(*(double*)count_stack[i]->get_value()));
+			break;
+		case TLiteralInt:
+			tmpStack.push_front(new Runtime::ObjectBase(*(int32_t*)count_stack[i]->get_value()));
+			break;
+		case TLiteralString:
+			tmpStack.push_front(new Runtime::ObjectBase(*(std::string*)count_stack[i]->get_value()));
+			break;
+		case TLiteralLong:
+			tmpStack.push_front(new Runtime::ObjectBase(*(int64_t*)count_stack[i]->get_value()));
+			break;
+		case True:
+			tmpStack.push_front(new Runtime::ObjectBase(true));
+			break;
+		case False:
+			tmpStack.push_front(new Runtime::ObjectBase(false));
+			break;
+		case Ne:
+		case Ge:
+		case Eq:
+		case Gt:
+		case Le:
+		case And:
+		case Or:
+		case Lt:
 		{
-			int tmp_index = i - 2;
-			_Eunit need_to_push = outPut[tmp_index].obj->Add(outPut[i - 1].obj);
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut.insert(outPut.begin() + (tmp_index), need_to_push);
-			i -= 2;
+			Runtime::ObjectBase *newObj = (tmpStack[1])->Compare(tmpStack[0], count_stack[i]->get_tag());
+			delete tmpStack[0];
+			tmpStack.pop_front();
+			delete tmpStack[0];
+			tmpStack.pop_front();
+			tmpStack.push_front(newObj);
 			break;
 		}
-		case _Eunit::Sub:
+		case Add:
 		{
-			int tmp_index = i - 2;
-			_Eunit need_to_push = outPut[tmp_index].obj->Sub(outPut[i - 1].obj);
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut.insert(outPut.begin() + (tmp_index), need_to_push);
-			i -= 2;
+			(tmpStack[1])->SelfAdd(tmpStack[0]);
+			delete tmpStack[0];
+			tmpStack.pop_front();
 			break;
 		}
-		case _Eunit::Mul:
+		case Sub:
 		{
-			int tmp_index = i - 2;
-			_Eunit need_to_push = outPut[tmp_index].obj->Mul(outPut[i - 1].obj);
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut.insert(outPut.begin() + (tmp_index), need_to_push);
-			i -= 2;
+			(tmpStack[1])->SelfSub(tmpStack[0]);
+			delete tmpStack[0];
+			tmpStack.pop_front();
 			break;
 		}
-		case _Eunit::Div:
+		case Mul:
 		{
-			int tmp_index = i - 2;
-			_Eunit need_to_push = outPut[tmp_index].obj->Div(outPut[i - 1].obj);
-			std::cout << "that's";
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut[tmp_index].destroData();
-			outPut.erase(outPut.begin() + (tmp_index));
-			outPut.insert(outPut.begin() + (tmp_index), need_to_push);
-			i -= 2;
+			(tmpStack[1])->SelfMul(tmpStack[0]);
+			delete tmpStack[0];
+			tmpStack.pop_front();
 			break;
 		}
-		case _Eunit::Value:
-			continue;
+		case Div:
+		{
+			(tmpStack[1])->SelfDiv(tmpStack[0]);
+			delete tmpStack[0];
+			tmpStack.pop_front();
+			break;
+		}
+		case Id:
+			tmpStack.push_front(new Runtime::ObjectBase(*GetObjectValue(count_stack[i])));
+			break;
 		default:
-			throw std::runtime_error("runtime error6");
+			break;
 		}
+		//tmpStack.push_back(count_stack[i]);
 	}
-	return outPut.front().obj;
-	*/
+	if (tmpStack.empty())
+		return nullptr;
+	return tmpStack.front();
 }
 void yt::Parser::Expression::debug()
 {
 	for (auto & a :count_stack)
 	{
 		std::cout << a->to_string();
+	}
+}
+
+yt::Runtime::ObjectBase * yt::Parser::Expression::GetObjectValue(Lexer::Token* tok)
+{
+	switch (tok->get_tag())
+	{
+	case Lexer::Tag::Id:
+		return environment->stack_block.find_variable(tok);
+	default:
+		break;
 	}
 }

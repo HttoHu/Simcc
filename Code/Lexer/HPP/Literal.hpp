@@ -12,7 +12,7 @@ namespace yt
 		class VInt :public Token
 		{
 		public:
-			VInt(int v) :Token(TLiteralInt), value(v) {}
+			VInt(int32_t v) :Token(TLiteralInt), value(v) {}
 			std::string to_string()const override
 			{
 				return "<VInt: " + std::to_string(value) + ">";
@@ -26,7 +26,7 @@ namespace yt
 				return (void*)&value;
 			}
 		private:
-			int value;
+			int32_t value;
 		};
 		class VDouble :public Token
 		{

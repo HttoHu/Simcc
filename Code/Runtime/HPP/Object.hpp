@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "../../Parser/HPP/Type.hpp"
+#include "../../Lexer/HPP/Token.hpp"
 namespace yt
 {
 	namespace Runtime
@@ -10,7 +11,7 @@ namespace yt
 		public:
 			enum VType
 			{
-				Int, Long, Double, Char, String,Bool,User
+				Int=1, Long=2, Double=3, Char, String,Bool,User
 			};
 			enum CompareArg
 			{
@@ -25,6 +26,7 @@ namespace yt
 			ObjectBase(bool a) :data(new bool(a)), type(Bool) {}
 			ObjectBase(const ObjectBase& v)
 			{
+				std::cout << v.to_string()<<std::endl;
 				switch (v.type)
 				{
 				case Int:
@@ -32,8 +34,9 @@ namespace yt
 					type = Int;
 					break;
 				case Double:
-					data = new int32_t(*(double*)v.data);
+					data = new double(*(double*)v.data);
 					type = Double;
+					break;
 				case Long:
 					data = new int64_t(*(int64_t*)v.data);
 					type = Long;
@@ -51,6 +54,7 @@ namespace yt
 					type = Bool;
 					break;
 				default:
+					std::cout << "ERROR:"<<v.type<<"  ";
 					throw std::runtime_error("yt::Runtime::ObjectBase(const ObjectBase&) 1");
 					break;
 				}
@@ -67,7 +71,7 @@ namespace yt
 					type = Int;
 					break;
 				case Double:
-					data = new int32_t(*(double*)v.data);
+					data = new double(*(double*)v.data);
 					type = Double;
 				case Long:
 					data = new int64_t(*(int64_t*)v.data);
@@ -94,7 +98,7 @@ namespace yt
 				delete data;
 			}
 			template <typename T>
-			T& get_value()
+			T& get_value()const
 			{
 				return *(T*)data;
 			}
@@ -102,12 +106,30 @@ namespace yt
 			float to_float()const;
 			double to_double()const;
 			int64_t to_long()const;
+			bool to_bool()const;
 			virtual std::string to_string()const;
 			//=========================== 初始化和转换====================
+			virtual void SelfAdd(const ObjectBase *obj1)
+			{
+				*this = *this + *obj1;
+			}
+			virtual void SelfSub(const ObjectBase *obj1)
+			{
+				*this = *this - *obj1;
+			}
+			virtual void SelfMul(const ObjectBase *obj1)
+			{
+				*this = *this * *obj1;
+			}
+			virtual void SelfDiv(const ObjectBase *obj1)
+			{
+				*this = *this / *obj1;
+			}
 			virtual ObjectBase* Add(const ObjectBase *obj1);// 这样玩指针 吃枣内存泄露, 后来慢慢查把．<{=．．．． 
 			virtual ObjectBase* Sub(const ObjectBase *obj1);
 			virtual ObjectBase* Mul(const ObjectBase *obj1);
 			virtual ObjectBase* Div(const ObjectBase *obj1);
+			virtual ObjectBase* Compare(const ObjectBase *obj, yt::Lexer::Tag t);
 			VType type;
 		private:
 			//=================== 这些都不露面啦=====================

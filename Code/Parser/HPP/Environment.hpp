@@ -12,7 +12,8 @@ namespace yt
 			Environment(TokenStream* ts):token_stream(ts) {}
 			yt::Runtime::Stack stack_block;
 			TokenStream* token_stream;
-			size_t current_pos;
+			size_t current_pos=0;
+			size_t current_line=1;
 		};
 	}
 }

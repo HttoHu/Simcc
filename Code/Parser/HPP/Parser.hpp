@@ -2,7 +2,7 @@
 #include "Stmt.hpp"
 #include "Environment.hpp"
 #include "CreateObject.hpp"
-#include "Assign.hpp"
+#include "Single.hpp"
 namespace yt
 {
 	namespace Parser
@@ -16,25 +16,28 @@ namespace yt
 				using namespace Lexer;
 				while (environment->current_pos < environment->token_stream->size())
 				{
+
 					switch (this_token()->get_tag())
 					{
+					case Tag::SBool:
 					case Tag::SInt:
 					case Tag::SDouble:
 					case Tag::SString:
 					case Tag::SChar:
 					case Tag::SLong:
-						(new CreateBasicTypeObject(environment))->execute();
-						break;
+						lst.push_back(new CreateBasicTypeObject(environment));
 					case Tag::Id:
-						(new Assign(environment))->execute();
-						break;
+						lst.push_back(new Single(environment));
 					case Tag::Endl:
+						environment->current_line++;
 						next_token();
 						break;
 					default:
-						throw std::runtime_error("runtime_error11");
+						std::cout << "\n\nError:" << this_token()->to_string();
+						throw std::runtime_error(std::to_string(environment->current_line)+"runtime_error11");
 						break;
 					}
+					environment->current_pos++;
 				}
 			}
 			Lexer::Token * next_token()
@@ -49,7 +52,7 @@ namespace yt
 			{
 				for (auto & a : lst)
 				{
-					//a->execute();
+					a->execute();
 				}
 			}
 		private:

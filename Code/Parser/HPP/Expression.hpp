@@ -21,6 +21,10 @@ namespace yt
 			void skip();
 			Runtime::ObjectBase* GetResult();
 			void debug();
+			// 返回的值不要delete
+			Runtime::ObjectBase* GetObjectValue(Lexer::Token* tok);
+			~Expression() {
+			}
 		private:
 			Lexer::Token * next_token()
 			{
@@ -48,6 +52,7 @@ namespace yt
 				{
 				case yt::Lexer::And:
 				case yt::Lexer::Or:
+					return 0;
 				case yt::Lexer::Ge:
 				case yt::Lexer::Gt:
 				case yt::Lexer::Le:
