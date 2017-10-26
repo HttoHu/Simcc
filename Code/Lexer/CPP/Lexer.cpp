@@ -206,8 +206,8 @@ void yt::Lexer::Lexer::init_token_stream()
 			}
 			else
 			{
-				while (index!=content.size()&&content[index++] != '\n')
-					index++;
+				while (index != content.size() && content[index++] != '\n')
+					;
 				continue;
 			}
 			break;

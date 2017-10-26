@@ -26,7 +26,6 @@ namespace yt
 			ObjectBase(bool a) :data(new bool(a)), type(Bool) {}
 			ObjectBase(const ObjectBase& v)
 			{
-				std::cout << v.to_string()<<std::endl;
 				switch (v.type)
 				{
 				case Int:
@@ -94,6 +93,25 @@ namespace yt
 					break;
 				}
 			}
+			virtual ObjectBase& operator++()
+			{
+				*this =*this+1;
+				return *this;
+			}
+			virtual ObjectBase& operator--(int)
+			{
+				return (*this)--;
+			}
+			virtual ObjectBase& operator++(int)
+			{
+				*this = *this + 1;
+				return (*this)++;;
+			}
+			virtual ObjectBase& operator--()
+			{
+				*this = *this - 1;
+				return *this;
+			}
 			virtual ~ObjectBase() {
 				delete data;
 			}
@@ -103,7 +121,6 @@ namespace yt
 				return *(T*)data;
 			}
 			int32_t to_int()const;
-			float to_float()const;
 			double to_double()const;
 			int64_t to_long()const;
 			bool to_bool()const;
