@@ -1,5 +1,8 @@
 #include "..\Parser\HPP\If.hpp"
+<<<<<<< HEAD
 #include "../Parser/HPP/Block.hpp"
+=======
+>>>>>>> add58c8a2fa8ca203a69411286a9ed6d8c15d4e3
 #include <fstream>
 #include <time.h>
 #include <Windows.h>
@@ -13,6 +16,7 @@ std::string get_file_content(const std::string & filename)
 }
 void block_test()
 {
+<<<<<<< HEAD
 
 	std::string str = get_file_content("Text.txt");
 	yt::Lexer::Lexer lex(str);
@@ -22,6 +26,17 @@ void block_test()
 	yt::Parser::Block block(&ev);
 	time_t s = clock();
 	block.execute();
+=======
+	time_t s = clock();
+	std::string str = get_file_content("Text.txt");
+	yt::Lexer::Lexer lex(str);
+	lex.init_token_stream();
+	//lex.debug();
+	yt::Parser::Environment ev(&lex.token_stream);
+	yt::Parser::IfBlock block(&ev);
+	block.execute();
+	std::cout << "\n";
+>>>>>>> add58c8a2fa8ca203a69411286a9ed6d8c15d4e3
 	ev.stack_block.debug();
 	std::cout << (double)(clock()-s)/CLK_TCK<<"\n";
 }

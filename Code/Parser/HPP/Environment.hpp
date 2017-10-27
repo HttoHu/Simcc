@@ -19,6 +19,7 @@ namespace yt
 			{
 				return token_stream->operator[](current_pos);
 			}
+<<<<<<< HEAD
 			void match(Lexer::Tag t)
 			{
 				if (this_token()->get_tag() == t)
@@ -27,6 +28,14 @@ namespace yt
 				}
 				else
 					throw std::runtime_error(this_token()->to_string()+"unexpected erorr!");
+=======
+			bool match(Lexer::Tag t)
+			{
+				if (this_token()->get_tag()== t)
+					return true;
+				else
+					return false;
+>>>>>>> add58c8a2fa8ca203a69411286a9ed6d8c15d4e3
 			}
 		};
 	}
