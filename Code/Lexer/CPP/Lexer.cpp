@@ -120,15 +120,15 @@ void yt::Lexer::Lexer::read_number()
 	{
 		intPart = intPart * 10 + (content[index++] - 48);
 	}
-	if (content[index] != '.')
-	{
-		token_stream.push_back(new VInt(intPart));
-		return;
-	}
-	else if (content[index] == 'L')
+	if (content[index] == 'L')
 	{
 		index++;
 		token_stream.push_back(new VLong(intPart));
+		return;
+	}
+	if (content[index] != '.')
+	{
+		token_stream.push_back(new VInt(intPart));
 		return;
 	}
 	index++;
@@ -206,8 +206,8 @@ void yt::Lexer::Lexer::init_token_stream()
 			}
 			else
 			{
-				while (index!=content.size()&&content[index++] != '\n')
-					index++;
+				while (index != content.size() && content[index++] != '\n')
+					;
 				continue;
 			}
 			break;

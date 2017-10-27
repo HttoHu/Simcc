@@ -13,3 +13,4 @@ bool yt::Parser::Single::match(Lexer::Tag t)
 	}
 	return false;
 }
+

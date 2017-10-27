@@ -1,4 +1,4 @@
-#include "../HPP/Object.hpp"
+﻿#include "../HPP/Object.hpp"
 using namespace yt::Runtime;
 int32_t yt::Runtime::ObjectBase::to_int()const
 {
@@ -20,26 +20,6 @@ int32_t yt::Runtime::ObjectBase::to_int()const
 		throw std::runtime_error("double yt::Runtime::ObjectBase::get_float_value() ");
 	}
 }
-float yt::Runtime::ObjectBase::to_float()const
-{
-	switch (type)
-	{
-	case yt::Runtime::ObjectBase::Int:
-		return (float)*(int32_t*)data;
-	case yt::Runtime::ObjectBase::Long:
-		return (float)*(long*)data;
-	case yt::Runtime::ObjectBase::Double:
-		return (float)*(double*)data;
-	case yt::Runtime::ObjectBase::Char:
-		return (float)*(char*)data;
-	case yt::Runtime::ObjectBase::String:
-		throw std::runtime_error("double yt::Runtime::ObjectBase::get_float_value()");
-	case yt::Runtime::ObjectBase::Bool:
-		return (float)*(bool*)data;
-	default:
-		throw std::runtime_error("double yt::Runtime::ObjectBase::get_float_value() ");
-	}
-}
 double yt::Runtime::ObjectBase::to_double()const
 {
 	switch (type)
@@ -49,7 +29,7 @@ double yt::Runtime::ObjectBase::to_double()const
 	case yt::Runtime::ObjectBase::Long:
 		return (double)*(long*)data;
 	case yt::Runtime::ObjectBase::Double:
-		return (double)*(double*)data;
+		return *(double*)data;
 	case yt::Runtime::ObjectBase::Char:
 		return (double)*(char*)data;
 	case yt::Runtime::ObjectBase::String:
@@ -113,7 +93,7 @@ std::string yt::Runtime::ObjectBase::to_string()const
 
 ObjectBase * yt::Runtime::ObjectBase::Add(const ObjectBase * obj1)
 {
-	ObjectBase *ret = new ObjectBase(*obj1 + *this);
+	ObjectBase *ret = new ObjectBase(*this+*obj1);
 	return ret;
 }
 ObjectBase * yt::Runtime::ObjectBase::Sub(const ObjectBase * obj1)
@@ -123,12 +103,12 @@ ObjectBase * yt::Runtime::ObjectBase::Sub(const ObjectBase * obj1)
 }
 ObjectBase * yt::Runtime::ObjectBase::Mul(const ObjectBase * obj1)
 {
-	ObjectBase *ret = new ObjectBase(*obj1 * *this);
+	ObjectBase *ret = new ObjectBase(*this + *obj1);
 	return ret;
 }
 ObjectBase * yt::Runtime::ObjectBase::Div(const ObjectBase * obj1)
 {
-	ObjectBase *ret = new ObjectBase(*obj1 / *this);
+	ObjectBase *ret = new ObjectBase(*this + *obj1);
 	return ret;
 }
 ObjectBase* yt::Runtime::ObjectBase::Compare(const ObjectBase * obj, yt::Lexer::Tag t)

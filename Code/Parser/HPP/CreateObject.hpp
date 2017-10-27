@@ -13,10 +13,10 @@ namespace yt
 				type = next_token();
 				while (true)
 				{
-
 					Lexer::Token *tok = next_token();
 					Lexer::Tag tag = next_token()->get_tag();
 					Expression *expr = new Expression(environment);
+					
 					vtable.push_back({ tok,expr });
 					if (tag != Lexer::Assign)
 					{

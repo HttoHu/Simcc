@@ -14,6 +14,20 @@ namespace yt
 			TokenStream* token_stream;
 			size_t current_pos=0;
 			size_t current_line=1;
+			//===========
+			Lexer::Token* this_token()
+			{
+				return token_stream->operator[](current_pos);
+			}
+			void match(Lexer::Tag t)
+			{
+				if (this_token()->get_tag() == t)
+				{
+					current_pos++;
+				}
+				else
+					throw std::runtime_error(this_token()->to_string()+"unexpected erorr!");
+			}
 		};
 	}
 }

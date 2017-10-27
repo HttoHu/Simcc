@@ -22,7 +22,7 @@ namespace yt
 			Runtime::ObjectBase* GetResult();
 			void debug();
 			// 返回的值不要delete
-			Runtime::ObjectBase* GetObjectValue(Lexer::Token* tok);
+			Runtime::ObjectBase* GetObjectValue( size_t &i);
 			~Expression() {
 			}
 		private:
@@ -42,10 +42,6 @@ namespace yt
 				}
 				return false;
 			}
-			void go_back()
-			{
-				environment->current_pos--;
-			}
 			char get_priority(yt::Lexer::Tag a)
 			{
 				switch (a)
@@ -63,8 +59,6 @@ namespace yt
 				case yt::Lexer::Add:
 				case yt::Lexer::Sub:
 					return 2;
-				case yt::Lexer::Assign:
-					return 5;
 				case yt::Lexer::Mul:
 				case yt::Lexer::Div:
 					return 3;

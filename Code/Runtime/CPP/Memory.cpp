@@ -35,13 +35,11 @@ void yt::Runtime::Stack::push(const std::string & vname, ObjectBase *obj)
 
 void yt::Runtime::Stack::debug()
 {
+	for (auto & a : stack_memory)
 	{
-		for (auto & a : stack_memory)
+		for (auto & b : a)
 		{
-			for (auto & b : a)
-			{
-				std::cout << "Variable name:" << b.first << "\t\t value:" << b.second->to_string() << std::endl;
-			}
+			std::cout << "Variable name:" << b.first << "\t\t value:" << b.second->to_string() << std::endl;
 		}
 	}
 }
