@@ -5,7 +5,7 @@ void yt::Parser::CreateBasicTypeObject::execute()
 {
 	for (auto & a : vtable)
 	{
-		environment->stack_block.push(a.first->to_string(), a.second->GetResult());
+		environment->stack_block.push(a.first, a.second->GetResult());
 	}
 }
 

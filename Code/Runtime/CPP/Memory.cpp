@@ -2,7 +2,7 @@
 using namespace yt::Runtime;
 void yt::Runtime::Stack::newBlock()
 {
-	stack_memory.push_front(std::unordered_map<std::string, ObjectBase*>());
+	stack_memory.push_front(std::unordered_map<Lexer::Token*, ObjectBase*>());
 }
 void yt::Runtime::Stack::endBlock()
 {
@@ -18,7 +18,7 @@ ObjectBase * yt::Runtime::Stack::find_variable(yt::Lexer::Token*tok )
 	auto current = stack_memory.begin();
 	while (current != stack_memory.end())
 	{
-		auto result = current->find(tok->to_string());
+		auto result = current->find(tok);
 
 		if (result != current->end())
 		{
@@ -28,7 +28,7 @@ ObjectBase * yt::Runtime::Stack::find_variable(yt::Lexer::Token*tok )
 	}
 	throw std::runtime_error(tok->to_string()+"unknow variable");
 }
-void yt::Runtime::Stack::push(const std::string & vname, ObjectBase *obj)
+void yt::Runtime::Stack::push(Lexer::Token*vname, ObjectBase *obj)
 {
 	stack_memory.front().insert({ vname,obj });
 }
@@ -39,7 +39,7 @@ void yt::Runtime::Stack::debug()
 	{
 		for (auto & b : a)
 		{
-			std::cout << "Variable name:" << b.first << "\t\t value:" << b.second->to_string() << std::endl;
+			std::cout << "Variable name:" << b.first->to_string() << "\t\t value:" << b.second->to_string() << std::endl;
 		}
 	}
 }

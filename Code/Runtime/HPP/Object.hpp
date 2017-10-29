@@ -95,7 +95,23 @@ namespace yt
 			}
 			virtual ObjectBase& operator++()
 			{
-				*this =*this+1;
+				switch (type)
+				{
+				case yt::Runtime::ObjectBase::Double:
+					*(double*)data += 1;
+					break;
+				case yt::Runtime::ObjectBase::Long:
+					*(int64_t*)data += 1;
+					break;
+				case yt::Runtime::ObjectBase::Int:
+					*(int32_t*)data += 1;
+					break;
+				case yt::Runtime::ObjectBase::Char:
+					*(char*)data += 1;
+					break;
+				default:
+					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+				}
 				return *this;
 			}
 			virtual ObjectBase& operator--(int)
@@ -104,12 +120,27 @@ namespace yt
 			}
 			virtual ObjectBase& operator++(int)
 			{
-				*this = *this + 1;
 				return (*this)++;;
 			}
 			virtual ObjectBase& operator--()
 			{
-				*this = *this - 1;
+				switch (type)
+				{
+				case yt::Runtime::ObjectBase::Double:
+					*(double*)data -= 1;
+					break;
+				case yt::Runtime::ObjectBase::Long:
+					*(int64_t*)data -= 1;
+					break;
+				case yt::Runtime::ObjectBase::Int:
+					*(int32_t*)data -= 1;
+					break;
+				case yt::Runtime::ObjectBase::Char:
+					*(char*)data -= 1;
+					break;
+				default:
+					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+				}
 				return *this;
 			}
 			virtual ~ObjectBase() {

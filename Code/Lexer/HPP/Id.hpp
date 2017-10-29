@@ -1,5 +1,7 @@
 #pragma once
 #include "Token.hpp"
+#include <map>
+#include <vector>
 namespace yt
 {
 	namespace Lexer
@@ -7,11 +9,15 @@ namespace yt
 		class TId :public Token
 		{
 		public:
+			static std::vector<std::map<std::string,TId*>> id_table;
+			static TId* find_id(const std::string & str);
+			static void delete_id_table();
 			TId(const std::string & str) :Token(Tag::Id),id_name(str){}
 			virtual std::string to_string()const override
 			{
 				return "<id:" + id_name + ">";
 			}
+			size_t add = 0;
 		private:
 			std::string id_name;
 		};

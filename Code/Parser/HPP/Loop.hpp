@@ -18,5 +18,9 @@ namespace yt
 			Environment *environment;
 			Block *block;
 		};
+		class For
+		{
+
+		};
 	}
 }

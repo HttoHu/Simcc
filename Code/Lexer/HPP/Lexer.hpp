@@ -27,7 +27,7 @@ namespace yt
 			{
 				for (auto & a : token_stream)
 				{
-					delete a;
+					//delete a;
 				}
 				token_stream.clear();
 			}

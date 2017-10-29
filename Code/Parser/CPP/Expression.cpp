@@ -176,18 +176,6 @@ yt::Runtime::ObjectBase * yt::Parser::Expression::GetResult()
 			tmpStack.pop_front();
 			break;
 		}
-<<<<<<< HEAD
-=======
-		case Assign:
-		{
-			auto a=*environment->stack_block.find_variable(count_stack[i - 2]) = *tmpStack[0];
-			delete tmpStack[0];
-			tmpStack.pop_front();
-			delete tmpStack[0];
-			tmpStack.pop_front();
-			tmpStack.push_front(new Runtime::ObjectBase(a));
-		}
->>>>>>> add58c8a2fa8ca203a69411286a9ed6d8c15d4e3
 			break;
 		case MM:
 		case PP:

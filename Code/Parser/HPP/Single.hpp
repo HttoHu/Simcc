@@ -35,13 +35,11 @@ namespace yt
 			Single(Environment *env) :environment(env)
 			{
 				expr = new Expression(env);
-				//std::cout << std::endl;
-				//expr->debug();
 				match(Lexer::EndStmt);
 			}
 			void execute()override
 			{
-				expr->GetResult();
+				delete expr->GetResult();
 			}
 			Lexer::Token* next_token();
 			bool match(Lexer::Tag t);

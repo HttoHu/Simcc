@@ -5,7 +5,7 @@ bool _is_operator(char ch)
 	switch (ch)
 	{
 	case '+':case '-':case '*':case '/':case '&':case '|':case ':':case'=':case'<':case'>':case'[':case']':case'(':case')':
-	case'{':case'}':case';':case ',':case '.':case'!':case'#':
+	case';':case ',':case '.':case'!':case'#':
 		return true;
 	default:
 		return false;
@@ -151,7 +151,13 @@ void yt::Lexer::Lexer::read_word()
 	auto result = keyword_map().find(word);
 	if (result == keyword_map().end())
 	{
-		token_stream.push_back(new TId(word));
+		TId *tmp = TId::find_id(word);
+		if (tmp == nullptr)
+		{ 
+			tmp = new TId(word);
+			TId::id_table.back().insert({ word, tmp });
+		}
+		token_stream.push_back(tmp);
 		return;
 	}
 	token_stream.push_back(new Token(result->second));
@@ -187,6 +193,16 @@ void yt::Lexer::Lexer::init_token_stream()
 	{
 		switch (content[index])
 		{
+		case '{':
+			token_stream.push_back(new Token(Tag::BlockBegin));
+			TId::id_table.push_back(std::map<std::string,TId*>());
+			index++;
+			continue;
+		case '}':
+			token_stream.push_back(new Token(Tag::BlockEnd));
+			TId::id_table.pop_back();
+			index++;
+			continue;
 		case '\'':
 			read_char();
 			continue;

@@ -18,7 +18,7 @@ std::unordered_map<std::string, Tag>& yt::Lexer::symbol_map()
 	static std::unordered_map<std::string, Tag> ret{
 		{ "+",Tag::Add },{ "-",Tag::Sub },{ "*",Tag::Mul },{ "/",Tag::Div },
 		{ "&&",Tag::And },{ "||",Tag::Or },{ "[",Tag::LSB },{ "]",Tag::RSB },
-		{ "{",Tag::BlockBegin },{ "}",Tag::BlockEnd },{ "(",Tag::Lk },{ ")",Tag::Rk },
+		{ "(",Tag::Lk },{ ")",Tag::Rk },
 		{ "::",Tag::Place },{ "=",Tag::Assign },{ ">",Tag::Gt },{ "<",Tag::Lt },
 		{ ">=",Tag::Ge },{ "<=",Tag::Le },{ "==",Tag::Eq },{ "!=",Tag::Ne },
 		{",",Tag::Comma},{";",Tag::EndStmt},{".",Tag::MemberPoint},
