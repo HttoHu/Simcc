@@ -8,6 +8,14 @@ Block::Block(Environment *env) :environment(env)
 	{
 		switch (env->this_token()->get_tag())
 		{
+		case Lexer::Tag::TBreak:
+			stmts.push_back(new Break(environment));
+			environment->current_pos++;
+			return;
+		case Lexer::Tag::TContinue:
+			stmts.push_back(new Continue(environment));
+			environment->current_pos++;
+			return;
 		case Lexer::Tag::Endl:
 			environment->current_pos++;
 			break;
@@ -17,6 +25,10 @@ Block::Block(Environment *env) :environment(env)
 			return;
 		case Lexer::Tag::TIf:
 			stmts.push_back(new yt::Parser::If(environment));
+			environment->current_pos++;
+			return;
+		case Lexer::Tag::TFor:
+			stmts.push_back(new yt::Parser::For(environment));
 			environment->current_pos++;
 			return;
 		case Lexer::Tag::SBool:
@@ -35,8 +47,6 @@ Block::Block(Environment *env) :environment(env)
 				stmts.push_back(new Assign(environment));
 			else
 			{
-
-
 				stmts.push_back(new Single(environment));
 			}
 			return;
@@ -51,6 +61,12 @@ Block::Block(Environment *env) :environment(env)
 			throw std::runtime_error("runtime_error15");
 		switch (env->this_token()->get_tag())
 		{
+		case Lexer::Tag::TBreak:
+			stmts.push_back(new Break(environment));
+			break;
+		case Lexer::Tag::TContinue:
+			stmts.push_back(new Continue(environment));
+			break;
 		case Lexer::Tag::BlockEnd:
 			environment->current_pos++;
 			return;
@@ -62,6 +78,9 @@ Block::Block(Environment *env) :environment(env)
 			break;
 		case Lexer::Tag::TIf:
 			stmts.push_back(new yt::Parser::If(environment));
+			break;
+		case Lexer::Tag::TFor:
+			stmts.push_back(new yt::Parser::For(environment));
 			break;
 		case Lexer::Tag::SBool:
 		case  Lexer::Tag::SInt:

@@ -76,3 +76,10 @@ void assign_test()
 	std::cout << "\n";
 	ev.stack_block.debug();
 }
+	auto a = condition->GetResult();
+	while (a->to_bool())
+	{
+		block->execute();
+		delete a;
+		a = condition->GetResult();
+	}

@@ -3,9 +3,11 @@ using namespace yt::Parser;
 
 yt::Parser::Expression::Expression(Environment * env) :environment(env)
 {
+	int bd = 0;
 	std::vector<Lexer::Token* >operatorStack;
 	while (1)
 	{
+		//检查括号深度
 		switch (this_token()->get_tag())
 		{
 		case Lexer::True:
@@ -20,6 +22,7 @@ yt::Parser::Expression::Expression(Environment * env) :environment(env)
 			break;
 		case Lexer::Tag::Lk:
 			// '(' 总是被压入栈中
+			bd++;
 			operatorStack.push_back(this_token());
 			break;
 
@@ -44,6 +47,16 @@ yt::Parser::Expression::Expression(Environment * env) :environment(env)
 			operatorStack.push_back(this_token());
 			break;
 		case Lexer::Tag::Rk:
+			bd--;
+			if (bd < 0)
+			{
+				while (!operatorStack.empty())
+				{
+					count_stack.push_back(operatorStack.back());
+					operatorStack.pop_back();
+				}
+				return;
+			}
 			while (operatorStack.back()->get_tag() != Lexer::Tag::Lk)
 			{
 				count_stack.push_back(operatorStack.back());

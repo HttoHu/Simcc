@@ -27,7 +27,10 @@ namespace yt
 					return;
 				}
 				else if (this_token()->get_tag() == Lexer::Endl)
+				{
+					current_pos++;
 					match(t);
+				}
 				else
 					throw std::runtime_error(this_token()->to_string() + "unexpected erorr!");
 			}

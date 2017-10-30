@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 #include "../../Lexer/HPP/Token.hpp"
 #include "Object.hpp"
 namespace yt
@@ -64,7 +65,7 @@ namespace yt
 			void push(Lexer::Token* , ObjectBase *obj);
 			void debug();
 		private:
-			std::list<std::unordered_map<Lexer::Token*,ObjectBase*>> stack_memory;
+			std::list<std::map<Lexer::Token*,ObjectBase*>> stack_memory;
 		};
 	}
 }

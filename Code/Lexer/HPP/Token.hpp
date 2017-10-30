@@ -9,7 +9,7 @@ namespace yt
 	{
 		enum Tag
 		{
-			SInt,SDouble,SLong,SChar,SString,SBool,
+			SInt, SDouble, SLong, SChar, SString, SBool,
 			TLiteralInt, TLiteralLong, TLiteralDouble, TLiteralChar, TLiteralString,
 			TWhile, TFor, TBreak, TContinue,
 			TIf, TSwitch, TElse, TElif, TCase, TGoto,
@@ -19,10 +19,10 @@ namespace yt
 			Symbol,
 			Id,
 			Assign, Ge, Gt, Le, Lt, Ne, Eq,
-			Add, Sub, Mul, Div,PP, MM,
+			Add, Sub, Mul, Div, PP, MM,
 			True, False,
 			TTag,
-			MemberPoint,Function,
+			MemberPoint, Function,
 			Place, //::
 			And, Or, // && ,||
 			Lk, Rk,// ( and )
@@ -42,6 +42,10 @@ namespace yt
 			{
 				switch (tag)
 				{
+				case TBreak:
+					return "<break>";
+				case TContinue:
+					return "<continue>";
 				case True:
 					return "<true>";
 				case False:

@@ -11,6 +11,30 @@ namespace yt
 		class Block
 		{
 		public:
+			class Break:public Stmt
+			{
+			public:
+				Break(Environment *env) {
+					env->match(Lexer::TBreak);
+					env->match(Lexer::EndStmt);
+				}
+				void execute()override {
+					throw (char)1;
+				}
+			private:
+			};
+			class Continue :public Stmt
+			{
+			public:
+				Continue(Environment *env) {
+					env->match(Lexer::TContinue);
+					env->match(Lexer::EndStmt);
+				}
+				void execute()override {
+					throw (char)2;
+				}
+			private:
+			};
 			Block(Environment *env);
 			void execute()
 			{

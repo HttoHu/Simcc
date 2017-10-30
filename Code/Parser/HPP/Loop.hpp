@@ -1,6 +1,7 @@
 #pragma once
 #include "Block.hpp"
 #include "If.hpp"
+#include "Single.hpp"
 namespace yt
 {
 	namespace Parser
@@ -18,9 +19,18 @@ namespace yt
 			Environment *environment;
 			Block *block;
 		};
-		class For
+		class For:public Stmt
 		{
-
+		public:
+			For(Environment *env);
+			void execute()override;
+			~For();
+		private:
+			CreateBasicTypeObject *cbt;
+			Expression *condition;
+			Expression *step_action;
+			Environment *environment;
+			Block *block;
 		};
 	}
 }

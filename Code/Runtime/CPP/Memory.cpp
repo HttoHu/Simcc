@@ -2,7 +2,7 @@
 using namespace yt::Runtime;
 void yt::Runtime::Stack::newBlock()
 {
-	stack_memory.push_front(std::unordered_map<Lexer::Token*, ObjectBase*>());
+	stack_memory.push_front(std::map<Lexer::Token*, ObjectBase*>());
 }
 void yt::Runtime::Stack::endBlock()
 {
