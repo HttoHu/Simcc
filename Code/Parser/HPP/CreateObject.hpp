@@ -8,14 +8,14 @@ namespace Simcc
 		class CreateBasicTypeObject :public Stmt
 		{
 		public:
-			CreateBasicTypeObject(Environment *env) :environment(env)
+			CreateBasicTypeObject()
 			{
 				type = next_token();
 				while (true)
 				{
 					Lexer::Token *tok = next_token();
 					Lexer::Tag tag = next_token()->get_tag();
-					Expression *expr = new Expression(environment);
+					Expression *expr = new Expression();
 					
 					vtable.push_back({ tok,expr });
 					if (tag != Lexer::Assign)
@@ -39,7 +39,6 @@ namespace Simcc
 			Lexer::Token* this_token();
 		private:
 			Lexer::Token* type;
-			Environment *environment;
 			std::list < std::pair<Lexer::Token*, Expression*>> vtable;
 		};
 	}

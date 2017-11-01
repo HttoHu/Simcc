@@ -1,26 +1,27 @@
 #include "..\HPP\Action.hpp"
-
-Simcc::Runtime::Action::Action(Parser::Environment * env):environment(env)
+using namespace Simcc::Parser;
+Simcc::Runtime::Action::Action()
 {
-	switch (env->this_token()->get_tag())
+	switch (Environment::this_token()->get_tag())
 	{
 	case Lexer::PP:
 		action_type = FP;
-		env->current_pos++;
-		id = env->this_token();
+		Environment::current_pos++;
+		content = Environment::this_token();
 		return;
 	case Lexer::MM:
 		action_type = FM;
-		env->current_pos++;
-		id = env->this_token();
+		Environment::current_pos++;
+		content = Environment::this_token();
 		return;
 	case Lexer::Id:
-		env->current_pos++;
-		switch (env->this_token()->get_tag())
+		content = Environment::this_token();
+		Environment::current_pos++;
+		switch (Environment::this_token()->get_tag())
 		{
 		case Lexer::Lk:
 			action_type = CALL;
-			param = new Parser::Param(env);
+			param = new Parser::Param();
 			return;
 		case Lexer::PP:
 			action_type = BP;
@@ -33,6 +34,8 @@ Simcc::Runtime::Action::Action(Parser::Environment * env):environment(env)
 			return;
 		}
 	default:
-		throw std::runtime_error("runtime_error23");
+		content = Environment::this_token();
+		action_type = Action::CS;
+		return;
 	}
 }

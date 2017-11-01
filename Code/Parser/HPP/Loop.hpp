@@ -11,25 +11,23 @@ namespace Simcc
 		class While :public Stmt
 		{
 		public:
-			While(Environment *env);
+			While();
 			void execute()override;
 			~While();
 		private:
 			Expression *condition;
-			Environment *environment;
 			Block *block;
 		};
 		class For:public Stmt
 		{
 		public:
-			For(Environment *env);
+			For();
 			void execute()override;
 			~For();
 		private:
 			CreateBasicTypeObject *cbt;
 			Expression *condition;
 			Expression *step_action;
-			Environment *environment;
 			Block *block;
 		};
 	}

@@ -14,14 +14,14 @@ namespace Simcc
 			class Return :public Stmt
 			{
 			public:
-				Return(Environment *env) {
-					env->match(Lexer::TReturn);
-					if (env->match_noexcept(Lexer::EndStmt))
+				Return() {
+					Parser::Environment::match(Lexer::TReturn);
+					if (Parser::Environment::match_noexcept(Lexer::EndStmt))
 					{
-						env->current_pos++;
+						Parser::Environment::current_pos++;
 						expr = nullptr;
 					}
-					expr = new Expression(env);
+					expr = new Expression();
 				}
 				void execute()override {
 					throw expr->GetResult();
@@ -32,9 +32,9 @@ namespace Simcc
 			class Break :public Stmt
 			{
 			public:
-				Break(Environment *env) {
-					env->match(Lexer::TBreak);
-					env->match(Lexer::EndStmt);
+				Break() {
+					Parser::Environment::match(Lexer::TBreak);
+					Parser::Environment::match(Lexer::EndStmt);
 				}
 				void execute()override {
 					throw (char)1;
@@ -44,16 +44,16 @@ namespace Simcc
 			class Continue :public Stmt
 			{
 			public:
-				Continue(Environment *env) {
-					env->match(Lexer::TContinue);
-					env->match(Lexer::EndStmt);
+				Continue() {
+					Parser::Environment::match(Lexer::TContinue);
+					Parser::Environment::match(Lexer::EndStmt);
 				}
 				void execute()override {
 					throw (char)2;
 				}
 			private:
 			};
-			Block(Environment *env);
+			Block();
 			void execute()
 			{
 				index = 0;
@@ -73,7 +73,6 @@ namespace Simcc
 		private:
 			std::deque<Stmt*> stmts;
 			size_t index = 0;
-			Environment *environment;
 		};
 	}
 }

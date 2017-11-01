@@ -2,13 +2,13 @@
 #include "../HPP/Block.hpp"
 using namespace Simcc::Parser;
 
-Simcc::Parser::While::While(Environment * env) :environment(env)
+Simcc::Parser::While::While()
 {
-	environment->match(Lexer::TWhile);
-	environment->match(Lexer::Lk);
-	condition = new Expression(env);
-	environment->match(Lexer::Rk);
-	block = new Block(env);
+	Environment::match(Lexer::TWhile);
+	Environment::match(Lexer::Lk);
+	condition = new Expression();
+	Environment::match(Lexer::Rk);
+	block = new Block();
 }
 
 void Simcc::Parser::While::execute()
@@ -43,30 +43,30 @@ Simcc::Parser::While::~While() {
 	delete block;
 }
 
-Simcc::Parser::For::For(Environment * env) :environment(env)
+Simcc::Parser::For::For()
 {
-	environment->match(Lexer::TFor);
-	environment->match(Lexer::Lk);
-	if (environment->match_noexcept(Lexer::EndStmt))
+	Environment::match(Lexer::TFor);
+	Environment::match(Lexer::Lk);
+	if (Environment::match_noexcept(Lexer::EndStmt))
 		cbt = nullptr;
 	else
 	{
-		cbt = new CreateBasicTypeObject(environment);
+		cbt = new CreateBasicTypeObject();
 	}
-	condition = new Expression(environment);
-	environment->match(Lexer::EndStmt);
-	if (environment->match_noexcept(Lexer::EndStmt))
+	condition = new Expression();
+	Environment::match(Lexer::EndStmt);
+	if (Environment::match_noexcept(Lexer::EndStmt))
 	{
-		environment->current_pos++;
+		Environment::current_pos++;
 		step_action = nullptr;
 	}
 	else
 	{
-		step_action = new Expression(environment);
+		step_action = new Expression();
 	}
 
-	environment->match(Lexer::Rk);
-	block = new Block(env);
+	Environment::match(Lexer::Rk);
+	block = new Block();
 
 }
 

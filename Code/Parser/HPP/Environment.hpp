@@ -9,17 +9,15 @@ namespace Simcc
 		class Environment
 		{
 		public:
-			Environment(TokenStream* ts) :token_stream(ts) {}
-			Simcc::Runtime::Stack stack_block;
-			TokenStream* token_stream;
-			size_t current_pos = 0;
-			size_t current_line = 1;
+			static Simcc::Runtime::Stack stack_block;
+			static TokenStream* token_stream;
+			static size_t current_pos;
 			//===========
-			Lexer::Token* this_token()
+			static Lexer::Token* this_token()
 			{
 				return token_stream->operator[](current_pos);
 			}
-			void match(Lexer::Tag t)
+			static void match(Lexer::Tag t)
 			{
 				if (this_token()->get_tag() == t)
 				{
@@ -34,7 +32,7 @@ namespace Simcc
 				else
 					throw std::runtime_error(this_token()->to_string() + "unexpected erorr!");
 			}
-			bool match_noexcept(Lexer::Tag t)
+			static bool match_noexcept(Lexer::Tag t)
 			{
 				if (this_token()->get_tag() == t)
 				{

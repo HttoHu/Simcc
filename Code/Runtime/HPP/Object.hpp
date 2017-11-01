@@ -11,13 +11,13 @@ namespace Simcc
 		public:
 			enum VType
 			{
-				Int=1, Long=2, Double=3, Char=4, String=5,Bool=6,User
+				Int = 1, Long = 2, Double = 3, Char = 4, String = 5, Bool = 6, User
 			};
 			enum CompareArg
 			{
-				Ne,Ge,Gt,Le,Lt,Eq,
+				Ne, Ge, Gt, Le, Lt, Eq,
 			};
-			ObjectBase(VType vt) :type(vt),data(nullptr) {}
+			ObjectBase(VType vt) :type(vt), data(nullptr) {}
 			ObjectBase(int32_t a) :data(new int32_t(a)), type(Int) {}
 			ObjectBase(double a) :data(new double(a)), type(Double) {}
 			ObjectBase(char a) :data(new char(a)), type(Char) {}
@@ -53,7 +53,7 @@ namespace Simcc
 					type = Bool;
 					break;
 				default:
-					std::cout << "ERROR:"<<v.type<<"  ";
+					std::cout << "ERROR:" << v.type << "  ";
 					throw std::runtime_error("Simcc::Runtime::ObjectBase(const ObjectBase&) 1");
 					break;
 				}
@@ -114,14 +114,6 @@ namespace Simcc
 				}
 				return *this;
 			}
-			virtual ObjectBase& operator--(int)
-			{
-				return (*this)--;
-			}
-			virtual ObjectBase& operator++(int)
-			{
-				return (*this)++;;
-			}
 			virtual ObjectBase& operator--()
 			{
 				switch (type)
@@ -144,7 +136,8 @@ namespace Simcc
 				return *this;
 			}
 			virtual ~ObjectBase() {
-				delete data;
+				if (data != nullptr)
+					delete data;
 			}
 			template <typename T>
 			T& get_value()const
@@ -261,10 +254,10 @@ namespace Simcc
 			void *data;
 
 		};
-		class Object:ObjectBase
+		class Object :ObjectBase
 		{
 		public:
-			Object(const Parser::Type& t) :type(t),ObjectBase(ObjectBase::VType::User) {
+			Object(const Parser::Type& t) :type(t), ObjectBase(ObjectBase::VType::User) {
 				for (const auto & a : t.private_members)
 				{
 					switch (a.second->type_structure)
@@ -331,9 +324,9 @@ namespace Simcc
 			void set_value(const std::string & str, ObjectBase* objb)
 			{
 				auto result = private_member_table.find(str);
-				if(result == private_member_table.end())
+				if (result == private_member_table.end())
 					throw std::runtime_error("runtime_error3");
-				
+
 			}
 		private:
 			ObjectBase *set_value(const Parser::Type &t)

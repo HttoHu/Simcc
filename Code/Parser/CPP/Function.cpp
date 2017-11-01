@@ -1,12 +1,12 @@
 #include "../HPP/Function.hpp"
 using namespace Simcc::Parser;
 using namespace Simcc;
-Simcc::Parser::Param::Param(Environment * env) :environment(env)
+Simcc::Parser::Param::Param()
 {
-	environment->match(Lexer::Lk);
+	Parser::Environment::match(Lexer::Lk);
 	while (1)
 	{
-		switch (environment->this_token()->get_tag())
+		switch (Parser::Environment::this_token()->get_tag())
 		{
 		case Lexer::Id:
 		case Lexer::TLiteralChar:
@@ -16,17 +16,17 @@ Simcc::Parser::Param::Param(Environment * env) :environment(env)
 		case Lexer::TLiteralString:
 		case Lexer::True:
 		case Lexer::False:
-			param_list.push_back(environment->this_token());
+			param_list.push_back(Parser::Environment::this_token());
 			break;
 		default:
 			return;
 		}
-		if (environment->match_noexcept(Lexer::Comma))
+		if (Parser::Environment::match_noexcept(Lexer::Comma))
 			continue;
 		else
 			break;
 	}
-	environment->match(Lexer::Rk);
+	Parser::Environment::match(Lexer::Rk);
 }
 std::vector<Simcc::Runtime::ObjectBase*>& Simcc::Parser::Param::get_list()
 {
@@ -35,7 +35,7 @@ std::vector<Simcc::Runtime::ObjectBase*>& Simcc::Parser::Param::get_list()
 		switch (a->get_tag())
 		{
 		case Lexer::Id:
-			obj_list.push_back(new Simcc::Runtime::ObjectBase(*environment->stack_block.find_variable(a)));
+			obj_list.push_back(new Simcc::Runtime::ObjectBase(*Parser::Environment::stack_block.find_variable(a)));
 			break;
 		case Lexer::TLiteralInt:
 			obj_list.push_back(new Simcc::Runtime::ObjectBase(*(int*)a->get_value()));
@@ -65,12 +65,13 @@ Simcc::Parser::Param::~Param()
 		delete a;
 }
 
-Simcc::Parser::Argument::Argument(Environment * env) :environment(env) {
-	environment->match(Lexer::Lk);
+Simcc::Parser::Argument::Argument()
+{
+	Parser::Environment::match(Lexer::Lk);
 	while (1)
 	{
 		std::pair<Lexer::Token*, Lexer::Token*> tmp;
-		switch (environment->this_token()->get_tag())
+		switch (Parser::Environment::this_token()->get_tag())
 		{
 		case Lexer::SInt:
 		case Lexer::SDouble:
@@ -78,21 +79,21 @@ Simcc::Parser::Argument::Argument(Environment * env) :environment(env) {
 		case Lexer::SChar:
 		case Lexer::SString:
 		case Lexer::SBool:
-			tmp.first = environment->this_token();
+			tmp.first = Parser::Environment::this_token();
 			break;
 		default:
 			return;
 		}
-		environment->current_pos++;
-		auto id_name = environment->this_token();
-		environment->match(Lexer::Id);
-		tmp.second = environment->this_token();
+		Parser::Environment::current_pos++;
+		auto id_name = Parser::Environment::this_token();
+		Parser::Environment::match(Lexer::Id);
+		tmp.second = Parser::Environment::this_token();
 		arg_list.push_back(tmp);
-		if (environment->match_noexcept(Lexer::Comma))
+		if (Parser::Environment::match_noexcept(Lexer::Comma))
 			continue;
 		break;
 	}
-	environment->match(Lexer::Rk);
+	Parser::Environment::match(Lexer::Rk);
 }
 
 void Simcc::Parser::Argument::CreateVariable(Param & param)
@@ -102,20 +103,20 @@ void Simcc::Parser::Argument::CreateVariable(Param & param)
 		throw std::runtime_error("RUntimeError22");
 	for (size_t i = 0; i<p_list.size(); i++)
 	{
-		environment->stack_block.push(arg_list[i].second, p_list[i]);
+		Parser::Environment::stack_block.push(arg_list[i].second, p_list[i]);
 	}
 }
 
-Simcc::Parser::Function::Function(Environment * env) :environment(env) {
-	type = Runtime::IdTypeTable::find_type(environment->this_token());
-	environment->current_pos++;
-	environment->match(Lexer::Id);
-	args = new Argument(environment);
-	funcBlock = new Block(environment);
+Simcc::Parser::Function::Function(){
+	type = Runtime::IdTypeTable::find_type(Parser::Environment::this_token());
+	Parser::Environment::current_pos++;
+	Parser::Environment::match(Lexer::Id);
+	args = new Argument();
+	funcBlock = new Block();
 }
 Runtime::ObjectBase * Simcc::Parser::Function::execute(Param * param)
 {
-	environment->stack_block.newBlock();
+	Parser::Environment::stack_block.newBlock();
 	args->CreateVariable(*param);
 	try
 	{
@@ -123,9 +124,9 @@ Runtime::ObjectBase * Simcc::Parser::Function::execute(Param * param)
 	}
 	catch (Runtime::ObjectBase* return_value)
 	{
-		environment->stack_block.endBlock();
+		Parser::Environment::stack_block.endBlock();
 		return return_value;
 	}
-	environment->stack_block.endBlock();
+	Parser::Environment::stack_block.endBlock();
 	return nullptr;
 }

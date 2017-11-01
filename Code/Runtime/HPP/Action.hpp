@@ -11,37 +11,57 @@ namespace Simcc
 		public:
 			enum  ActionType
 			{
-				FP,FM,BP,BM,CALL,ID,
+				FP,FM,BP,BM,CALL,ID,CS,
 			};
-			Action(Parser::Environment *env);
-			ObjectBase* get_result()
+			Action();
+			Action(Lexer::Token* tok) :content(tok) 
+			{
+			}
+			ObjectBase* get_object_result()
 			{
 				switch (action_type)
 				{
 				case FP:
-					ObjectBase *obj = environment->stack_block.find_variable(id);
-					return &(++*obj);
+				{
+					Parser::Environment::stack_block.find_variable(content)->operator++();
+					ObjectBase *obj = new ObjectBase(*Parser::Environment::stack_block.find_variable(content));
+					return obj;
+				}
 				case BP:
-					ObjectBase *obj = environment->stack_block.find_variable(id);
-					return &(*obj++);
+				{
+					ObjectBase *obj = new ObjectBase(*Parser::Environment::stack_block.find_variable(content));
+					Parser::Environment::stack_block.find_variable(content)->operator++();
+					return obj;
+				}
 				case FM:
-					ObjectBase *obj = environment->stack_block.find_variable(id);
-					return &(--*obj);
+				{
+					Parser::Environment::stack_block.find_variable(content)->operator--();
+					ObjectBase *obj = new ObjectBase(*Parser::Environment::stack_block.find_variable(content));
+					return obj;
+				}
 				case BM:
-					ObjectBase *obj = environment->stack_block.find_variable(id);
-					return &(*obj--);
+				{
+					ObjectBase *obj = new ObjectBase(*Parser::Environment::stack_block.find_variable(content));
+					Parser::Environment::stack_block.find_variable(content)->operator--();
+					return obj;
+				}
 				case CALL:
-					return nullptr;
+				{
+
+				}
 				case ID:
-					return environment->stack_block.find_variable(id);
+					return new ObjectBase(*Parser::Environment::stack_block.find_variable(content));
 				default:
 					break;
 				}
 			}
-		private:
-			Parser::Environment *environment;
+			Lexer::Tag get_cs()
+			{
+				return content->get_tag();
+			}
+			Lexer::Token *content;
 			ActionType action_type;
-			Lexer::Token *id;
+		private:
 			Parser::Param *param=nullptr;
 		};
 	}

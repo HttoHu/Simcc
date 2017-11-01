@@ -18,12 +18,12 @@ void block_test()
 	Simcc::Lexer::Lexer lex(str);
 	lex.init_token_stream();
 	lex.debug();
-	Simcc::Parser::Environment ev(&lex.token_stream);
-	Simcc::Parser::Block block(&ev);
+	Simcc::Parser::Environment::token_stream = &lex.token_stream;
+	Simcc::Parser::Block block;
 	time_t s = clock();
 	block.execute();
 	std::cout << std::endl<<"====================================="<<std::endl;
-	ev.stack_block.debug();
+	Simcc::Parser::Environment::stack_block.debug();
 	std::cout << (double)(clock()-s)/CLK_TCK<<"\n";
 }
 void memory_test();

@@ -12,31 +12,33 @@
 */
 namespace Simcc
 {
+	namespace Runtime
+	{
+		class Action;
+	}
 	namespace Parser
 	{
 		class Expression
 		{
 		public:
-			Expression(Environment *env);
-			void skip();
+			Expression();
 			Runtime::ObjectBase* GetResult();
 			void debug();
 			// 返回的值不要delete
-			Runtime::ObjectBase* GetObjectValue( size_t &i);
 			~Expression() {
 			}
 		private:
 			Lexer::Token * next_token()
 			{
-				return environment->token_stream->operator[](environment->current_pos++);
+				return Environment::token_stream->operator[](Environment::current_pos++);
 			}
 			Lexer::Token * this_token()
 			{
-				return environment->token_stream->operator[](environment->current_pos);
+				return Environment::token_stream->operator[](Environment::current_pos);
 			}
 			bool match(Lexer::Tag t)
 			{
-				if ((environment->token_stream)->operator[](environment->current_pos++)->get_tag() == t)
+				if ((Environment::token_stream)->operator[](Environment::current_pos++)->get_tag() == t)
 				{
 					return true;
 				}
@@ -69,8 +71,7 @@ namespace Simcc
 					break;
 				}
 			}
-			std::vector<Simcc::Lexer::Token*> count_stack;
-			Environment *environment;
+			std::vector<Runtime::Action*> count_stack;
 		};
 	}
 }

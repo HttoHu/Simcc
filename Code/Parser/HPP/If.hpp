@@ -11,11 +11,10 @@ namespace Simcc
 		class If :public Stmt
 		{
 		public:
-			If(Environment *env);
+			If();
 			void execute()override;
 			~If();
 		private:
-			Environment *environment;
 			std::list<std::pair<Expression*,Block *>>block;
 			Block* Else=nullptr;
 		};

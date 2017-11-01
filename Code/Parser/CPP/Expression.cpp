@@ -1,7 +1,8 @@
 #include "../HPP/Expression.hpp"
+#include "../../Runtime/HPP/Action.hpp"
 using namespace Simcc::Parser;
 
-Simcc::Parser::Expression::Expression(Environment * env) :environment(env)
+Simcc::Parser::Expression::Expression()
 {
 	int bd = 0;
 	std::vector<Lexer::Token* >operatorStack;
@@ -18,14 +19,13 @@ Simcc::Parser::Expression::Expression(Environment * env) :environment(env)
 		case Lexer::Tag::TLiteralLong:
 		case Lexer::Tag::TLiteralChar:
 			//  字面值总是先压入输入中.
-			count_stack.push_back(this_token());
+			count_stack.push_back(new Runtime::Action());
 			break;
 		case Lexer::Tag::Lk:
 			// '(' 总是被压入栈中
 			bd++;
 			operatorStack.push_back(this_token());
 			break;
-
 		case Lexer::Tag::Ne:
 		case Lexer::Tag::Ge:
 		case Lexer::Tag::Eq:
@@ -41,7 +41,7 @@ Simcc::Parser::Expression::Expression(Environment * env) :environment(env)
 			//当然一样厉害的还是pass 不敢打啊.'('除外啦. 毕竟它走他也不走 它只认')'
 			while (!operatorStack.empty() && operatorStack.back()->get_tag() != Lexer::Tag::Lk&&get_priority(this_token()->get_tag()) <= get_priority(operatorStack.back()->get_tag()))
 			{
-				count_stack.push_back(operatorStack.back());
+				count_stack.push_back(new Runtime::Action(operatorStack.back()));
 				operatorStack.pop_back();
 			}
 			operatorStack.push_back(this_token());
@@ -52,14 +52,14 @@ Simcc::Parser::Expression::Expression(Environment * env) :environment(env)
 			{
 				while (!operatorStack.empty())
 				{
-					count_stack.push_back(operatorStack.back());
+					count_stack.push_back(new Runtime::Action(operatorStack.back()));
 					operatorStack.pop_back();
 				}
 				return;
 			}
 			while (operatorStack.back()->get_tag() != Lexer::Tag::Lk)
 			{
-				count_stack.push_back(operatorStack.back());
+				count_stack.push_back(new Runtime::Action(operatorStack.back()));
 				operatorStack.pop_back();
 			}
 			operatorStack.pop_back();
@@ -67,53 +67,24 @@ Simcc::Parser::Expression::Expression(Environment * env) :environment(env)
 		case Lexer::Tag::MM:
 		case Lexer::Tag::PP:
 		case Lexer::Tag::Id:
-			skip();
-			break;
+			count_stack.push_back(new Runtime::Action());
+			std::cout << count_stack.back()->content->to_string()<<std::endl;
+			continue;
 		default:
 			if (count_stack.empty())
 				throw std::runtime_error("runtime_error21");
 			while (!operatorStack.empty())
 			{
-				count_stack.push_back(operatorStack.back());
+				count_stack.push_back(new Runtime::Action(operatorStack.back()));
 				operatorStack.pop_back();
 			}
 			return;
 		}
-		environment->current_pos++;
+		Environment::current_pos++;
 	}
 
 }
 
-void Simcc::Parser::Expression::skip()
-{
-redo:	switch (this_token()->get_tag())
-{
-case Lexer::Tag::PP:
-case Lexer::Tag::MM:
-	count_stack.push_back(next_token());
-	goto redo;
-case Lexer::Tag::Id:
-	// 如果是个函数的话
-	if (this_token()->get_tag() == Lexer::Tag::Lk)
-	{
-		throw std::runtime_error("void Simcc::Parser::Expression::skip() not compleleted ");
-		// args_parse;
-		// 等我把函数模块写完后回头来完善这个地方.
-	}
-	else if (this_token()->get_tag() == Lexer::Tag::PP || this_token()->get_tag() == Lexer::Tag::PP)
-	{
-		count_stack.push_back(this_token());
-	}
-	else
-	{
-		count_stack.push_back(this_token());
-	}
-	break;
-default:
-	return;
-	throw std::runtime_error("\nError:" + this_token()->to_string() + "runtime_error12");
-}
-}
 
 Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetResult()
 {
@@ -121,22 +92,22 @@ Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetResult()
 	std::deque<Runtime::ObjectBase*> tmpStack;
 	for (size_t i = 0; i < count_stack.size(); i++)
 	{
-		switch (count_stack[i]->get_tag())
+		switch (count_stack[i]->get_cs())
 		{
 		case TLiteralChar:
-			tmpStack.push_front(new Runtime::ObjectBase(*(char*)count_stack[i]->get_value()));
+			tmpStack.push_front(new Runtime::ObjectBase(*(char*)count_stack[i]->content->get_value()));
 			break;
 		case TLiteralDouble:
-			tmpStack.push_front(new Runtime::ObjectBase(*(double*)count_stack[i]->get_value()));
+			tmpStack.push_front(new Runtime::ObjectBase(*(double*)count_stack[i]->content->get_value()));
 			break;
 		case TLiteralInt:
-			tmpStack.push_front(new Runtime::ObjectBase(*(int32_t*)count_stack[i]->get_value()));
+			tmpStack.push_front(new Runtime::ObjectBase(*(int32_t*)count_stack[i]->content->get_value()));
 			break;
 		case TLiteralString:
-			tmpStack.push_front(new Runtime::ObjectBase(*(std::string*)count_stack[i]->get_value()));
+			tmpStack.push_front(new Runtime::ObjectBase(*(std::string*)count_stack[i]->content->get_value()));
 			break;
 		case TLiteralLong:
-			tmpStack.push_front(new Runtime::ObjectBase(*(int64_t*)count_stack[i]->get_value()));
+			tmpStack.push_front(new Runtime::ObjectBase(*(int64_t*)count_stack[i]->content->get_value()));
 			break;
 		case True:
 			tmpStack.push_front(new Runtime::ObjectBase(true));
@@ -153,7 +124,7 @@ Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetResult()
 		case Or:
 		case Lt:
 		{
-			Runtime::ObjectBase *newObj = (tmpStack[1])->Compare(tmpStack[0], count_stack[i]->get_tag());
+			Runtime::ObjectBase *newObj = (tmpStack[1])->Compare(tmpStack[0], count_stack[i]->content->get_tag());
 			delete tmpStack[0];
 			tmpStack.pop_front();
 			delete tmpStack[0];
@@ -193,12 +164,11 @@ Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetResult()
 		case MM:
 		case PP:
 		case Id:
-			tmpStack.push_front(GetObjectValue(i));
+			tmpStack.push_front(count_stack[i]->get_object_result());
 			break;
 		default:
 			break;
 		}
-		//tmpStack.push_back(count_stack[i]);
 	}
 	if (tmpStack.empty())
 		return nullptr;
@@ -208,26 +178,6 @@ void Simcc::Parser::Expression::debug()
 {
 	for (auto & a : count_stack)
 	{
-		std::cout << a->to_string();
-	}
-}
-
-Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetObjectValue(size_t &i)
-{
-	switch (count_stack[i]->get_tag())
-	{
-	case Lexer::Tag::PP:
-		i++;
-		if (count_stack[i]->get_tag() == Lexer::Tag::Id)
-			return new Runtime::ObjectBase(environment->stack_block.find_variable(count_stack[i])->operator++());
-		throw std::runtime_error("damn it");
-	case Lexer::Tag::MM:
-		i++;
-		if (count_stack[i]->get_tag() == Lexer::Tag::Id)
-			return new Runtime::ObjectBase(environment->stack_block.find_variable(count_stack[i])->operator--());
-	case Lexer::Tag::Id:
-		return new Runtime::ObjectBase(*environment->stack_block.find_variable(count_stack[i]));
-	default:
-		break;
+		std::cout << a->content->to_string();
 	}
 }

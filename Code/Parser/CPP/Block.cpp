@@ -1,39 +1,39 @@
 #include "../HPP/Block.hpp"
 using namespace Simcc::Parser;
-Block::Block(Environment *env) :environment(env)
+Block::Block()
 {
-	environment->current_pos++;
-	bool isSingle = !(env->this_token()->get_tag() == Lexer::Tag::BlockBegin);
+	Parser::Environment::current_pos++;
+	bool isSingle = !(Parser::Environment::this_token()->get_tag() == Lexer::Tag::BlockBegin);
 	while (isSingle)
 	{
-		switch (env->this_token()->get_tag())
+		switch (Parser::Environment::this_token()->get_tag())
 		{
 		case Lexer::Tag::TReturn:
-			stmts.push_back(new Return(environment));
-			environment->current_pos++;
+			stmts.push_back(new Return());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::TBreak:
-			stmts.push_back(new Break(environment));
-			environment->current_pos++;
+			stmts.push_back(new Break());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::TContinue:
-			stmts.push_back(new Continue(environment));
-			environment->current_pos++;
+			stmts.push_back(new Continue());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::Endl:
-			environment->current_pos++;
+			Parser::Environment::current_pos++;
 			break;
 		case Lexer::Tag::TWhile:
-			stmts.push_back(new Simcc::Parser::While(environment));
-			environment->current_pos++;
+			stmts.push_back(new Simcc::Parser::While());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::TIf:
-			stmts.push_back(new Simcc::Parser::If(environment));
-			environment->current_pos++;
+			stmts.push_back(new Simcc::Parser::If());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::TFor:
-			stmts.push_back(new Simcc::Parser::For(environment));
-			environment->current_pos++;
+			stmts.push_back(new Simcc::Parser::For());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::SBool:
 		case  Lexer::Tag::SInt:
@@ -41,53 +41,53 @@ Block::Block(Environment *env) :environment(env)
 		case  Lexer::Tag::SString:
 		case  Lexer::Tag::SChar:
 		case  Lexer::Tag::SLong:
-			stmts.push_back(new CreateBasicTypeObject(environment));
-			environment->current_pos++;
+			stmts.push_back(new CreateBasicTypeObject());
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::MM:
 		case Lexer::Tag::PP:
 		case Lexer::Tag::Id:
-			if(environment->token_stream->at(environment->current_pos+1)->get_tag()==Lexer::Assign)
-				stmts.push_back(new Assign(environment));
+			if(Parser::Environment::token_stream->at(Parser::Environment::current_pos+1)->get_tag()==Lexer::Assign)
+				stmts.push_back(new Assign());
 			else
 			{
-				stmts.push_back(new Single(environment));
+				stmts.push_back(new Single());
 			}
 			return;
 		default:
-			throw std::runtime_error("\n" + environment->this_token()->to_string() + "runtime_error13");
+			throw std::runtime_error("\n" + Parser::Environment::this_token()->to_string() + "runtime_error13");
 		}
 	}
-	environment->current_pos++;
+	Parser::Environment::current_pos++;
 	while (!isSingle)
 	{
-		if (environment->current_pos >= environment->token_stream->size())
+		if (Parser::Environment::current_pos >= Parser::Environment::token_stream->size())
 			throw std::runtime_error("runtime_error15");
-		switch (env->this_token()->get_tag())
+		switch (Parser::Environment::this_token()->get_tag())
 		{
 		case Lexer::Tag::TReturn:
-			stmts.push_back(new Return(environment));
+			stmts.push_back(new Return());
 			break;
 		case Lexer::Tag::TBreak:
-			stmts.push_back(new Break(environment));
+			stmts.push_back(new Break());
 			break;
 		case Lexer::Tag::TContinue:
-			stmts.push_back(new Continue(environment));
+			stmts.push_back(new Continue());
 			break;
 		case Lexer::Tag::BlockEnd:
-			environment->current_pos++;
+			Parser::Environment::current_pos++;
 			return;
 		case Lexer::Tag::Endl:
-			environment->current_pos++;
+			Parser::Environment::current_pos++;
 			continue;
 		case Lexer::Tag::TWhile:
-			stmts.push_back(new Simcc::Parser::While(environment));
+			stmts.push_back(new Simcc::Parser::While());
 			break;
 		case Lexer::Tag::TIf:
-			stmts.push_back(new Simcc::Parser::If(environment));
+			stmts.push_back(new Simcc::Parser::If());
 			break;
 		case Lexer::Tag::TFor:
-			stmts.push_back(new Simcc::Parser::For(environment));
+			stmts.push_back(new Simcc::Parser::For());
 			break;
 		case Lexer::Tag::SBool:
 		case  Lexer::Tag::SInt:
@@ -95,18 +95,18 @@ Block::Block(Environment *env) :environment(env)
 		case  Lexer::Tag::SString:
 		case  Lexer::Tag::SChar:
 		case  Lexer::Tag::SLong:
-			stmts.push_back(new CreateBasicTypeObject(environment));
+			stmts.push_back(new CreateBasicTypeObject());
 			continue;
 		case Lexer::Tag::MM:
 		case Lexer::Tag::PP:
 		case Lexer::Tag::Id:
-			if (environment->token_stream->at(environment->current_pos + 1)->get_tag() == Lexer::Assign)
-				stmts.push_back(new Assign(environment));
+			if (Parser::Environment::token_stream->at(Parser::Environment::current_pos + 1)->get_tag() == Lexer::Assign)
+				stmts.push_back(new Assign());
 			else
-				stmts.push_back(new Single(environment));
+				stmts.push_back(new Single());
 			continue;
 		default:
-			throw std::runtime_error("\n" + environment->this_token()->to_string() + "runtime_error14");
+			throw std::runtime_error("\n" + Parser::Environment::this_token()->to_string() + "runtime_error14");
 		}
 	}
 }

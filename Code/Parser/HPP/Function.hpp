@@ -11,32 +11,29 @@ namespace Simcc
 		class Param
 		{
 		public:
-			Param(Environment *env);
+			Param();
 			std::vector<Simcc::Runtime::ObjectBase*>& get_list();
 			~Param();
 		private:
 			std::vector<Lexer::Token* > param_list;
 			std::vector<Simcc::Runtime::ObjectBase*> obj_list;
-			Environment *environment;
 		};
 		//пн╡н
 		class Argument
 		{
 		public:
-			Argument(Environment *env);
+			Argument();
 			void CreateVariable(Param &param);
 		private:
-			Environment *environment;
 			std::vector<std::pair<Lexer::Token*, Lexer::Token*>> arg_list;
 		};
 		class Function
 		{
 		public:
-			Function(Environment *env);
+			Function();
 			Runtime::ObjectBase* execute(Param *param);
 		private:
 			size_t type;
-			Environment *environment;
 			Block *funcBlock;
 			Argument * args;
 		};
