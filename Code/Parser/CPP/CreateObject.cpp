@@ -1,7 +1,7 @@
 #include "..\HPP\CreateObject.hpp"
-using namespace yt::Parser;
-using namespace yt;
-void yt::Parser::CreateBasicTypeObject::execute()
+using namespace Simcc::Parser;
+using namespace Simcc;
+void Simcc::Parser::CreateBasicTypeObject::execute()
 {
 	for (auto & a : vtable)
 	{
@@ -9,11 +9,11 @@ void yt::Parser::CreateBasicTypeObject::execute()
 	}
 }
 
-Lexer::Token * yt::Parser::CreateBasicTypeObject::next_token()
+Lexer::Token * Simcc::Parser::CreateBasicTypeObject::next_token()
 {
 	return environment->token_stream->operator[](environment->current_pos++);
 }
-Lexer::Token * yt::Parser::CreateBasicTypeObject::this_token()
+Lexer::Token * Simcc::Parser::CreateBasicTypeObject::this_token()
 {
 	return environment->token_stream->operator[](environment->current_pos);
 }

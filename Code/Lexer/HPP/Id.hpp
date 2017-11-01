@@ -2,7 +2,7 @@
 #include "Token.hpp"
 #include <map>
 #include <vector>
-namespace yt
+namespace Simcc
 {
 	namespace Lexer
 	{

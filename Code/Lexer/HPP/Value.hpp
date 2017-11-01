@@ -1,11 +1,11 @@
 #pragma once
-// By 胡远韬 Yt Hu
+// By 胡远韬 Simcc Hu
 /*
 * There are six classed in the header file,
 * the purpose of them is storing literal value in the analysis of scanner.
 */
 #include "Token.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Lexer
 	{

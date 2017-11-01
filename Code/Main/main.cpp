@@ -3,7 +3,7 @@
 #include <fstream>
 #include <time.h>
 #include <Windows.h>
-using namespace yt::Runtime;
+using namespace Simcc::Runtime;
 std::string get_file_content(const std::string & filename)
 {
 	using namespace std;
@@ -15,11 +15,11 @@ void block_test()
 {
 
 	std::string str = get_file_content("Text.txt");
-	yt::Lexer::Lexer lex(str);
+	Simcc::Lexer::Lexer lex(str);
 	lex.init_token_stream();
 	lex.debug();
-	yt::Parser::Environment ev(&lex.token_stream);
-	yt::Parser::Block block(&ev);
+	Simcc::Parser::Environment ev(&lex.token_stream);
+	Simcc::Parser::Block block(&ev);
 	time_t s = clock();
 	block.execute();
 	std::cout << std::endl<<"====================================="<<std::endl;

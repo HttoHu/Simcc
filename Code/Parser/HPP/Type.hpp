@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include "Error.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Runtime
 	{

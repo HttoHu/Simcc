@@ -1,7 +1,7 @@
 #include "..\HPP\If.hpp"
 #include "../HPP/Block.hpp"
-using namespace yt::Parser;
-If::If(yt::Parser::Environment *env) :environment(env)
+using namespace Simcc::Parser;
+If::If(Simcc::Parser::Environment *env) :environment(env)
 {
 	environment->match(Lexer::TIf);
 	environment->match(Lexer::Lk);
@@ -35,7 +35,7 @@ If::If(yt::Parser::Environment *env) :environment(env)
 }
 
 
-void yt::Parser::If::execute()
+void Simcc::Parser::If::execute()
 {
 	for (auto & a : block)
 	{
@@ -50,7 +50,7 @@ void yt::Parser::If::execute()
 		Else->execute();
 }
 
-yt::Parser::If::~If() {
+Simcc::Parser::If::~If() {
 	for (auto &a : block)
 	{
 		delete a.first;

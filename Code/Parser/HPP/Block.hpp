@@ -4,14 +4,32 @@
 #include "CreateObject.hpp"
 #include "Single.hpp"
 #include "Loop.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{
 		class Block
 		{
 		public:
-			class Break:public Stmt
+			class Return :public Stmt
+			{
+			public:
+				Return(Environment *env) {
+					env->match(Lexer::TReturn);
+					if (env->match_noexcept(Lexer::EndStmt))
+					{
+						env->current_pos++;
+						expr = nullptr;
+					}
+					expr = new Expression(env);
+				}
+				void execute()override {
+					throw expr->GetResult();
+				}
+			private:
+				Expression *expr;
+			};
+			class Break :public Stmt
 			{
 			public:
 				Break(Environment *env) {
@@ -39,12 +57,10 @@ namespace yt
 			void execute()
 			{
 				index = 0;
-				//environment->stack_block.newBlock();
-				for (const auto & a:stmts)
+				for (const auto & a : stmts)
 				{
 					a->execute();
 				}
-				//environment->stack_block.endBlock();
 			}
 			void break_block()
 			{

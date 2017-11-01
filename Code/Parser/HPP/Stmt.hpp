@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Runtime/HPP/Memory.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{

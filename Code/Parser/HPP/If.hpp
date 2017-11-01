@@ -3,7 +3,7 @@
 #include "Expression.hpp"
 #include "CreateObject.hpp"
 #include "Single.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{

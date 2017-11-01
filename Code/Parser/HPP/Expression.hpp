@@ -10,7 +10,7 @@
 * 该类接受一个环境, 然后可以直接计算出表达式的值, 当然遇到id时我们调用一个
 * 叫 get_value的类, 返回一个Object 然后
 */
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{
@@ -42,34 +42,34 @@ namespace yt
 				}
 				return false;
 			}
-			char get_priority(yt::Lexer::Tag a)
+			char get_priority(Simcc::Lexer::Tag a)
 			{
 				switch (a)
 				{
-				case yt::Lexer::And:
-				case yt::Lexer::Or:
+				case Simcc::Lexer::And:
+				case Simcc::Lexer::Or:
 					return 0;
-				case yt::Lexer::Ge:
-				case yt::Lexer::Gt:
-				case yt::Lexer::Le:
-				case yt::Lexer::Lt:
-				case yt::Lexer::Ne:
-				case yt::Lexer::Eq:
+				case Simcc::Lexer::Ge:
+				case Simcc::Lexer::Gt:
+				case Simcc::Lexer::Le:
+				case Simcc::Lexer::Lt:
+				case Simcc::Lexer::Ne:
+				case Simcc::Lexer::Eq:
 					return 1;
-				case yt::Lexer::Add:
-				case yt::Lexer::Sub:
+				case Simcc::Lexer::Add:
+				case Simcc::Lexer::Sub:
 					return 2;
-				case yt::Lexer::Mul:
-				case yt::Lexer::Div:
+				case Simcc::Lexer::Mul:
+				case Simcc::Lexer::Div:
 					return 3;
-				case yt::Lexer::Lk:
+				case Simcc::Lexer::Lk:
 					return 10;
 				default:
 					throw std::runtime_error("runtime_error4");
 					break;
 				}
 			}
-			std::vector<yt::Lexer::Token*> count_stack;
+			std::vector<Simcc::Lexer::Token*> count_stack;
 			Environment *environment;
 		};
 	}

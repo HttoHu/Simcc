@@ -1,7 +1,7 @@
 #include "../HPP/Expression.hpp"
-using namespace yt::Parser;
+using namespace Simcc::Parser;
 
-yt::Parser::Expression::Expression(Environment * env) :environment(env)
+Simcc::Parser::Expression::Expression(Environment * env) :environment(env)
 {
 	int bd = 0;
 	std::vector<Lexer::Token* >operatorStack;
@@ -84,7 +84,7 @@ yt::Parser::Expression::Expression(Environment * env) :environment(env)
 
 }
 
-void yt::Parser::Expression::skip()
+void Simcc::Parser::Expression::skip()
 {
 redo:	switch (this_token()->get_tag())
 {
@@ -96,7 +96,7 @@ case Lexer::Tag::Id:
 	// 如果是个函数的话
 	if (this_token()->get_tag() == Lexer::Tag::Lk)
 	{
-		throw std::runtime_error("void yt::Parser::Expression::skip() not compleleted ");
+		throw std::runtime_error("void Simcc::Parser::Expression::skip() not compleleted ");
 		// args_parse;
 		// 等我把函数模块写完后回头来完善这个地方.
 	}
@@ -115,9 +115,9 @@ default:
 }
 }
 
-yt::Runtime::ObjectBase * yt::Parser::Expression::GetResult()
+Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetResult()
 {
-	using namespace yt::Lexer;
+	using namespace Simcc::Lexer;
 	std::deque<Runtime::ObjectBase*> tmpStack;
 	for (size_t i = 0; i < count_stack.size(); i++)
 	{
@@ -204,7 +204,7 @@ yt::Runtime::ObjectBase * yt::Parser::Expression::GetResult()
 		return nullptr;
 	return tmpStack.front();
 }
-void yt::Parser::Expression::debug()
+void Simcc::Parser::Expression::debug()
 {
 	for (auto & a : count_stack)
 	{
@@ -212,7 +212,7 @@ void yt::Parser::Expression::debug()
 	}
 }
 
-yt::Runtime::ObjectBase * yt::Parser::Expression::GetObjectValue(size_t &i)
+Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetObjectValue(size_t &i)
 {
 	switch (count_stack[i]->get_tag())
 	{

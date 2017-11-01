@@ -3,7 +3,7 @@
 #include <iostream>
 #include "../../Parser/HPP/Type.hpp"
 #include "../../Lexer/HPP/Token.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Runtime
 	{
@@ -11,7 +11,7 @@ namespace yt
 		public:
 			enum VType
 			{
-				Int=1, Long=2, Double=3, Char, String,Bool,User
+				Int=1, Long=2, Double=3, Char=4, String=5,Bool=6,User
 			};
 			enum CompareArg
 			{
@@ -54,7 +54,7 @@ namespace yt
 					break;
 				default:
 					std::cout << "ERROR:"<<v.type<<"  ";
-					throw std::runtime_error("yt::Runtime::ObjectBase(const ObjectBase&) 1");
+					throw std::runtime_error("Simcc::Runtime::ObjectBase(const ObjectBase&) 1");
 					break;
 				}
 			}
@@ -89,7 +89,7 @@ namespace yt
 					type = Bool;
 					break;
 				default:
-					throw std::runtime_error("yt::Runtime::ObjectBase(const ObjectBase&) 1");
+					throw std::runtime_error("Simcc::Runtime::ObjectBase(const ObjectBase&) 1");
 					break;
 				}
 			}
@@ -97,20 +97,20 @@ namespace yt
 			{
 				switch (type)
 				{
-				case yt::Runtime::ObjectBase::Double:
+				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data += 1;
 					break;
-				case yt::Runtime::ObjectBase::Long:
+				case Simcc::Runtime::ObjectBase::Long:
 					*(int64_t*)data += 1;
 					break;
-				case yt::Runtime::ObjectBase::Int:
+				case Simcc::Runtime::ObjectBase::Int:
 					*(int32_t*)data += 1;
 					break;
-				case yt::Runtime::ObjectBase::Char:
+				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data += 1;
 					break;
 				default:
-					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
 				}
 				return *this;
 			}
@@ -126,20 +126,20 @@ namespace yt
 			{
 				switch (type)
 				{
-				case yt::Runtime::ObjectBase::Double:
+				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data -= 1;
 					break;
-				case yt::Runtime::ObjectBase::Long:
+				case Simcc::Runtime::ObjectBase::Long:
 					*(int64_t*)data -= 1;
 					break;
-				case yt::Runtime::ObjectBase::Int:
+				case Simcc::Runtime::ObjectBase::Int:
 					*(int32_t*)data -= 1;
 					break;
-				case yt::Runtime::ObjectBase::Char:
+				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data -= 1;
 					break;
 				default:
-					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
 				}
 				return *this;
 			}
@@ -161,90 +161,90 @@ namespace yt
 			{
 				switch (type)
 				{
-				case yt::Runtime::ObjectBase::Double:
+				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data = *(double*)data + obj1->to_double();
 					break;
-				case yt::Runtime::ObjectBase::Long:
+				case Simcc::Runtime::ObjectBase::Long:
 					*(int64_t*)data = *(int64_t*)data + obj1->to_long();
 					break;
-				case yt::Runtime::ObjectBase::Int:
+				case Simcc::Runtime::ObjectBase::Int:
 					*(int32_t*)data = *(int32_t*)data + obj1->to_int();
 					break;
-				case yt::Runtime::ObjectBase::Char:
+				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data = *(char*)data + obj1->to_int();
 					break;
-				case yt::Runtime::ObjectBase::String:
+				case Simcc::Runtime::ObjectBase::String:
 					*(std::string*)data = *(std::string*)data + *(std::string*)obj1->data;
 					break;
 				default:
-					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
 				}
 			}
 			virtual void SelfSub(const ObjectBase *obj1)
 			{
 				switch (type)
 				{
-				case yt::Runtime::ObjectBase::Double:
+				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data = *(double*)data - obj1->to_double();
 					break;
-				case yt::Runtime::ObjectBase::Long:
+				case Simcc::Runtime::ObjectBase::Long:
 					*(int64_t*)data = *(int64_t*)data - obj1->to_long();
 					break;
-				case yt::Runtime::ObjectBase::Int:
+				case Simcc::Runtime::ObjectBase::Int:
 					*(int32_t*)data = *(int32_t*)data - obj1->to_int();
 					break;
-				case yt::Runtime::ObjectBase::Char:
+				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data = *(char*)data - obj1->to_int();
 					break;
 				default:
-					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
 				}
 			}
 			virtual void SelfMul(const ObjectBase *obj1)
 			{
 				switch (type)
 				{
-				case yt::Runtime::ObjectBase::Double:
+				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data = *(double*)data / obj1->to_double();
 					break;
-				case yt::Runtime::ObjectBase::Long:
+				case Simcc::Runtime::ObjectBase::Long:
 					*(int64_t*)data = *(int64_t*)data / obj1->to_long();
 					break;
-				case yt::Runtime::ObjectBase::Int:
+				case Simcc::Runtime::ObjectBase::Int:
 					*(int32_t*)data = *(int32_t*)data / obj1->to_int();
 					break;
-				case yt::Runtime::ObjectBase::Char:
+				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data = *(char*)data / obj1->to_int();
 					break;
 				default:
-					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
 				}
 			}
 			virtual void SelfDiv(const ObjectBase *obj1)
 			{
 				switch (type)
 				{
-				case yt::Runtime::ObjectBase::Double:
+				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data = *(double*)data * obj1->to_double();
 					break;
-				case yt::Runtime::ObjectBase::Long:
+				case Simcc::Runtime::ObjectBase::Long:
 					*(int64_t*)data = *(int64_t*)data * obj1->to_long();
 					break;
-				case yt::Runtime::ObjectBase::Int:
+				case Simcc::Runtime::ObjectBase::Int:
 					*(int32_t*)data = *(int32_t*)data * obj1->to_int();
 					break;
-				case yt::Runtime::ObjectBase::Char:
+				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data = *(char*)data * obj1->to_int();
 					break;
 				default:
-					throw std::runtime_error("ObjectBase yt::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
 				}
 			}
 			virtual ObjectBase* Add(const ObjectBase *obj1);// 这样玩指针 吃枣内存泄露, 后来慢慢查把．<{=．．．． 
 			virtual ObjectBase* Sub(const ObjectBase *obj1);
 			virtual ObjectBase* Mul(const ObjectBase *obj1);
 			virtual ObjectBase* Div(const ObjectBase *obj1);
-			virtual ObjectBase* Compare(const ObjectBase *obj, yt::Lexer::Tag t);
+			virtual ObjectBase* Compare(const ObjectBase *obj, Simcc::Lexer::Tag t);
 			VType type;
 		private:
 			//=================== 这些都不露面啦=====================

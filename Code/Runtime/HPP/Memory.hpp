@@ -4,7 +4,7 @@
 #include <map>
 #include "../../Lexer/HPP/Token.hpp"
 #include "Object.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Runtime
 	{

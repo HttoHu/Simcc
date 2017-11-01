@@ -2,7 +2,9 @@
 #include "Stmt.hpp"
 #include "Environment.hpp"
 #include "../../Runtime/HPP/Object.hpp"
-namespace yt
+#include "Block.hpp"
+#include "../../Runtime/HPP/IdTypeTable.hpp"
+namespace Simcc
 {
 	namespace Parser
 	{
@@ -37,29 +39,29 @@ namespace yt
 				}
 				environment->match(Lexer::Rk);
 			}
-			std::vector<yt::Runtime::ObjectBase*>& get_list()
+			std::vector<Simcc::Runtime::ObjectBase*>& get_list()
 			{
 				for (auto & a : param_list)
 				{
 					switch (a->get_tag())
 					{
 					case Lexer::Id:
-						obj_list.push_back(new yt::Runtime::ObjectBase(*environment->stack_block.find_variable(a)));
+						obj_list.push_back(new Simcc::Runtime::ObjectBase(*environment->stack_block.find_variable(a)));
 						break;
 					case Lexer::TLiteralInt:
-						obj_list.push_back(new yt::Runtime::ObjectBase(*(int*)a->get_value()));
+						obj_list.push_back(new Simcc::Runtime::ObjectBase(*(int*)a->get_value()));
 						break;
 					case Lexer::TLiteralChar:
-						obj_list.push_back(new yt::Runtime::ObjectBase(*(char*)a->get_value()));
+						obj_list.push_back(new Simcc::Runtime::ObjectBase(*(char*)a->get_value()));
 						break;
 					case Lexer::TLiteralLong:
-						obj_list.push_back(new yt::Runtime::ObjectBase(*(int64_t*)a->get_value()));
+						obj_list.push_back(new Simcc::Runtime::ObjectBase(*(int64_t*)a->get_value()));
 						break;
 					case Lexer::TLiteralDouble:
-						obj_list.push_back(new yt::Runtime::ObjectBase(*(double*)a->get_value()));
+						obj_list.push_back(new Simcc::Runtime::ObjectBase(*(double*)a->get_value()));
 						break;
 					case Lexer::TLiteralString:
-						obj_list.push_back(new yt::Runtime::ObjectBase(*(std::string*)a->get_value()));
+						obj_list.push_back(new Simcc::Runtime::ObjectBase(*(std::string*)a->get_value()));
 						break;
 					default:
 						throw std::runtime_error("RuntimeError");
@@ -75,7 +77,7 @@ namespace yt
 
 		private:
 			std::vector<Lexer::Token* > param_list;
-			std::vector<yt::Runtime::ObjectBase*> obj_list;
+			std::vector<Simcc::Runtime::ObjectBase*> obj_list;
 			Environment *environment;
 		};
 		//пн╡н
@@ -125,6 +127,38 @@ namespace yt
 			Environment *environment;
 			std::vector<std::pair<Lexer::Token*, Lexer::Token*>> arg_list;
 		};
-		class Function;
+		class Function
+		{
+		public:
+			Function(Environment *env) :environment(env) {
+				type = Runtime::IdTypeTable::find_type(environment->this_token());
+				environment->current_pos++;
+				environment->match(Lexer::Id);
+				args = new Argument(environment);
+				funcBlock = new Block(environment);
+			}
+			Runtime::ObjectBase* execute(Param *param)
+			{
+				environment->stack_block.newBlock();
+				args->CreateVariable(*param);
+				try
+				{
+					funcBlock->execute();
+				}
+				catch (Runtime::ObjectBase* return_value)
+				{
+					environment->stack_block.endBlock();
+					return return_value;
+				}
+				environment->stack_block.endBlock();
+				return nullptr;
+			}
+		private:
+			size_t type;
+			Environment *environment;
+			Block *funcBlock;
+			Argument * args;
+		};
+
 	}
 }

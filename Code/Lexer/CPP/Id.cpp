@@ -1,8 +1,7 @@
 #include "../HPP/Id.hpp"
-using namespace yt::Lexer;
-std::vector<std::map<std::string,TId*>> TId::id_table(1);
+using namespace Simcc::Lexer;
 
-TId * yt::Lexer::TId::find_id(const std::string & str)
+TId * Simcc::Lexer::TId::find_id(const std::string & str)
 {
 	for (int i=id_table.size()-1;i>=0;i-- )
 	{
@@ -14,7 +13,7 @@ TId * yt::Lexer::TId::find_id(const std::string & str)
 	return nullptr;
 }
 
-void yt::Lexer::TId::delete_id_table()
+void Simcc::Lexer::TId::delete_id_table()
 {
 	for (auto & a : id_table)
 		for (auto & b : a)

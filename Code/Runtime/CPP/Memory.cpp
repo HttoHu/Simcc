@@ -1,10 +1,10 @@
 #include "..\HPP\Memory.hpp"
-using namespace yt::Runtime;
-void yt::Runtime::Stack::newBlock()
+using namespace Simcc::Runtime;
+void Simcc::Runtime::Stack::newBlock()
 {
 	stack_memory.push_front(std::map<Lexer::Token*, ObjectBase*>());
 }
-void yt::Runtime::Stack::endBlock()
+void Simcc::Runtime::Stack::endBlock()
 {
 	for (const auto & a : stack_memory.front())
 	{
@@ -12,7 +12,7 @@ void yt::Runtime::Stack::endBlock()
 	}
 	stack_memory.pop_front();
 }
-ObjectBase * yt::Runtime::Stack::find_variable(yt::Lexer::Token*tok )
+ObjectBase * Simcc::Runtime::Stack::find_variable(Simcc::Lexer::Token*tok )
 {
 	//std::cout << "DDD" << *(std::string*)tok->get_value() << std::endl;
 	auto current = stack_memory.begin();
@@ -28,12 +28,12 @@ ObjectBase * yt::Runtime::Stack::find_variable(yt::Lexer::Token*tok )
 	}
 	throw std::runtime_error(tok->to_string()+"unknow variable");
 }
-void yt::Runtime::Stack::push(Lexer::Token*vname, ObjectBase *obj)
+void Simcc::Runtime::Stack::push(Lexer::Token*vname, ObjectBase *obj)
 {
 	stack_memory.front().insert({ vname,obj });
 }
 
-void yt::Runtime::Stack::debug()
+void Simcc::Runtime::Stack::debug()
 {
 	for (auto & a : stack_memory)
 	{

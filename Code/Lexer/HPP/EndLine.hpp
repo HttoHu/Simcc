@@ -1,6 +1,6 @@
 #pragma once
 #include "Token.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Lexer
 	{

@@ -1,5 +1,5 @@
 #include "../HPP/Lexer.hpp"
-using namespace yt::Lexer;
+using namespace Simcc::Lexer;
 bool _is_operator(char ch)
 {
 	switch (ch)
@@ -52,9 +52,9 @@ void Lexer::read_string() {
 			value += content[index];
 	}
 	index++;
-	token_stream.push_back(new yt::Lexer::VString(value));
+	token_stream.push_back(new Simcc::Lexer::VString(value));
 }
-void yt::Lexer::Lexer::read_char()
+void Simcc::Lexer::Lexer::read_char()
 {
 	char ch = 0;
 	if (content[index++] != '\'')
@@ -112,7 +112,7 @@ void yt::Lexer::Lexer::read_char()
 		}
 	}
 }
-void yt::Lexer::Lexer::read_number()
+void Simcc::Lexer::Lexer::read_number()
 {
 	int64_t intPart = 0;
 	// 负号被当作一种运算;
@@ -141,7 +141,7 @@ void yt::Lexer::Lexer::read_number()
 	}
 	token_stream.push_back(new VDouble(v));
 }
-void yt::Lexer::Lexer::read_word()
+void Simcc::Lexer::Lexer::read_word()
 {
 	std::string word;
 	while ((isalnum(content[index]) || content[index] == '_') && index < content.size())
@@ -163,7 +163,7 @@ void yt::Lexer::Lexer::read_word()
 	token_stream.push_back(new Token(result->second));
 
 }
-void yt::Lexer::Lexer::read_symbol()
+void Simcc::Lexer::Lexer::read_symbol()
 {
 	std::string tmp(1, content[index]);
 	if (index < content.size() - 1 && _is_operator(content[index + 1]))
@@ -187,7 +187,7 @@ void Lexer::debug()
 	}
 }
 
-void yt::Lexer::Lexer::init_token_stream()
+void Simcc::Lexer::Lexer::init_token_stream()
 {
 	while (index < content.size())
 	{

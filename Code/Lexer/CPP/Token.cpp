@@ -1,6 +1,6 @@
 #include "../HPP/Token.hpp"
-using namespace yt::Lexer;
-std::unordered_map<std::string, Tag>& yt::Lexer::keyword_map()
+using namespace Simcc::Lexer;
+std::unordered_map<std::string, Tag>& Simcc::Lexer::keyword_map()
 {
 	static std::unordered_map<std::string, Tag> ret{
 		{ "class",Tag::TClass },{ "namespace",Tag::TNamespace },{ "public",Tag::TPublic },{ "private",Tag::TPrivate },
@@ -13,7 +13,7 @@ std::unordered_map<std::string, Tag>& yt::Lexer::keyword_map()
 	return ret;
 }
 
-std::unordered_map<std::string, Tag>& yt::Lexer::symbol_map()
+std::unordered_map<std::string, Tag>& Simcc::Lexer::symbol_map()
 {
 	static std::unordered_map<std::string, Tag> ret{
 		{ "+",Tag::Add },{ "-",Tag::Sub },{ "*",Tag::Mul },{ "/",Tag::Div },

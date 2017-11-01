@@ -1,7 +1,7 @@
 #pragma once
 #include "Expression.hpp"
 #include "Stmt.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{

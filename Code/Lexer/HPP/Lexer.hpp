@@ -4,8 +4,8 @@
 #include "EndLine.hpp"
 #include <string>
 #include <deque>
-typedef std::vector<yt::Lexer::Token*> TokenStream;
-namespace yt
+typedef std::vector<Simcc::Lexer::Token*> TokenStream;
+namespace Simcc
 {
 	namespace Lexer
 	{

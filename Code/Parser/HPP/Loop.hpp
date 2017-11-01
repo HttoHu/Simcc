@@ -2,7 +2,7 @@
 #include "Block.hpp"
 #include "If.hpp"
 #include "Single.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{

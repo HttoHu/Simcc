@@ -2,7 +2,7 @@
 #include "Stmt.hpp"
 #include "Environment.hpp"
 #include "Expression.hpp"
-namespace yt
+namespace Simcc
 {
 	namespace Parser
 	{

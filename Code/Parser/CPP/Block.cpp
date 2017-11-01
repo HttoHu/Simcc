@@ -1,5 +1,5 @@
 #include "../HPP/Block.hpp"
-using namespace yt::Parser;
+using namespace Simcc::Parser;
 Block::Block(Environment *env) :environment(env)
 {
 	environment->current_pos++;
@@ -8,6 +8,10 @@ Block::Block(Environment *env) :environment(env)
 	{
 		switch (env->this_token()->get_tag())
 		{
+		case Lexer::Tag::TReturn:
+			stmts.push_back(new Return(environment));
+			environment->current_pos++;
+			return;
 		case Lexer::Tag::TBreak:
 			stmts.push_back(new Break(environment));
 			environment->current_pos++;
@@ -20,15 +24,15 @@ Block::Block(Environment *env) :environment(env)
 			environment->current_pos++;
 			break;
 		case Lexer::Tag::TWhile:
-			stmts.push_back(new yt::Parser::While(environment));
+			stmts.push_back(new Simcc::Parser::While(environment));
 			environment->current_pos++;
 			return;
 		case Lexer::Tag::TIf:
-			stmts.push_back(new yt::Parser::If(environment));
+			stmts.push_back(new Simcc::Parser::If(environment));
 			environment->current_pos++;
 			return;
 		case Lexer::Tag::TFor:
-			stmts.push_back(new yt::Parser::For(environment));
+			stmts.push_back(new Simcc::Parser::For(environment));
 			environment->current_pos++;
 			return;
 		case Lexer::Tag::SBool:
@@ -61,6 +65,9 @@ Block::Block(Environment *env) :environment(env)
 			throw std::runtime_error("runtime_error15");
 		switch (env->this_token()->get_tag())
 		{
+		case Lexer::Tag::TReturn:
+			stmts.push_back(new Return(environment));
+			break;
 		case Lexer::Tag::TBreak:
 			stmts.push_back(new Break(environment));
 			break;
@@ -74,13 +81,13 @@ Block::Block(Environment *env) :environment(env)
 			environment->current_pos++;
 			continue;
 		case Lexer::Tag::TWhile:
-			stmts.push_back(new yt::Parser::While(environment));
+			stmts.push_back(new Simcc::Parser::While(environment));
 			break;
 		case Lexer::Tag::TIf:
-			stmts.push_back(new yt::Parser::If(environment));
+			stmts.push_back(new Simcc::Parser::If(environment));
 			break;
 		case Lexer::Tag::TFor:
-			stmts.push_back(new yt::Parser::For(environment));
+			stmts.push_back(new Simcc::Parser::For(environment));
 			break;
 		case Lexer::Tag::SBool:
 		case  Lexer::Tag::SInt:

@@ -1,8 +1,8 @@
 #include "../HPP/Loop.hpp"
 #include "../HPP/Block.hpp"
-using namespace yt::Parser;
+using namespace Simcc::Parser;
 
-yt::Parser::While::While(Environment * env) :environment(env)
+Simcc::Parser::While::While(Environment * env) :environment(env)
 {
 	environment->match(Lexer::TWhile);
 	environment->match(Lexer::Lk);
@@ -11,7 +11,7 @@ yt::Parser::While::While(Environment * env) :environment(env)
 	block = new Block(env);
 }
 
-void yt::Parser::While::execute()
+void Simcc::Parser::While::execute()
 {
 	auto a = condition->GetResult();
 	while (a->to_bool())
@@ -38,12 +38,12 @@ void yt::Parser::While::execute()
 	}
 }
 
-yt::Parser::While::~While() {
+Simcc::Parser::While::~While() {
 	delete condition;
 	delete block;
 }
 
-yt::Parser::For::For(Environment * env) :environment(env)
+Simcc::Parser::For::For(Environment * env) :environment(env)
 {
 	environment->match(Lexer::TFor);
 	environment->match(Lexer::Lk);
@@ -70,7 +70,7 @@ yt::Parser::For::For(Environment * env) :environment(env)
 
 }
 
-void yt::Parser::For::execute()
+void Simcc::Parser::For::execute()
 {
 	if (cbt != nullptr)
 		cbt->execute();
@@ -97,7 +97,7 @@ void yt::Parser::For::execute()
 	}
 }
 
-yt::Parser::For::~For()
+Simcc::Parser::For::~For()
 {
 	if (step_action != nullptr)
 		delete step_action;

@@ -1,9 +1,9 @@
 ﻿#pragma once
-// By 胡远韬 Yt Hu
+// By 胡远韬 Simcc Hu
 #include <iostream>
 #include <string>
 #include <unordered_map>
-namespace yt
+namespace Simcc
 {
 	namespace Lexer
 	{
@@ -87,61 +87,61 @@ namespace yt
 					return "< <= >";
 				case Lt:
 					return "< < >";
-				case yt::Lexer::TLiteralInt:
+				case Simcc::Lexer::TLiteralInt:
 					return "<tint>";
-				case yt::Lexer::TLiteralLong:
+				case Simcc::Lexer::TLiteralLong:
 					return "<tlong>";
-				case yt::Lexer::TLiteralDouble:
+				case Simcc::Lexer::TLiteralDouble:
 					return "<tdouble>";
-				case yt::Lexer::TLiteralChar:
+				case Simcc::Lexer::TLiteralChar:
 					return "<tchar>";
-				case yt::Lexer::TLiteralString:
+				case Simcc::Lexer::TLiteralString:
 					return "<tstring>";
-				case yt::Lexer::TWhile:
+				case Simcc::Lexer::TWhile:
 					return "<while>";
-				case yt::Lexer::TIf:
+				case Simcc::Lexer::TIf:
 					return "<if>";
-				case yt::Lexer::TFor:
+				case Simcc::Lexer::TFor:
 					return "<for>";
-				case yt::Lexer::TSwitch:
+				case Simcc::Lexer::TSwitch:
 					return "<switch>";
-				case yt::Lexer::TClass:
+				case Simcc::Lexer::TClass:
 					return "<class>";
-				case yt::Lexer::TNamespace:
+				case Simcc::Lexer::TNamespace:
 					return "<namespace>";
-				case yt::Lexer::TReturn:
+				case Simcc::Lexer::TReturn:
 					return "<return>";
-				case yt::Lexer::Symbol:
+				case Simcc::Lexer::Symbol:
 					return "<symbol>";
-				case yt::Lexer::Add:
+				case Simcc::Lexer::Add:
 					return "<+>";
-				case yt::Lexer::Sub:
+				case Simcc::Lexer::Sub:
 					return "<->";
-				case yt::Lexer::Mul:
+				case Simcc::Lexer::Mul:
 					return "<*>";
-				case yt::Lexer::Div:
+				case Simcc::Lexer::Div:
 					return "</>";
-				case yt::Lexer::And:
+				case Simcc::Lexer::And:
 					return "<&&>";
-				case yt::Lexer::Or:
+				case Simcc::Lexer::Or:
 					return "<||>";
-				case yt::Lexer::Lk:
+				case Simcc::Lexer::Lk:
 					return "<(>";
-				case yt::Lexer::Rk:
+				case Simcc::Lexer::Rk:
 					return "<)>";
-				case yt::Lexer::BlockBegin:
+				case Simcc::Lexer::BlockBegin:
 					return "<{>";
-				case yt::Lexer::BlockEnd:
+				case Simcc::Lexer::BlockEnd:
 					return "<}>";
-				case yt::Lexer::LSB:
+				case Simcc::Lexer::LSB:
 					return "<[>";
-				case yt::Lexer::RSB:
+				case Simcc::Lexer::RSB:
 					return "<]>";
-				case yt::Lexer::MemberPoint:
+				case Simcc::Lexer::MemberPoint:
 					return "<.>";
-				case yt::Lexer::Comma:
+				case Simcc::Lexer::Comma:
 					return "<,>";
-				case yt::Lexer::EndStmt:
+				case Simcc::Lexer::EndStmt:
 					return "<;>";
 				default:
 					return "<unknown>";
