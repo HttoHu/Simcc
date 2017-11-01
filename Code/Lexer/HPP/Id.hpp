@@ -13,10 +13,7 @@ namespace Simcc
 			static TId* find_id(const std::string & str);
 			static void delete_id_table();
 			TId(const std::string & str) :Token(Tag::Id),id_name(str){}
-			virtual std::string to_string()const override
-			{
-				return "<id:" + id_name + ">";
-			}
+			virtual std::string to_string()const override;
 			size_t add = 0;
 		private:
 			std::string id_name;

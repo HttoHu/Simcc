@@ -1,6 +1,6 @@
 #include "../HPP/Id.hpp"
 using namespace Simcc::Lexer;
-
+std::vector<std::map<std::string, TId*>> TId::id_table;
 TId * Simcc::Lexer::TId::find_id(const std::string & str)
 {
 	for (int i=id_table.size()-1;i>=0;i-- )
@@ -19,4 +19,9 @@ void Simcc::Lexer::TId::delete_id_table()
 		for (auto & b : a)
 			delete b.second;
 	id_table.clear();
+}
+
+std::string Simcc::Lexer::TId::to_string() const
+{
+	return "<id:" + id_name + ">";
 }
