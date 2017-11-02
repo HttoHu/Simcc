@@ -22,6 +22,7 @@ namespace Simcc
 						expr = nullptr;
 					}
 					expr = new Expression();
+					Parser::Environment::match(Lexer::EndStmt);
 				}
 				void execute()override {
 					throw expr->GetResult();

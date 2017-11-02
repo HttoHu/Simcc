@@ -47,7 +47,13 @@ namespace Simcc
 				}
 				case CALL:
 				{
-
+					auto result = Parser::Function::function_table.find(Parser::Environment::this_token());
+					if (result == Parser::Function::function_table.end())
+					{
+						throw std::runtime_error("function no found");
+					}
+					ObjectBase *obj = result->second->execute(param);
+					return obj;
 				}
 				case ID:
 					return new ObjectBase(*Parser::Environment::stack_block.find_variable(content));

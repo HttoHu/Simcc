@@ -1,6 +1,7 @@
 #include "../HPP/Function.hpp"
 using namespace Simcc::Parser;
 using namespace Simcc;
+std::map<Lexer::Token*, Function*> Function::function_table;
 Simcc::Parser::Param::Param()
 {
 	Parser::Environment::match(Lexer::Lk);
@@ -21,10 +22,16 @@ Simcc::Parser::Param::Param()
 		default:
 			return;
 		}
+		Parser::Environment::current_pos++;
 		if (Parser::Environment::match_noexcept(Lexer::Comma))
+		{
+			Parser::Environment::current_pos++;
 			continue;
+		}
 		else
+		{
 			break;
+		}
 	}
 	Parser::Environment::match(Lexer::Rk);
 }
@@ -57,6 +64,7 @@ std::vector<Simcc::Runtime::ObjectBase*>& Simcc::Parser::Param::get_list()
 			break;
 		}
 	}
+	return obj_list;
 }
 
 Simcc::Parser::Param::~Param()
@@ -71,6 +79,7 @@ Simcc::Parser::Argument::Argument()
 	while (1)
 	{
 		std::pair<Lexer::Token*, Lexer::Token*> tmp;
+		// 处理类型
 		switch (Parser::Environment::this_token()->get_tag())
 		{
 		case Lexer::SInt:
@@ -85,12 +94,15 @@ Simcc::Parser::Argument::Argument()
 			return;
 		}
 		Parser::Environment::current_pos++;
-		auto id_name = Parser::Environment::this_token();
-		Parser::Environment::match(Lexer::Id);
+		//id_name;
 		tmp.second = Parser::Environment::this_token();
+		Environment::match(Lexer::Id);
 		arg_list.push_back(tmp);
 		if (Parser::Environment::match_noexcept(Lexer::Comma))
+		{
+			Parser::Environment::current_pos++;
 			continue;
+		}
 		break;
 	}
 	Parser::Environment::match(Lexer::Rk);
@@ -108,8 +120,6 @@ void Simcc::Parser::Argument::CreateVariable(Param & param)
 }
 
 Simcc::Parser::Function::Function(){
-	type = Runtime::IdTypeTable::find_type(Parser::Environment::this_token());
-	Parser::Environment::current_pos++;
 	Parser::Environment::match(Lexer::Id);
 	args = new Argument();
 	funcBlock = new Block();
@@ -127,6 +137,7 @@ Runtime::ObjectBase * Simcc::Parser::Function::execute(Param * param)
 		Parser::Environment::stack_block.endBlock();
 		return return_value;
 	}
+	Parser::Environment::stack_block.debug();
 	Parser::Environment::stack_block.endBlock();
 	return nullptr;
 }

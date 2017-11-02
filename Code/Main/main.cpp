@@ -1,16 +1,10 @@
-#include "..\Parser\HPP\If.hpp"
+#include "..\Parser\HPP\Function.hpp"
 #include "../Parser/HPP/Block.hpp"
 #include <fstream>
 #include <time.h>
 #include <Windows.h>
 using namespace Simcc::Runtime;
-std::string get_file_content(const std::string & filename)
-{
-	using namespace std;
-	ifstream ifs(filename);
-	std::string file_content((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
-	return file_content;
-}
+std::string get_file_content(const std::string & filename);
 void block_test()
 {
 
@@ -26,7 +20,24 @@ void block_test()
 	Simcc::Parser::Environment::stack_block.debug();
 	std::cout << (double)(clock()-s)/CLK_TCK<<"\n";
 }
-void memory_test();
+void lexer_test()
+{
+	std::string str = get_file_content("Text.txt");
+	Simcc::Lexer::Lexer lex(str);
+	lex.init_token_stream();
+	lex.debug();
+}
+void function_test()
+{
+	std::string str = get_file_content("Text.txt");
+	Simcc::Lexer::Lexer lex(str);
+	lex.init_token_stream();
+	lex.debug();
+	std::cout << std::endl;
+	Simcc::Parser::Environment::token_stream = &lex.token_stream;
+	Simcc::Parser::Function fuc;
+	fuc.execute(new Simcc::Parser::Param());
+}
 int main()
 {
 	/* Text.txt ÄÚÈÝ
@@ -40,7 +51,7 @@ int main()
 	*/
 	try
 	{
-		block_test();
+		function_test();
 		std::cin.get();
 	}
 	catch (std::exception& e)

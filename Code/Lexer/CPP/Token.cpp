@@ -9,6 +9,7 @@ std::unordered_map<std::string, Tag>& Simcc::Lexer::keyword_map()
 		{ "while",Tag::TWhile },{ "for",Tag::TFor },{ "continue",Tag::TContinue },{ "break",Tag::TBreak },
 		{ "case",Tag::TCase },{ "break",Tag::TBreak },{ "goto",Tag::TBreak },
 		{ "switch",Tag::TSwitch },{ "if",Tag::TIf },{ "else",Tag::TElse } ,{ "elif",Tag::TElif },
+		{"return",Tag::TReturn}
 	};
 	return ret;
 }

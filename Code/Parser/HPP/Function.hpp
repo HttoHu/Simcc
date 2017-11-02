@@ -11,6 +11,7 @@ namespace Simcc
 		class Param
 		{
 		public:
+			Param(const std::vector<Simcc::Runtime::ObjectBase*> & ol) :obj_list(ol) {}
 			Param();
 			std::vector<Simcc::Runtime::ObjectBase*>& get_list();
 			~Param();
@@ -30,6 +31,7 @@ namespace Simcc
 		class Function
 		{
 		public:
+			static std::map<Lexer::Token*, Function*> function_table;
 			Function();
 			Runtime::ObjectBase* execute(Param *param);
 		private:
