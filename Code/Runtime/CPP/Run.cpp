@@ -10,17 +10,31 @@ std::string get_file_content(const std::string & filename)
 void Simcc::Runtime::Init(const std::string & str)
 {
 	std::string content = get_file_content(str);
-	Simcc::Lexer::Lexer lex(content);
+	static Simcc::Lexer::Lexer lex(content);
 	lex.init_token_stream();
+	Parser::Environment::token_stream = &lex.token_stream;
+	lex.debug();
 }
 
 void Simcc::Runtime::CreateFunctionTable()
 {
-	while (Parser::Environment::current_pos < Parser::Environment::token_stream->size())
-		Parser::Function::function_table.insert({ nullptr,new Parser::Function() });
+	while (Parser::Environment::current_pos < Parser::Environment::token_stream->size()-1)
+	{ 
+		Parser::Function *func = new Parser::Function();
+	}
 }
 
 void Simcc::Runtime::Execute()
 {
-	
+	std::cout << "\n===============Func List========================\n";
+	for (auto &a : Parser::Function::function_table)
+	{
+		std::cout<<a.first->to_string()<<std::endl;
+	}
+	std::cout << "\n===============Func List========================\n";
+	 auto loadfunc = Parser::Function::function_table.find(Lexer::TId::find_id("main"));
+	 if (loadfunc != Parser::Function::function_table.end())
+		 loadfunc->second->execute();
+	 else
+		 throw std::runtime_error("no found main ");
 }

@@ -198,26 +198,6 @@ namespace Simcc
 				switch (type)
 				{
 				case Simcc::Runtime::ObjectBase::Double:
-					*(double*)data = *(double*)data / obj1->to_double();
-					break;
-				case Simcc::Runtime::ObjectBase::Long:
-					*(int64_t*)data = *(int64_t*)data / obj1->to_long();
-					break;
-				case Simcc::Runtime::ObjectBase::Int:
-					*(int32_t*)data = *(int32_t*)data / obj1->to_int();
-					break;
-				case Simcc::Runtime::ObjectBase::Char:
-					*(char*)data = *(char*)data / obj1->to_int();
-					break;
-				default:
-					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
-				}
-			}
-			virtual void SelfDiv(const ObjectBase *obj1)
-			{
-				switch (type)
-				{
-				case Simcc::Runtime::ObjectBase::Double:
 					*(double*)data = *(double*)data * obj1->to_double();
 					break;
 				case Simcc::Runtime::ObjectBase::Long:
@@ -228,6 +208,26 @@ namespace Simcc
 					break;
 				case Simcc::Runtime::ObjectBase::Char:
 					*(char*)data = *(char*)data * obj1->to_int();
+					break;
+				default:
+					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");
+				}
+			}
+			virtual void SelfDiv(const ObjectBase *obj1)
+			{
+				switch (type)
+				{
+				case Simcc::Runtime::ObjectBase::Double:
+					*(double*)data = *(double*)data / obj1->to_double();
+					break;
+				case Simcc::Runtime::ObjectBase::Long:
+					*(int64_t*)data = *(int64_t*)data / obj1->to_long();
+					break;
+				case Simcc::Runtime::ObjectBase::Int:
+					*(int32_t*)data = *(int32_t*)data / obj1->to_int();
+					break;
+				case Simcc::Runtime::ObjectBase::Char:
+					*(char*)data = *(char*)data / obj1->to_int();
 					break;
 				default:
 					throw std::runtime_error("ObjectBase Simcc::Runtime::ObjectBase::operator+(const ObjectBase & v) const ");

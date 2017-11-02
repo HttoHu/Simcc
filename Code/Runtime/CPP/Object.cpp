@@ -103,12 +103,12 @@ ObjectBase * Simcc::Runtime::ObjectBase::Sub(const ObjectBase * obj1)
 }
 ObjectBase * Simcc::Runtime::ObjectBase::Mul(const ObjectBase * obj1)
 {
-	ObjectBase *ret = new ObjectBase(*this + *obj1);
+	ObjectBase *ret = new ObjectBase(*this * *obj1);
 	return ret;
 }
 ObjectBase * Simcc::Runtime::ObjectBase::Div(const ObjectBase * obj1)
 {
-	ObjectBase *ret = new ObjectBase(*this + *obj1);
+	ObjectBase *ret = new ObjectBase(*this / *obj1);
 	return ret;
 }
 ObjectBase* Simcc::Runtime::ObjectBase::Compare(const ObjectBase * obj, Simcc::Lexer::Tag t)

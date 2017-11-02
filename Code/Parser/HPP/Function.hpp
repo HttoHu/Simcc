@@ -34,6 +34,7 @@ namespace Simcc
 			static std::map<Lexer::Token*, Function*> function_table;
 			Function();
 			Runtime::ObjectBase* execute(Param *param);
+			Runtime::ObjectBase* execute();
 		private:
 			size_t type;
 			Block *funcBlock;

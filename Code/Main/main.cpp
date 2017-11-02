@@ -1,5 +1,6 @@
 #include "..\Parser\HPP\Function.hpp"
 #include "../Parser/HPP/Block.hpp"
+#include "../Runtime/HPP/Run.hpp"
 #include <fstream>
 #include <time.h>
 #include <Windows.h>
@@ -51,7 +52,9 @@ int main()
 	*/
 	try
 	{
-		function_test();
+		Init("Text.txt");
+		CreateFunctionTable();
+		Execute();
 		std::cin.get();
 	}
 	catch (std::exception& e)

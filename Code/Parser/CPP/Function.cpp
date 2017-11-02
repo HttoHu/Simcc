@@ -91,6 +91,7 @@ Simcc::Parser::Argument::Argument()
 			tmp.first = Parser::Environment::this_token();
 			break;
 		default:
+			Parser::Environment::match(Lexer::Rk);
 			return;
 		}
 		Parser::Environment::current_pos++;
@@ -120,7 +121,15 @@ void Simcc::Parser::Argument::CreateVariable(Param & param)
 }
 
 Simcc::Parser::Function::Function(){
-	Parser::Environment::match(Lexer::Id);
+	if (Parser::Environment::match_noexcept(Lexer::Id))
+	{
+		function_table.insert({ Parser::Environment::this_token(),this });
+		Parser::Environment::current_pos++;
+	}
+	else
+	{
+		throw std::runtime_error("no matched");
+	}
 	args = new Argument();
 	funcBlock = new Block();
 }
@@ -128,6 +137,23 @@ Runtime::ObjectBase * Simcc::Parser::Function::execute(Param * param)
 {
 	Parser::Environment::stack_block.newBlock();
 	args->CreateVariable(*param);
+	try
+	{
+		funcBlock->execute();
+	}
+	catch (Runtime::ObjectBase* return_value)
+	{
+		Parser::Environment::stack_block.endBlock();
+		return return_value;
+	}
+	Parser::Environment::stack_block.debug();
+	Parser::Environment::stack_block.endBlock();
+	return nullptr;
+}
+
+Runtime::ObjectBase * Simcc::Parser::Function::execute()
+{
+	Parser::Environment::stack_block.newBlock();
 	try
 	{
 		funcBlock->execute();

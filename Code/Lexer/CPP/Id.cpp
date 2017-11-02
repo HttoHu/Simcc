@@ -1,6 +1,10 @@
 #include "../HPP/Id.hpp"
 using namespace Simcc::Lexer;
-std::vector<std::map<std::string, TId*>> TId::id_table(1);
+std::vector<std::map<std::string, TId*>> TId::id_table{
+	{
+	{"main",new TId("main") }
+	}
+};
 TId * Simcc::Lexer::TId::find_id(const std::string & str)
 {
 	for (int i=id_table.size()-1;i>=0;i-- )

@@ -25,11 +25,6 @@ namespace Simcc
 			TokenStream token_stream;
 			~Lexer()
 			{
-				for (auto & a : token_stream)
-				{
-					//delete a;
-				}
-				token_stream.clear();
 			}
 		private:
 			std::string content;
