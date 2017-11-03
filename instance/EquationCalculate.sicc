@@ -1,0 +1,31 @@
+solve (double a,double b,double c)
+{
+	double diat=b*b-4*a*c;
+	if(diat<0)
+	{
+		system::write_line("The equation doesn't have a real-num root..");
+		return 0;
+	}
+	double tmp=system::sqrt(diat);
+	string result="";
+	double x1=0.0,x2=0.0;
+	x1=(-1*b+tmp)/(2*a);
+	x2=(-1*b-tmp)/(2*a);
+	system::write("x1=\t");
+	system::write_line(x1);
+	system::write("x2=\t");
+	system::write_line(x2);
+	return 1;
+}
+main()
+{
+	double a=2.0,b=0.0,c=0.0;
+	system::write("Welcome to use Equation Calculator!\nax^2+bx+c=0\na=");
+	system::read(a);
+	system::write("b=");
+	system::read(b);
+	system::write("c=");
+	system::read(c);
+	solve(a,b,c);
+	return 0;
+}

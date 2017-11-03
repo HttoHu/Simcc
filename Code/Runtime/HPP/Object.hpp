@@ -72,6 +72,7 @@ namespace Simcc
 				case Double:
 					data = new double(*(double*)v.data);
 					type = Double;
+					break;
 				case Long:
 					data = new int64_t(*(int64_t*)v.data);
 					type = Long;
@@ -92,6 +93,7 @@ namespace Simcc
 					throw std::runtime_error("Simcc::Runtime::ObjectBase(const ObjectBase&) 1");
 					break;
 				}
+				return *this;
 			}
 			virtual ObjectBase& operator++()
 			{

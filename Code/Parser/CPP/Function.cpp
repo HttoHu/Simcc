@@ -20,6 +20,7 @@ Simcc::Parser::Param::Param()
 			param_list.push_back(Parser::Environment::this_token());
 			break;
 		default:
+			Parser::Environment::match(Lexer::Rk);
 			return;
 		}
 		Parser::Environment::current_pos++;
@@ -148,7 +149,6 @@ Runtime::ObjectBase * Simcc::Parser::Function::execute(Param * param)
 		Parser::Environment::stack_block.endBlock();
 		return return_value;
 	}
-	Parser::Environment::stack_block.debug();
 	Parser::Environment::stack_block.endBlock();
 	return nullptr;
 }
@@ -165,7 +165,6 @@ Runtime::ObjectBase * Simcc::Parser::Function::execute()
 		Parser::Environment::stack_block.endBlock();
 		return return_value;
 	}
-	Parser::Environment::stack_block.debug();
 	Parser::Environment::stack_block.endBlock();
 	return nullptr;
 }

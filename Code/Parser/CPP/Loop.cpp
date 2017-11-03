@@ -1,5 +1,6 @@
 #include "../HPP/Loop.hpp"
 #include "../HPP/Block.hpp"
+#include "../../Runtime/HPP/Action.hpp"
 using namespace Simcc::Parser;
 
 Simcc::Parser::While::While()
@@ -62,7 +63,7 @@ Simcc::Parser::For::For()
 	}
 	else
 	{
-		step_action = new Expression();
+		step_action = new Runtime::Action();
 	}
 
 	Environment::match(Lexer::Rk);
@@ -80,7 +81,7 @@ void Simcc::Parser::For::execute()
 		while (a->to_bool())
 		{
 			block->execute();
-			delete step_action->GetResult();
+			step_action->execute();
 			delete a;
 			a = condition->GetResult();
 		}

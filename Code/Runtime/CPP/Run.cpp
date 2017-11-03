@@ -13,7 +13,6 @@ void Simcc::Runtime::Init(const std::string & str)
 	static Simcc::Lexer::Lexer lex(content);
 	lex.init_token_stream();
 	Parser::Environment::token_stream = &lex.token_stream;
-	lex.debug();
 }
 
 void Simcc::Runtime::CreateFunctionTable()
@@ -26,12 +25,6 @@ void Simcc::Runtime::CreateFunctionTable()
 
 void Simcc::Runtime::Execute()
 {
-	std::cout << "\n===============Func List========================\n";
-	for (auto &a : Parser::Function::function_table)
-	{
-		std::cout<<a.first->to_string()<<std::endl;
-	}
-	std::cout << "\n===============Func List========================\n";
 	 auto loadfunc = Parser::Function::function_table.find(Lexer::TId::find_id("main"));
 	 if (loadfunc != Parser::Function::function_table.end())
 		 loadfunc->second->execute();

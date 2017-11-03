@@ -3,7 +3,7 @@
 Simcc::Runtime::ObjectBase * Simcc::System::console_output(Parser::Param * param) {
 	auto a = param->get_list();
 	if (a.size() != 1)
-		throw std::runtime_error("param not matched");
+		throw Error::SyntaxError("param not matched");
 	std::cout << a.front()->to_string();
 	return nullptr;
 }
@@ -12,7 +12,7 @@ Simcc::Runtime::ObjectBase * Simcc::System::console_output_line(Parser::Param * 
 {
 	auto a = param->get_list();
 	if (a.size() != 1)
-		throw std::runtime_error("param not matched");
+		throw Error::SyntaxError("param not matched");
 	std::cout << a.front()->to_string()<<std::endl;
 	return nullptr;
 }
@@ -20,7 +20,7 @@ Simcc::Runtime::ObjectBase * Simcc::System::console_output_line(Parser::Param * 
 Simcc::Runtime::ObjectBase * Simcc::System::console_input(Parser::Param * param)
 {
 	if (param->param_list.size() != 1)
-		throw std::runtime_error("param not matched");
+		throw Error::SyntaxError("param not matched");
 	auto obj = Parser::Environment::stack_block.find_variable(param->param_list[0]);
 	switch (obj->type)
 	{

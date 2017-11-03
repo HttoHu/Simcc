@@ -17,7 +17,6 @@ void block_test()
 	time_t s = clock();
 	block.execute();
 	std::cout << std::endl<<"====================================="<<std::endl;
-	Simcc::Parser::Environment::stack_block.debug();
 	std::cout << (double)(clock()-s)/CLK_TCK<<"\n";
 }
 void lexer_test()
@@ -38,7 +37,7 @@ void function_test()
 	Simcc::Parser::Function fuc;
 	fuc.execute(new Simcc::Parser::Param());
 }
-int main()
+int main(int argc,char* argv[])
 {
 	/* Text.txt ÄÚÈÝ
 	*
@@ -51,13 +50,12 @@ int main()
 	*/
 	try
 	{
-		Init("Text.txt");
+		if (argc != 2)
+			throw std::runtime_error("invaild input");
+		Init(argv[1]);
 		CreateFunctionTable();
 		time_t s = clock();
 		Execute();
-		std::cout << std::endl << "=====================================" << std::endl;
-		Simcc::Parser::Environment::stack_block.debug();
-		std::cout << (double)(clock() - s) / CLK_TCK << "\n";
 		std::cin.get();
 	}
 	catch (std::exception& e)

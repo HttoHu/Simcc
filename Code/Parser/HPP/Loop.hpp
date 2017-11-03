@@ -6,7 +6,6 @@ namespace Simcc
 {
 	namespace Parser
 	{
-
 		class Block;
 		class While :public Stmt
 		{
@@ -27,7 +26,7 @@ namespace Simcc
 		private:
 			CreateBasicTypeObject *cbt;
 			Expression *condition;
-			Expression *step_action;
+			Runtime::Action *step_action;
 			Block *block;
 		};
 	}
