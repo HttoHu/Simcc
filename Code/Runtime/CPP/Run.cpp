@@ -13,7 +13,6 @@ void Simcc::Runtime::Init(const std::string & str)
 	static Simcc::Lexer::Lexer lex(content);
 	lex.init_token_stream();
 	Parser::Environment::token_stream = &lex.token_stream;
-	lex.debug();
 }
 
 void Simcc::Runtime::CreateFunctionTable()

@@ -68,7 +68,6 @@ Simcc::Parser::Expression::Expression()
 		case Lexer::Tag::PP:
 		case Lexer::Tag::Id:
 			count_stack.push_back(new Runtime::Action());
-			std::cout << count_stack.back()->content->to_string()<<std::endl;
 			continue;
 		default:
 			if (count_stack.empty())

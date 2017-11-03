@@ -37,6 +37,7 @@ Simcc::Parser::Param::Param()
 }
 std::vector<Simcc::Runtime::ObjectBase*>& Simcc::Parser::Param::get_list()
 {
+	obj_list.clear();
 	for (auto & a : param_list)
 	{
 		switch (a->get_tag())
@@ -76,6 +77,7 @@ Simcc::Parser::Param::~Param()
 Simcc::Parser::Argument::Argument()
 {
 	Parser::Environment::match(Lexer::Lk);
+	
 	while (1)
 	{
 		std::pair<Lexer::Token*, Lexer::Token*> tmp;
@@ -120,7 +122,7 @@ void Simcc::Parser::Argument::CreateVariable(Param & param)
 	}
 }
 
-Simcc::Parser::Function::Function(){
+Simcc::Parser::Function::Function() {
 	if (Parser::Environment::match_noexcept(Lexer::Id))
 	{
 		function_table.insert({ Parser::Environment::this_token(),this });

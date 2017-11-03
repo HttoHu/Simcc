@@ -8,6 +8,7 @@ Simcc::Runtime::Action::Action()
 		action_type = FP;
 		Environment::current_pos++;
 		content = Environment::this_token();
+		Environment::current_pos++;
 		return;
 	case Lexer::MM:
 		action_type = FM;

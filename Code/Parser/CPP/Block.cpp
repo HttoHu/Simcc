@@ -1,4 +1,5 @@
 #include "../HPP/Block.hpp"
+#include "../../Runtime/HPP/Action.hpp"
 using namespace Simcc::Parser;
 Block::Block()
 {
@@ -47,11 +48,19 @@ Block::Block()
 		case Lexer::Tag::MM:
 		case Lexer::Tag::PP:
 		case Lexer::Tag::Id:
-			if(Parser::Environment::token_stream->at(Parser::Environment::current_pos+1)->get_tag()==Lexer::Assign)
+			if (Parser::Environment::token_stream->at(Parser::Environment::current_pos + 1)->get_tag() == Lexer::Assign)
 				stmts.push_back(new Assign());
 			else
 			{
-				stmts.push_back(new Single());
+				auto a = new Single();
+				if (a->is_simple())
+				{
+					stmts.push_back(new ActionStmt(new Runtime::Action(*a->create_action_stmt())));
+					delete a;
+					return;
+				}
+				else
+					stmts.push_back(a);
 			}
 			return;
 		default:
@@ -103,7 +112,17 @@ Block::Block()
 			if (Parser::Environment::token_stream->at(Parser::Environment::current_pos + 1)->get_tag() == Lexer::Assign)
 				stmts.push_back(new Assign());
 			else
-				stmts.push_back(new Single());
+			{
+				auto a = new Single();
+				if (a->is_simple())
+				{
+					stmts.push_back(new ActionStmt(new Runtime::Action(*a->create_action_stmt())));
+					delete a;
+					continue;
+				}
+				else
+					stmts.push_back(a);
+			}
 			continue;
 		default:
 			throw std::runtime_error("\n" + Parser::Environment::this_token()->to_string() + "runtime_error14");

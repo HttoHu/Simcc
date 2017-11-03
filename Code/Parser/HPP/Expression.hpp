@@ -22,10 +22,20 @@ namespace Simcc
 		{
 		public:
 			Expression();
+			// 返回的值不要delete
 			Runtime::ObjectBase* GetResult();
 			void debug();
-			// 返回的值不要delete
+			size_t action_size()const
+			{
+				return count_stack.size();
+			}
+			Runtime::Action* get_front_action()
+			{
+				return count_stack.front();
+			}
 			~Expression() {
+				for (auto &a : count_stack)
+					delete a;
 			}
 		private:
 			Lexer::Token * next_token()

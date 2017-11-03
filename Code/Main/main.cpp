@@ -8,7 +8,6 @@ using namespace Simcc::Runtime;
 std::string get_file_content(const std::string & filename);
 void block_test()
 {
-
 	std::string str = get_file_content("Text.txt");
 	Simcc::Lexer::Lexer lex(str);
 	lex.init_token_stream();
@@ -54,7 +53,11 @@ int main()
 	{
 		Init("Text.txt");
 		CreateFunctionTable();
+		time_t s = clock();
 		Execute();
+		std::cout << std::endl << "=====================================" << std::endl;
+		Simcc::Parser::Environment::stack_block.debug();
+		std::cout << (double)(clock() - s) / CLK_TCK << "\n";
 		std::cin.get();
 	}
 	catch (std::exception& e)

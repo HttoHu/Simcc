@@ -61,6 +61,48 @@ namespace Simcc
 					break;
 				}
 			}
+			void execute()
+			{
+				switch (action_type)
+				{
+				case FP:
+				{
+					Parser::Environment::stack_block.find_variable(content)->operator++();
+					return;
+				}
+				case BP:
+				{
+
+					Parser::Environment::stack_block.find_variable(content)->operator++();
+					return;
+				}
+				case FM:
+				{
+					Parser::Environment::stack_block.find_variable(content)->operator--();
+					return;
+				}
+				case BM:
+				{
+					Parser::Environment::stack_block.find_variable(content)->operator--();
+					return;
+				}
+				case CALL:
+				{
+					auto result = Parser::Function::function_table.find(content);
+					if (result == Parser::Function::function_table.end())
+					{
+						throw std::runtime_error(content->to_string() + "function no found");
+					}
+					result->second->execute(param);
+					return;
+				}
+				case ID:
+					return;
+				default:
+					break;
+				}
+
+			}
 			Lexer::Tag get_cs()
 			{
 				return content->get_tag();

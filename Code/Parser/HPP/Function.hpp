@@ -11,7 +11,6 @@ namespace Simcc
 		class Param
 		{
 		public:
-			Param(const std::vector<Simcc::Runtime::ObjectBase*> & ol) :obj_list(ol) {}
 			Param();
 			std::vector<Simcc::Runtime::ObjectBase*>& get_list();
 			~Param();

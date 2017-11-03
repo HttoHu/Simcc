@@ -18,14 +18,14 @@ namespace Simcc
 				mem = new char[length];
 			}
 			void extend() {
-				char *nmem = new char[length*TIMES];
+				char *nmem = new char[(size_t)length*TIMES];
 				for (size_t i = 0; i < PC; i++)
 				{
 					nmem[i] = mem[i];
 				}
 				delete[]mem;
 				mem = nmem;
-				length *= TIMES;
+				length *= (size_t)TIMES;
 			}
 			void cnk()
 			{
