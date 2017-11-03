@@ -115,14 +115,19 @@ void Simcc::Lexer::Lexer::read_char()
 void Simcc::Lexer::Lexer::read_number()
 {
 	int64_t intPart = 0;
-	bool isN = false;
-	if (content[index++] == '-')
-		isN = true;
-	if (!isdigit(content[index]))
+	bool isN = content[index] == '-';
+	if (isN)
 	{
+		if (!isdigit(content[index + 1]))
+		{
+			read_symbol();
+			return;
+		}
+		if (token_stream.back()->get_tag() == TLiteralInt || token_stream.back()->get_tag() == TLiteralDouble ||
+			token_stream.back()->get_tag() == TLiteralLong || token_stream.back()->get_tag() == TLiteralChar||
+			token_stream.back()->get_tag() ==Id)
+			token_stream.push_back(new Token(Add));
 		index++;
-		token_stream.push_back(new Token(Sub));
-		return;
 	}
 	while (isdigit(content[index]))
 	{
