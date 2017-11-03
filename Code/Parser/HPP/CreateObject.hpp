@@ -20,7 +20,7 @@ namespace Simcc
 					vtable.push_back({ tok,expr });
 					if (tag != Lexer::Assign)
 					{
-						throw std::runtime_error("runtime_error14");
+						throw Error::SyntaxError("In (_CreateBasicTypeObject)"+this_token()->to_string()+ "unexpected character.");
 					}
 					tag = next_token()->get_tag();
 					if (tag == Lexer::Comma)
@@ -29,8 +29,7 @@ namespace Simcc
 						return;
 					else
 					{ 
-						std::cout << this_token()->to_string();
-						throw std::runtime_error("runtime_error13");
+						throw Error::SyntaxError("In (_CreateBasicTypeObject)"+this_token()->to_string()+ "unexpected character.");
 					}
 				}
 			}

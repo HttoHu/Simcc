@@ -115,7 +115,15 @@ void Simcc::Lexer::Lexer::read_char()
 void Simcc::Lexer::Lexer::read_number()
 {
 	int64_t intPart = 0;
-	// 负号被当作一种运算;
+	bool isN = false;
+	if (content[index++] == '-')
+		isN = true;
+	if (!isdigit(content[index]))
+	{
+		index++;
+		token_stream.push_back(new Token(Sub));
+		return;
+	}
 	while (isdigit(content[index]))
 	{
 		intPart = intPart * 10 + (content[index++] - 48);
@@ -123,12 +131,16 @@ void Simcc::Lexer::Lexer::read_number()
 	if (content[index] == 'L')
 	{
 		index++;
+		if (isN)
+			intPart = -intPart;
 		token_stream.push_back(new VLong(intPart));
 		return;
 	}
 	if (content[index] != '.')
 	{
-		token_stream.push_back(new VInt(intPart));
+		if (isN)
+			intPart = -intPart;
+		token_stream.push_back(new VInt(static_cast<int32_t>(intPart)));
 		return;
 	}
 	index++;
@@ -139,6 +151,8 @@ void Simcc::Lexer::Lexer::read_number()
 		v += v2*(content[index++] - 48);
 		v2 /= 10;
 	}
+	if (isN)
+		v = -v;
 	token_stream.push_back(new VDouble(v));
 }
 void Simcc::Lexer::Lexer::read_word()
@@ -193,6 +207,9 @@ void Simcc::Lexer::Lexer::init_token_stream()
 	{
 		switch (content[index])
 		{
+		case '-':
+			read_number();
+			continue;
 		case '{':
 			token_stream.push_back(new Token(Tag::BlockBegin));
 			TId::id_table.push_back(std::map<std::string,TId*>());

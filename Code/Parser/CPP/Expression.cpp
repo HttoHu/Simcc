@@ -64,6 +64,7 @@ Simcc::Parser::Expression::Expression()
 			}
 			operatorStack.pop_back();
 			break;
+		case Lexer::Tag::System:
 		case Lexer::Tag::MM:
 		case Lexer::Tag::PP:
 		case Lexer::Tag::Id:
@@ -160,6 +161,7 @@ Simcc::Runtime::ObjectBase * Simcc::Parser::Expression::GetResult()
 			break;
 		}
 			break;
+		case Simcc::Lexer::Tag::System:
 		case MM:
 		case PP:
 		case Id:
@@ -179,4 +181,10 @@ void Simcc::Parser::Expression::debug()
 	{
 		std::cout << a->content->to_string();
 	}
+}
+
+Simcc::Parser::Expression::~Expression()
+{
+	for (auto &a : count_stack)
+		delete a;
 }

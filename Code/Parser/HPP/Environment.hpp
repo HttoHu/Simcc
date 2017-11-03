@@ -30,7 +30,7 @@ namespace Simcc
 					match(t);
 				}
 				else
-					throw std::runtime_error(this_token()->to_string() + "unexpected erorr!");
+					throw Error::SyntaxError(this_token()->to_string() + "unexpected erorr!");
 			}
 			static bool match_noexcept(Lexer::Tag t)
 			{

@@ -2,6 +2,7 @@
 #include "Object.hpp"
 #include "../../Parser/HPP/Environment.hpp"
 #include "../../Parser/HPP/Function.hpp"
+#include "../../System/HPP/SystemFunction.hpp"
 namespace Simcc
 {
 	namespace Runtime
@@ -11,7 +12,7 @@ namespace Simcc
 		public:
 			enum  ActionType
 			{
-				FP,FM,BP,BM,CALL,ID,CS,
+				FP,FM,BP,BM,CALL,ID,CS,SYSTEM_CALL,
 			};
 			Action();
 			Action(Lexer::Token* tok) :content(tok) 
@@ -53,6 +54,16 @@ namespace Simcc
 						throw std::runtime_error(content->to_string()+"function no found");
 					}
 					ObjectBase *obj = result->second->execute(param);
+					return obj;
+				}
+				case SYSTEM_CALL:
+				{
+					auto result = System::CPPFunction::system_function_table.find(content);
+					if (result == System::CPPFunction::system_function_table.end())
+					{
+						throw std::runtime_error(content->to_string() + "system_function no found");
+					}
+					ObjectBase *obj = result->second.operator()(param);
 					return obj;
 				}
 				case ID:

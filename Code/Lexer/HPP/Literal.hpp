@@ -45,7 +45,7 @@ namespace Simcc
 		class VLong :public Token
 		{
 		public:
-			VLong(long v) :Token(TLiteralLong), value(v) {}
+			VLong(int64_t v) :Token(TLiteralLong), value(v) {}
 			std::string to_string()const override
 			{
 				return "<vdouble: " + std::to_string(value) + ">";

@@ -31,6 +31,7 @@ namespace Simcc
 			Comma,// ,
 			Endl,
 			EndStmt,
+			System,
 		};
 		std::unordered_map<std::string, Tag>& keyword_map();
 		std::unordered_map<std::string, Tag>& symbol_map();
@@ -42,6 +43,8 @@ namespace Simcc
 			{
 				switch (tag)
 				{
+				case System:
+					return "<system>";
 				case TBreak:
 					return "<break>";
 				case TContinue:

@@ -4,6 +4,14 @@ Simcc::Runtime::Action::Action()
 {
 	switch (Environment::this_token()->get_tag())
 	{
+	case Lexer::System:
+		action_type = SYSTEM_CALL;
+		Environment::current_pos++;
+		Environment::match(Lexer::Place);
+		content = Environment::this_token();
+		Environment::match(Lexer::Id);
+		param = new Parser::Param();
+		return;
 	case Lexer::PP:
 		action_type = FP;
 		Environment::current_pos++;

@@ -14,8 +14,8 @@ namespace Simcc
 			Param();
 			std::vector<Simcc::Runtime::ObjectBase*>& get_list();
 			~Param();
-		private:
 			std::vector<Lexer::Token* > param_list;
+		private:
 			std::vector<Simcc::Runtime::ObjectBase*> obj_list;
 		};
 		//пн╡н
@@ -32,6 +32,11 @@ namespace Simcc
 		public:
 			static std::map<Lexer::Token*, Function*> function_table;
 			Function();
+			virtual ~Function()
+			{
+				delete funcBlock;
+				delete args;
+			}
 			Runtime::ObjectBase* execute(Param *param);
 			Runtime::ObjectBase* execute();
 		private:

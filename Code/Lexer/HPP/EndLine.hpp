@@ -16,6 +16,10 @@ namespace Simcc
 			{
 				return "\n<Line:" + std::to_string(line_no) + ">";
 			}
+			void* get_value()override
+			{
+				return (void*)&line_no;
+			}
 		private:
 			size_t line_no;
 		};

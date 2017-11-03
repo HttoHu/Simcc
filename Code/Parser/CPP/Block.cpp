@@ -1,5 +1,6 @@
 #include "../HPP/Block.hpp"
 #include "../../Runtime/HPP/Action.hpp"
+#include "../../System/HPP/SystemFunction.hpp"
 using namespace Simcc::Parser;
 Block::Block()
 {
@@ -9,6 +10,11 @@ Block::Block()
 	{
 		switch (Parser::Environment::this_token()->get_tag())
 		{
+		case Lexer::Tag::System:
+			Parser::Environment::current_pos++;
+			Environment::match(Lexer::Place);
+			stmts.push_back(new System::CPPFunction());
+			return;
 		case Lexer::Tag::TReturn:
 			stmts.push_back(new Return());
 			Parser::Environment::current_pos++;
@@ -71,9 +77,18 @@ Block::Block()
 	while (!isSingle)
 	{
 		if (Parser::Environment::current_pos >= Parser::Environment::token_stream->size())
+		{
+			std::cout << std::endl<<Parser::Environment::current_pos;
 			throw std::runtime_error("runtime_error15");
+
+		}
 		switch (Parser::Environment::this_token()->get_tag())
 		{
+		case Lexer::Tag::System:
+			Parser::Environment::current_pos++;
+			Environment::match(Lexer::Place);
+			stmts.push_back(new System::CPPFunction());
+			break;
 		case Lexer::Tag::TReturn:
 			stmts.push_back(new Return());
 			break;
@@ -125,7 +140,7 @@ Block::Block()
 			}
 			continue;
 		default:
-			throw std::runtime_error("\n" + Parser::Environment::this_token()->to_string() + "runtime_error14");
+			throw Error::SyntaxError( "In (_Block::Block)"+Parser::Environment::this_token()->to_string() + "unexpeted lexem");
 		}
 	}
 }

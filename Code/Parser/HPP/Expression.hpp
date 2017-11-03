@@ -33,10 +33,7 @@ namespace Simcc
 			{
 				return count_stack.front();
 			}
-			~Expression() {
-				for (auto &a : count_stack)
-					delete a;
-			}
+			~Expression();
 		private:
 			Lexer::Token * next_token()
 			{
