@@ -81,7 +81,7 @@ namespace Simcc
 					type = Char;
 					break;
 				case String:
-					*(long*)data = v.to_long();
+					*(int64_t*)data = v.to_long();
 					type = String;
 					break;
 				case Bool:
@@ -255,104 +255,11 @@ namespace Simcc
 			void *data;
 
 		};
-		class Object :ObjectBase
+		class ObjectBase2
 		{
 		public:
-			Object(const Parser::Type& t) :type(t), ObjectBase(ObjectBase::VType::User) {
-				for (const auto & a : t.private_members)
-				{
-					switch (a.second->type_structure)
-					{
-					case Parser::Type::BOOL:
-						private_member_table.insert({ a.first,new ObjectBase(false) });
-						break;
-					case Parser::Type::DOUBLE:
-						private_member_table.insert({ a.first,new ObjectBase((double)0) });
-						break;
-					case Parser::Type::INT:
-						private_member_table.insert({ a.first,new ObjectBase((int32_t)0) });
-						break;
-					case Parser::Type::LONG:
-						private_member_table.insert({ a.first,new ObjectBase((int64_t)0) });
-						break;
-					case Parser::Type::STRING:
-						private_member_table.insert({ a.first,new ObjectBase(std::string(0)) });
-						break;
-					case Parser::Type::CHAR:
-						private_member_table.insert({ a.first,new ObjectBase((char)0) });
-						break;
-					case Parser::Type::CLASS:
-						private_member_table.insert({ a.first,new Object(*a.second) });
-						break;
-					default:
-						throw std::runtime_error("runtime_error1");
-						break;
-					}
-				}
-				for (const auto & a : t.public_members)
-				{
-					switch (a.second->type_structure)
-					{
-					case Parser::Type::BOOL:
-						public_member_table.insert({ a.first,new ObjectBase(false) });
-						break;
-					case Parser::Type::DOUBLE:
-						public_member_table.insert({ a.first,new ObjectBase((double)0) });
-						break;
-					case Parser::Type::INT:
-						public_member_table.insert({ a.first,new ObjectBase((int32_t)0) });
-						break;
-					case Parser::Type::LONG:
-						public_member_table.insert({ a.first,new ObjectBase((int64_t)0) });
-						break;
-					case Parser::Type::STRING:
-						public_member_table.insert({ a.first,new ObjectBase(std::string(0)) });
-						break;
-					case Parser::Type::CHAR:
-						public_member_table.insert({ a.first,new ObjectBase((char)0) });
-						break;
-					case Parser::Type::CLASS:
-						public_member_table.insert({ a.first,new Object(*a.second) });
-						break;
-					default:
-						throw std::runtime_error("runtime_error2");
-						break;
-					}
-				}
-				for (const auto & a : t.public_members)
-					public_member_table.insert({ a.first,new Object(*a.second) });
-			};
-			void set_value(const std::string & str, ObjectBase* objb)
-			{
-				auto result = private_member_table.find(str);
-				if (result == private_member_table.end())
-					throw std::runtime_error("runtime_error3");
-
-			}
+			
 		private:
-			ObjectBase *set_value(const Parser::Type &t)
-			{
-				switch (t.type_structure)
-				{
-				case Parser::Type::INT:
-					return new ObjectBase((int32_t)0);
-				case Parser::Type::DOUBLE:
-					return new ObjectBase((double_t)0.0);
-				case Parser::Type::CHAR:
-					return new ObjectBase((char)' ');
-				case Parser::Type::STRING:
-					return new ObjectBase(std::string(0));
-				case Parser::Type::LONG:
-					return new ObjectBase((int64_t)0);
-				case Parser::Type::BOOL:
-					return new ObjectBase((bool)false);
-				default:
-					return nullptr;
-				}
-			}
-			Parser::Type type;
-			std::unordered_map<std::string, ObjectBase*> private_member_table;
-			std::unordered_map<std::string, ObjectBase*> public_member_table;
 		};
 	}
 	namespace Test

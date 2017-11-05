@@ -5,6 +5,8 @@
 #include <time.h>
 #include <Windows.h>
 using namespace Simcc::Runtime;
+/*
+
 #ifndef _DEBUG
 int main(int argc,char* argv[])
 {
@@ -26,7 +28,6 @@ int main(int argc,char* argv[])
 	return 0;
 }
 #else
-/*
 
 int main(int argc, char* argv[])
 {
@@ -48,14 +49,18 @@ int main(int argc, char* argv[])
 */
 int main()
 {
-	Simcc::Runtime::StackMemory sm;
+	{
+		Simcc::Runtime::StackMemory sm;
 	long a=clock();
-	for (int i=0;i<100000000;i++)
-		sm.push(123);
-	long b = clock();
-	std::cout << double(b - a) / CLK_TCK;
+	for (int i=0;i<100;i++)
+		sm.push_temp("dfa"+std::to_string(i));
+	std::cout << *(std::string*)sm.find(5*32)<<std::endl;//*(std::string*)sm.find(sizeof(std::string)*3) << std::endl;
+	//long b = clock();
+	//
+//	std::cout << double(b - a) / CLK_TCK;
+	}
 	Sleep(1000000);
 
 	return 0;
 }
-#endif
+//#endif

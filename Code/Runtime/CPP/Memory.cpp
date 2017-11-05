@@ -12,7 +12,7 @@ void Simcc::Runtime::Stack::endBlock()
 	}
 	stack_memory.pop_front();
 }
-ObjectBase * Simcc::Runtime::Stack::find_variable(Simcc::Lexer::Token*tok )
+ObjectBase * Simcc::Runtime::Stack::find_variable(Simcc::Lexer::Token*tok)
 {
 	//std::cout << "DDD" << *(std::string*)tok->get_value() << std::endl;
 	auto current = stack_memory.begin();
@@ -26,7 +26,7 @@ ObjectBase * Simcc::Runtime::Stack::find_variable(Simcc::Lexer::Token*tok )
 		}
 		current++;
 	}
-	throw std::runtime_error(tok->to_string()+"unknow variable");
+	throw std::runtime_error(tok->to_string() + "unknow variable");
 }
 void Simcc::Runtime::Stack::push(Lexer::Token*vname, ObjectBase *obj)
 {
@@ -68,10 +68,33 @@ void Simcc::Runtime::StackMemory::endBlock()
 	pc = pos_stack[pos_stack_index--];
 }
 
-void Simcc::Runtime::StackMemory::push(int a)
+char * Simcc::Runtime::StackMemory::find(size_t pos)
+{
+	return mem + pos;
+}
+
+void Simcc::Runtime::StackMemory::push_temp(const char *c_str)
+{
+	std::string str = c_str;
+	char* d = (char*)&str;
+	for (int i = 0; i <sizeof(std::string); i++)
+		mem[tp_pos++] = d[i];
+}
+
+void Simcc::Runtime::StackMemory::push(int t)
 {
 	check();
-	char* d = (char*)&a;
+	char* d = (char*)&t;
 	for (int i = 0; i < sizeof(int); i++)
 		mem[pc++] = d[i];
 }
+
+void Simcc::Runtime::StackMemory::push(const char *c_str)
+{
+	std::string str= c_str;
+	check();
+	char* d = (char*)&str;
+	for (int i = 0; i < sizeof(str); i++)
+		mem[pc++] = d[i];
+}
+
