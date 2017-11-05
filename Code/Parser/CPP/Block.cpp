@@ -42,6 +42,7 @@ Block::Block()
 			stmts.push_back(new Simcc::Parser::For());
 			Parser::Environment::current_pos++;
 			return;
+		case Lexer::Tag::SVAR:
 		case Lexer::Tag::SBool:
 		case  Lexer::Tag::SInt:
 		case  Lexer::Tag::SDouble:

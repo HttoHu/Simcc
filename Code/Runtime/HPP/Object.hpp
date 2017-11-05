@@ -63,30 +63,29 @@ namespace Simcc
 				if (v.data == data)
 					return *this;
 				delete data;
-				switch (v.type)
+				switch (type)
 				{
 				case Int:
-					data = new int32_t(*(int32_t*)v.data);
-					type = Int;
+					*(int*)data = v.to_int();
 					break;
 				case Double:
-					data = new double(*(double*)v.data);
+					*(double*)data = v.to_bool();
 					type = Double;
 					break;
 				case Long:
-					data = new int64_t(*(int64_t*)v.data);
+					*(int64_t*)data = v.to_long();
 					type = Long;
 					break;
 				case Char:
-					data = new char(*(char*)v.data);
+					*(char*)data = *(char*)v.data;
 					type = Char;
 					break;
 				case String:
-					data = new std::string(*(std::string*)v.data);
+					*(long*)data = v.to_long();
 					type = String;
 					break;
 				case Bool:
-					data = new bool(*(bool*)v.data);
+					*(bool*)data = v.to_bool();
 					type = Bool;
 					break;
 				default:

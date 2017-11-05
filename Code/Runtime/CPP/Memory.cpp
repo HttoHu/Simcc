@@ -43,3 +43,35 @@ void Simcc::Runtime::Stack::debug()
 		}
 	}
 }
+
+void Simcc::Runtime::StackMemory::check()
+{
+	if (pc >= length / 2)
+	{
+		std::cout << "RESIZE";
+		char* newMem = new char[length * 2];
+		for (int i = 0; i < pc; i++)
+			newMem[i] = mem[i];
+		delete[] mem;
+		mem = newMem;
+		length *= 2;
+	}
+}
+
+void Simcc::Runtime::StackMemory::newBlock()
+{
+	pos_stack[pos_stack_index++] = pc;
+}
+
+void Simcc::Runtime::StackMemory::endBlock()
+{
+	pc = pos_stack[pos_stack_index--];
+}
+
+void Simcc::Runtime::StackMemory::push(int a)
+{
+	check();
+	char* d = (char*)&a;
+	for (int i = 0; i < sizeof(int); i++)
+		mem[pc++] = d[i];
+}
