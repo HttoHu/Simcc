@@ -1,66 +1,23 @@
-#include "..\Parser\HPP\Function.hpp"
-#include "../Parser/HPP/Block.hpp"
-#include "../Runtime/HPP/Run.hpp"
+#include "../Runtime/HPP/Object.hpp"
 #include <fstream>
-#include <time.h>
-#include <Windows.h>
-using namespace Simcc::Runtime;
-/*
-
-#ifndef _DEBUG
-int main(int argc,char* argv[])
+using namespace Simcc;
+std::string get_file_content(const std::string & filename)
 {
-	try
-	{
-		if (argc != 2)
-			throw std::runtime_error("invaild input");
-		Init(argv[1]);
-		CreateFunctionTable();
-		time_t s = clock();
-		Execute();
-		std::cin.get();
-	}
-	catch (std::exception& e)
-	{
-		std::cout << e.what();
-	}
-	Sleep(1000000);
-	return 0;
+	using namespace std;
+	ifstream ifs(filename);
+	std::string file_content((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
+	return file_content;
 }
-#else
-
-int main(int argc, char* argv[])
-{
-	try
-	{
-		Init("Text.cc");
-		CreateFunctionTable();
-		time_t s = clock();
-		Execute();
-		std::cin.get();
-	}
-	catch (std::exception& e)
-	{
-		std::cout << e.what();
-	}
-	Sleep(1000000);
-	return 0;
-}
-*/
 int main()
 {
+	Lexer::Lexer *lex = new Lexer::Lexer(get_file_content("Text.txt"));
+	lex->init_token_stream();
+	Environment::token_stream = &lex->token_stream;
+	for (int i = 0; i < 10000000; i++)
 	{
-		Simcc::Runtime::StackMemory sm;
-	long a=clock();
-	for (int i=0;i<100;i++)
-		sm.push_temp("dfa"+std::to_string(i));
-	std::cout << *(std::string*)sm.find(5*32)<<std::endl;//*(std::string*)sm.find(sizeof(std::string)*3) << std::endl;
-	//long b = clock();
-	//
-//	std::cout << double(b - a) / CLK_TCK;
+		Runtime::Basic bc(i);
 	}
-	Sleep(1000000);
-
-	return 0;
+	std::cout << Environment::stack_block->pc;
+	std::cout << *(int*)Environment::stack_block->find(sizeof(int)*10000);
+	std::cin.get();
 }
-//#endif
