@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <iostream>
-#include "../../Parser/HPP/Type.hpp"
 #include "../../Lexer/HPP/Token.hpp"
 namespace Simcc
 {
@@ -63,29 +62,30 @@ namespace Simcc
 				if (v.data == data)
 					return *this;
 				delete data;
-				switch (type)
+				switch (v.type)
 				{
 				case Int:
-					*(int*)data = v.to_int();
+					data = new int32_t(*(int32_t*)v.data);
+					type = Int;
 					break;
 				case Double:
-					*(double*)data = v.to_bool();
+					data = new double(*(double*)v.data);
 					type = Double;
 					break;
 				case Long:
-					*(int64_t*)data = v.to_long();
+					data = new int64_t(*(int64_t*)v.data);
 					type = Long;
 					break;
 				case Char:
-					*(char*)data = *(char*)v.data;
+					data = new char(*(char*)v.data);
 					type = Char;
 					break;
 				case String:
-					*(int64_t*)data = v.to_long();
+					data = new std::string(*(std::string*)v.data);
 					type = String;
 					break;
 				case Bool:
-					*(bool*)data = v.to_bool();
+					data = new bool(*(bool*)v.data);
 					type = Bool;
 					break;
 				default:
@@ -254,12 +254,6 @@ namespace Simcc
 			ObjectBase operator<(const ObjectBase&v)const;
 			void *data;
 
-		};
-		class ObjectBase2
-		{
-		public:
-			
-		private:
 		};
 	}
 	namespace Test

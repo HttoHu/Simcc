@@ -34,9 +34,11 @@ Simcc::Runtime::Action::Action()
 			return;
 		case Lexer::PP:
 			action_type = BP;
+			Environment::current_pos++;
 			return;
 		case Lexer::MM:
 			action_type = BM;
+			Environment::current_pos++;
 			return;
 		default:
 			action_type = ID;

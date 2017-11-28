@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Lexer/HPP/Lexer.hpp"
 #include "../../Runtime/HPP/Memory.hpp"
+#include "Error.hpp"
 namespace Simcc
 {
 	namespace Parser
