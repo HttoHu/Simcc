@@ -1,9 +1,11 @@
 #include "..\Parser\HPP\Function.hpp"
 #include "../Parser/HPP/Block.hpp"
+#include "../Test/HPP/TObject.hpp"
 #include "../Runtime/HPP/Run.hpp"
 #include <fstream>
 #include <time.h>
 #include <Windows.h>
+#define PT
 using namespace Simcc::Runtime;
 std::string get_file_content(const std::string & filename);
 void block_test()
@@ -67,7 +69,7 @@ int main(int argc,char* argv[])
 	return 0;
 }
 #endif
-
+#ifndef PT
 int main()
 {
 	/* Text.txt ÄÚÈÝ
@@ -93,4 +95,12 @@ int main()
 	}
 	Sleep(1000000);
 	return 0;
+}
+#endif
+
+int main()
+{
+	Simcc::Runtime::Basic g(12);
+	std::cout << g.to_string();
+	std::cin.get();
 }

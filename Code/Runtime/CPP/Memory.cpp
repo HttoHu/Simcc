@@ -12,22 +12,22 @@ void Simcc::Runtime::Stack::endBlock()
 	}
 	stack_memory.pop_front();
 }
-ObjectBase * Simcc::Runtime::Stack::find_variable(Simcc::Lexer::Token*tok )
+ObjectBase * Simcc::Runtime::Stack::find_variable(Simcc::Lexer::Token*tok)
 {
 	//std::cout << "DDD" << *(std::string*)tok->get_value() << std::endl;
 	auto current = stack_memory.begin();
 	while (current != stack_memory.end())
 	{
 		auto result = current->find(tok);
-
 		if (result != current->end())
 		{
 			return result->second;
 		}
 		current++;
 	}
-	throw std::runtime_error(tok->to_string()+"unknow variable");
+	throw std::runtime_error(tok->to_string() + "unknow variable");
 }
+
 void Simcc::Runtime::Stack::push(Lexer::Token*vname, ObjectBase *obj)
 {
 	stack_memory.front().insert({ vname,obj });
