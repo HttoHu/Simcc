@@ -11,5 +11,9 @@ sum (int x, int y)
   return x+y;
 }
 ```
-4. 基本的函数库
-
+4. 基本的函数库  system::
+**write|write_line|time|read**
+## 其他
+* 目前我在写0.2版本 现在master里并不是一个完整的解释器， 可以到发布里面找0.1 的版本(o.1 版本还有些bug（其实我已经修复了这些bug，但是没有高兴发布新版本），且速度缓慢）
+* 示例在instance里有， 是一个一元二次方程解释器
+* 如果有什么问题 请联系 [Email]huyuantao@outlook.com
