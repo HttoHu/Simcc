@@ -1,4 +1,4 @@
-#include "../HPP/TObject.hpp"
+#include "../HPP/Object.hpp"
 
 std::string Simcc::Runtime::Basic::to_string() const
 {
@@ -152,7 +152,7 @@ Simcc::Runtime::Object* Simcc::Runtime::Basic::Operator(Object * op, CountSign c
 			 get_value<double>() += op->get_value<double>();
 			break;
 		case 5:
-			get_value<bool>() += op->get_value<bool>();
+			throw std::runtime_error("type not matched");
 			break;
 		default:
 			throw std::runtime_error("unkown type!");
@@ -179,7 +179,7 @@ Simcc::Runtime::Object* Simcc::Runtime::Basic::Operator(Object * op, CountSign c
 			get_value<double>() *= op->get_value<double>();
 			break;
 		case 5:
-			get_value<bool>() += op->get_value<bool>();
+			throw std::runtime_error("type not matched");
 			break;
 		default:
 			throw std::runtime_error("unkown type!");
@@ -206,7 +206,7 @@ Simcc::Runtime::Object* Simcc::Runtime::Basic::Operator(Object * op, CountSign c
 			get_value<double>() /= op->get_value<double>();
 			break;
 		case 5:
-			get_value<bool>() /= op->get_value<bool>();
+			throw std::runtime_error("type not matched");
 			break;
 		default:
 			throw std::runtime_error("unkown type!");
@@ -233,7 +233,7 @@ Simcc::Runtime::Object* Simcc::Runtime::Basic::Operator(Object * op, CountSign c
 			get_value<double>() -= op->get_value<double>();
 			break;
 		case 5:
-			get_value<bool>() -= op->get_value<bool>();
+			throw std::runtime_error("type not matched");
 			break;
 		default:
 			throw std::runtime_error("unkown type!");

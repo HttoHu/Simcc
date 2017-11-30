@@ -199,8 +199,9 @@ namespace Simcc
 			{
 				return (void*)&count_sign;
 			}
-		private:
 			CountSign count_sign;
+		private:
+
 		};
 	}
 }

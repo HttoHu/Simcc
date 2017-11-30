@@ -24,7 +24,7 @@ namespace Simcc
 		{
 			char* d = (char*)&t;
 			if (tp_pos > 200)
-				tp_pos == 0;
+				tp_pos = 0;
 			for (int i = 0; i <sizeof(T); i++)
 				mem[tp_pos++] = d[i];
 			return pc - sizeof(T);
