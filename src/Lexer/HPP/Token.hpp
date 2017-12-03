@@ -7,6 +7,7 @@ namespace Simcc
 {
 	namespace Lexer
 	{
+
 		enum CountSign
 		{
 			Assign, 
@@ -16,6 +17,8 @@ namespace Simcc
 		    MM,PP,
 			SAdd,SMul,SSub,SDiv,
 		};
+		size_t operator_priority(CountSign cs);
+		bool is_single_variable_countsign(CountSign cs);
 		enum Tag
 		{
 			SInt, SDouble, SLong, SChar, SString, SBool,SVAR,
