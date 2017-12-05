@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../Lexer/HPP/Lexer.hpp"
+#include "../Context/HPP/Type.hpp"
 #include "../Parser/HPP/Expression.hpp"
 using namespace Simcc;
 using namespace Lexer;
@@ -8,8 +9,7 @@ int main()
 {
 	try
 	{
-		Simcc::Lexer::lex_init("Lex.sic");
-		Simcc::Expression::set_expr_tree(Simcc::Lexer::token_stream)->print(" ", false);
+		Context::type_test();
 	}
 	catch (std::exception &e)
 	{
