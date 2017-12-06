@@ -13,8 +13,10 @@ namespace Simcc
 			static TId* find_id(const std::string & str);
 			static TId* insert_id(const std::string &id_name);
 			static void delete_id_table();
+			static TId* create_tmp_id();
 			TId(const std::string & str) :Token(Tag::Id),id_name(str){}
 			virtual std::string to_string()const override;
+			virtual void* get_value()override;
 			size_t add = 0;
 		private:
 			std::string id_name;

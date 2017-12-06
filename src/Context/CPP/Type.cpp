@@ -11,17 +11,30 @@ std::map<size_t, Context::Type* >& Context::Type::type_table()
 	{ 5,_create_basic_type("bool",sizeof(bool),Context::BOOL) } };
 	return ret;
 };
+Context::Type * Simcc::Context::Type::find_type(const std::string & str)
+{
+	auto ret = name_typeid().find(str);
+	if (ret != name_typeid().end())
+	{
+		auto r2 = type_table().find(ret->second);
+		if (r2 != type_table().end())
+		{
+			return r2->second;
+		}
+	}
+	throw std::runtime_error("no finding such type:" + str);
+}
 std::map<std::string, size_t>& Context::Type::name_typeid()
 {
 	static std::map<std::string, size_t> ret;
 	return ret;
 }
 
-size_t Context::Type::current_type_index=0;
+size_t Context::Type::current_type_index = 0;
 
-Simcc::Context::Type::Type(const std::string & type_name, const std::vector<size_t>& amembers):basic_type(BasicType::USER)
+Simcc::Context::Type::Type(const std::string & type_name, const std::vector<size_t>& amembers) :basic_type(BasicType::USER)
 {
-	for (auto a :amembers)
+	for (auto a : amembers)
 	{
 		auto b = type_table().find(a);
 		if (b == type_table().end())
@@ -41,7 +54,7 @@ std::string Simcc::Context::Type::to_string() const
 		switch (a->basic_type)
 		{
 		case BasicType::INT:
-			ret+= "int\n";
+			ret += "int\n";
 			break;
 		case BasicType::DOUBLE:
 			ret += "double\n";
@@ -98,7 +111,7 @@ void Simcc::Context::type_test()
 {
 	Context::Type t(std::string("Coor"), std::vector<size_t>({ 1,2,1 }));
 	Context::Type t2(std::string("D"), std::vector<size_t>({ 3,3,4 }));
-	t.add_member(0);
+	t.add_member("double");
 	t2.add_member("Coor");
 	std::cout << t2.to_string();
 	std::cout << "length:" << t2.length();

@@ -1,5 +1,5 @@
 #include "../HPP/Expression.hpp"
-
+#include "../../Parser/HPP/BasicStmt.hpp"
 using namespace Simcc;
 
 //***********************************
@@ -10,7 +10,7 @@ bool is_literal(Simcc::Lexer::Tag t)
 		return true;
 	return false;
 }
-
+std::list<Stmt::Stmt*>  Simcc::Expression::trans_stmt;
 //***********************************
 TokenStream Simcc::Expression::sub_token_stream(const TokenStream & ts, size_t start_pos, size_t length)
 {
@@ -48,6 +48,90 @@ TokenStream Simcc::Expression::cut_brackets(const TokenStream & ts, size_t start
 	else
 	{
 		throw std::runtime_error("cut_brackets: ts[start_pos] must be a left braket");
+	}
+}
+
+Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
+{
+	if (expr_tree == nullptr)
+		return nullptr;
+	using namespace Lexer;
+	if (expr_tree->is_leaf())
+	{
+		if (expr_tree->value->get_tag() == Lexer::Id)
+			return static_cast<Lexer::TId*>(expr_tree->value);
+		else if (is_literal(expr_tree->value->get_tag()))
+		{
+
+			Context::Type *lit_type;
+			switch (expr_tree->value->get_tag())
+			{
+			case Lexer::TLiteralInt:
+				lit_type = Context::Type::find_type("int");
+				break;
+			case Lexer::TLiteralDouble:
+				lit_type = Context::Type::find_type("double");
+				break;
+			case Lexer::TLiteralLong:
+				lit_type = Context::Type::find_type("long");
+				break;
+			case Lexer::TLiteralString:
+				lit_type = Context::Type::find_type("string");
+				break;
+			case Lexer::TLiteralChar:
+				lit_type = Context::Type::find_type("char");
+				break;
+			case Lexer::True:
+				lit_type = Context::Type::find_type("bool");
+				break;
+			case Lexer::False:
+				lit_type = Context::Type::find_type("bool");
+				break;
+			default:
+				throw std::runtime_error("unknow type");
+				break;
+			}
+			Lexer::TId* tmp=Lexer::TId::create_tmp_id();
+			trans_stmt.push_front(new Stmt::CreateVariable(lit_type, tmp, expr_tree->value));
+			return tmp;
+		}
+		throw std::runtime_error("bad expr");
+	}
+	if (expr_tree->value->get_tag() != Lexer::TOperator)
+		throw std::runtime_error("bad expr");
+	Lexer::CountSign cs = *(Lexer::CountSign*)expr_tree->value->get_value();
+	switch (cs)
+	{
+	case Add:
+	case Sub:
+	case Mul:
+	case Div:
+	{
+		TId *left_op = trans_expr_tree(expr_tree->left);
+		TId *right_op = trans_expr_tree(expr_tree->right);
+		if (left_op == nullptr || right_op == nullptr)
+			throw std::runtime_error("bad expr");
+		TId *tmp = TId::create_tmp_id();
+
+		/* 17 12-5 
+		* -remember to add the stmt which creates the tmp variable. In present I am lack of tmp's type info, since I can not get 
+		* left_op right_op 's type info. ## and I haven't build a Symbol table yet. <-_-!>
+		* Htto */
+
+		trans_stmt.push_back(new Stmt::TOS(static_cast<TId*>(tmp), static_cast<TId*>(left_op), static_cast<TId*>(right_op)));
+		return tmp;
+	}
+	case PP:
+	case MM:
+	{
+		auto a = expr_tree->left->value;
+		if (a->get_tag() != Id)
+			throw std::runtime_error("bad expr3");
+		trans_stmt.push_back(new Stmt::SingleOS(static_cast<Operator*>(expr_tree->value), static_cast<TId*>(a)));
+		return static_cast<TId*>(a);
+	}
+	default:
+		break;
 	}
 }
 

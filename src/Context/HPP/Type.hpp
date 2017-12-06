@@ -14,6 +14,7 @@ namespace Simcc
 		class Type
 		{
 		public:
+			static Type* find_type(const std::string &str);
 			static std::map<std::string, size_t>& name_typeid();
 			static std::map<size_t, Type* >& type_table();
 			static size_t current_type_index;
