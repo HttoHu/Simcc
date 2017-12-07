@@ -99,6 +99,7 @@ namespace Simcc
 			}
 			bool is_root() { return root == nullptr; }
 			bool is_leaf() { return left == nullptr&&right == nullptr; }
+			bool have_single_son() { return left == nullptr xor right == nullptr; }
 
 			TreeNode *root;
 			TreeNode *left;

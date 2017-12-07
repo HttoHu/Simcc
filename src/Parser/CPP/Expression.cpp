@@ -11,6 +11,12 @@ bool is_literal(Simcc::Lexer::Tag t)
 	return false;
 }
 std::list<Stmt::Stmt*>  Simcc::Expression::trans_stmt;
+void Simcc::Expression::_clear_trans_stmt()
+{
+	for (auto & a : trans_stmt)
+		delete a;
+	trans_stmt.clear();
+}
 //***********************************
 TokenStream Simcc::Expression::sub_token_stream(const TokenStream & ts, size_t start_pos, size_t length)
 {
@@ -91,7 +97,7 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 				throw std::runtime_error("unknow type");
 				break;
 			}
-			Lexer::TId* tmp=Lexer::TId::create_tmp_id();
+			Lexer::TId* tmp = Lexer::TId::create_tmp_id();
 			trans_stmt.push_front(new Stmt::CreateVariable(lit_type, tmp, expr_tree->value));
 			return tmp;
 		}
@@ -102,8 +108,21 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 	Lexer::CountSign cs = *(Lexer::CountSign*)expr_tree->value->get_value();
 	switch (cs)
 	{
-	case Add:
+	case PP:
+	case MM:
+	{
+		auto a = expr_tree->left->value;
+		if (a->get_tag() != Id)
+			throw std::runtime_error("bad expr3");
+		trans_stmt.push_back(new Stmt::SingleOS(static_cast<TId*>(a), static_cast<Operator*>(expr_tree->value)));
+		return static_cast<TId*>(a);
+	}
 	case Sub:
+		if (expr_tree->right == nullptr)
+		{
+
+		}
+	case Add:
 	case Mul:
 	case Div:
 	{
@@ -113,25 +132,62 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 			throw std::runtime_error("bad expr");
 		TId *tmp = TId::create_tmp_id();
 
-		/* 17 12-5 
-		* -remember to add the stmt which creates the tmp variable. In present I am lack of tmp's type info, since I can not get 
+		/* 17 12-5
+		* -remember to add the stmt which creates the tmp variable. In present I am lack of tmp's type info, since I can not get
 		* left_op right_op 's type info. ## and I haven't build a Symbol table yet. <-_-!>
 		* Htto */
 
-		trans_stmt.push_back(new Stmt::TOS(static_cast<TId*>(tmp), static_cast<TId*>(left_op), static_cast<TId*>(right_op)));
+		trans_stmt.push_back(new Stmt::TOS(static_cast<TId*>(tmp), static_cast<TId*>(left_op), static_cast<TId*>(right_op),
+			static_cast<Operator*>(expr_tree->value)));
 		return tmp;
 	}
-	case PP:
-	case MM:
+	case SAdd:
+	case SSub:
+	case SMul:
+	case SDiv:
+	case Assign:
 	{
-		auto a = expr_tree->left->value;
-		if (a->get_tag() != Id)
-			throw std::runtime_error("bad expr3");
-		trans_stmt.push_back(new Stmt::SingleOS(static_cast<Operator*>(expr_tree->value), static_cast<TId*>(a)));
-		return static_cast<TId*>(a);
+		Token *tok = expr_tree->right->value;
+		if (tok->get_tag() == TOperator)
+		{
+			CountSign cs = *(CountSign*)tok->get_value();
+			switch (cs)
+			{
+			case MM:
+			case PP:
+			case Sub:
+				if (expr_tree->have_single_son())
+				{
+					// a = -b
+					/*
+					a is left 
+					= is op
+					- is action op
+					b is right->left->value 
+					*/
+					//AssignWithAction(Lexer::TId *vid, Lexer::Operator *op, Lexer::Operator * act, Lexer::TId *rid) :action_type(act),
+					trans_stmt.push_back(
+						new Stmt::AssignWithAction(static_cast<TId*>(expr_tree->left->value),
+							static_cast<Operator*>(expr_tree->value),
+							static_cast<Operator*>(expr_tree->right->value),
+							static_cast<TId*>(expr_tree->right->left->value))  );
+					break;
+				}
+				goto oc;
+			default:
+			{
+			oc:TId  *v = trans_expr_tree(expr_tree->right);
+				trans_stmt.push_back(new Stmt::Assign(static_cast<TId*>(expr_tree->left->value), static_cast<TId*>(tok),
+					static_cast<Operator*>(expr_tree->value)));
+				break;
+			}
+			}
+		}
+		else if (tok->get_tag() == Id)
+		{
+
+		}
 	}
-	default:
-		break;
 	}
 }
 
