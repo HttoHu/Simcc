@@ -2,9 +2,9 @@
 
 std::string Simcc::Stmt::CreateVariable::to_string()
 {
-	std::string ret = type->to_string() + "\t" + id->to_string();
+	std::string ret = "<var>" + id->to_string();
 	if (init_value != nullptr)
-		ret += init_value->to_string();
+		ret +=  " = "+init_value->to_string();
 	return ret;
 }
 

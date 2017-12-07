@@ -9,7 +9,7 @@ int main()
 {
 	try
 	{
-		Context::type_test();
+		Expression::trans_expr_tree_test();
 	}
 	catch (std::exception &e)
 	{

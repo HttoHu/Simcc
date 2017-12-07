@@ -38,8 +38,9 @@ void Simcc::Lexer::TId::delete_id_table()
 
 TId * Simcc::Lexer::TId::create_tmp_id()
 {
+	static size_t tmp_index = 0;
 	TId* ret;
-	ret = new TId("tmp");
+	ret = new TId("tmp" + std::to_string(tmp_index++));
 	return ret;
 }
 

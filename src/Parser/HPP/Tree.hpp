@@ -84,12 +84,12 @@ namespace Simcc
 				std::cout << indent;
 				if (is_right)
 				{
-					std::cout<<"L-";
+					std::cout<<"R-";
 					indent += "  ";
 				}
 				else
 				{
-					std::cout<<("R-");
+					std::cout<<("L-");
 					indent += "| ";
 				}
 				std::cout << value->to_string()<<std::endl;
@@ -99,7 +99,9 @@ namespace Simcc
 			}
 			bool is_root() { return root == nullptr; }
 			bool is_leaf() { return left == nullptr&&right == nullptr; }
-			bool have_single_son() { return left == nullptr xor right == nullptr; }
+			bool have_single_son() { 
+				return ((left !=nullptr)&& (right==nullptr)); 
+			}
 
 			TreeNode *root;
 			TreeNode *left;

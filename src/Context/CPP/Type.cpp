@@ -13,6 +13,7 @@ std::map<size_t, Context::Type* >& Context::Type::type_table()
 };
 Context::Type * Simcc::Context::Type::find_type(const std::string & str)
 {
+	type_table();
 	auto ret = name_typeid().find(str);
 	if (ret != name_typeid().end())
 	{

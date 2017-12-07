@@ -36,13 +36,9 @@ bool Simcc::Lexer::is_single_variable_countsign(CountSign cs)
 	case Simcc::Lexer::Not:
 	case Simcc::Lexer::MM:
 	case Simcc::Lexer::PP:
-	case Simcc::Lexer::SAdd:
-	case Simcc::Lexer::SMul:
-	case Simcc::Lexer::SSub:
-	case Simcc::Lexer::SDiv:
 		return true;
 	default:
-		return true;
+		return false;
 	}
 }
 

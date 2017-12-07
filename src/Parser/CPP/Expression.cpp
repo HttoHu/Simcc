@@ -1,5 +1,6 @@
 #include "../HPP/Expression.hpp"
 #include "../../Parser/HPP/BasicStmt.hpp"
+#include "../../Lexer/HPP/Lexer.hpp"
 using namespace Simcc;
 
 //***********************************
@@ -62,6 +63,7 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 	if (expr_tree == nullptr)
 		return nullptr;
 	using namespace Lexer;
+	//basic condition process.. 
 	if (expr_tree->is_leaf())
 	{
 		if (expr_tree->value->get_tag() == Lexer::Id)
@@ -105,6 +107,7 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 	}
 	if (expr_tree->value->get_tag() != Lexer::TOperator)
 		throw std::runtime_error("bad expr");
+	// confirm the operator of the current node.
 	Lexer::CountSign cs = *(Lexer::CountSign*)expr_tree->value->get_value();
 	switch (cs)
 	{
@@ -118,10 +121,6 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 		return static_cast<TId*>(a);
 	}
 	case Sub:
-		if (expr_tree->right == nullptr)
-		{
-
-		}
 	case Add:
 	case Mul:
 	case Div:
@@ -145,6 +144,7 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 	case SSub:
 	case SMul:
 	case SDiv:
+		// assign like a=--b 
 	case Assign:
 	{
 		Token *tok = expr_tree->right->value;
@@ -156,8 +156,9 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 			case MM:
 			case PP:
 			case Sub:
-				if (expr_tree->have_single_son())
+				if (expr_tree->right->have_single_son())
 				{
+					std::cout << "I Hate myself";
 					// a = -b
 					/*
 					a is left 
@@ -171,21 +172,17 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 							static_cast<Operator*>(expr_tree->value),
 							static_cast<Operator*>(expr_tree->right->value),
 							static_cast<TId*>(expr_tree->right->left->value))  );
-					break;
+					return static_cast<TId*>(expr_tree->left->value);
 				}
 				goto oc;
 			default:
 			{
 			oc:TId  *v = trans_expr_tree(expr_tree->right);
-				trans_stmt.push_back(new Stmt::Assign(static_cast<TId*>(expr_tree->left->value), static_cast<TId*>(tok),
+				trans_stmt.push_back(new Stmt::Assign(static_cast<TId*>(expr_tree->left->value), v,
 					static_cast<Operator*>(expr_tree->value)));
 				break;
 			}
 			}
-		}
-		else if (tok->get_tag() == Id)
-		{
-
 		}
 	}
 	}
@@ -227,7 +224,7 @@ ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream & ts)
 	case Lexer::TOperator:
 	{
 		Lexer::Operator *op = static_cast<Lexer::Operator*>(ts[pos]);
-		if (op->count_sign == Lexer::MM || Lexer::Sub || Lexer::PP)
+		if (op->count_sign == Lexer::MM || op->count_sign == Lexer::Sub || op->count_sign == Lexer::PP)
 		{
 			value = new ExprTree::TreeNode(op);
 			pos++;
@@ -236,6 +233,7 @@ ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream & ts)
 			if (Lexer::is_single_variable_countsign(op->count_sign))
 			{
 				sign = new ExprTree::TreeNode(ts[pos]);
+				std::cout << "HEY MIR";
 				sign->insert_left(value);
 				pos++;
 				break;
@@ -327,4 +325,19 @@ ExprTree::TreeNode* Simcc::Expression::find_place(ExprTree::TreeNode * n, ExprTr
 	ret = m->right;
 	m->insert_right(n);
 	return ret;
+}
+
+void Simcc::Expression::trans_expr_tree_test()
+{
+	Lexer::lex_init("Lex.sic");
+	Lexer::init_token_stream();
+	ExprTree::TreeNode *node=set_expr_tree(Lexer::token_stream);
+	
+	node->print(" ",false);
+	trans_expr_tree(node);
+	
+	for (const auto & a : trans_stmt)
+	{
+		std::cout << a->to_string()<<std::endl;
+	}
 }
