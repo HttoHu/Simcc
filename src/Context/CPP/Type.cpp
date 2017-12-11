@@ -8,7 +8,9 @@ std::map<size_t, Context::Type* >& Context::Type::type_table()
 	{ 2,_create_basic_type("char",sizeof(char),Context::CHAR) },
 	{ 3,_create_basic_type("string",sizeof(std::string),Context::STRING) },
 	{ 4,_create_basic_type("double",sizeof(double),Context::DOUBLE) },
-	{ 5,_create_basic_type("bool",sizeof(bool),Context::BOOL) } };
+	{ 5,_create_basic_type("bool",sizeof(bool),Context::BOOL) },
+	{6, _create_basic_type("ref", sizeof(size_t), Context::REF)},
+	};
 	return ret;
 };
 Context::Type * Simcc::Context::Type::find_type(const std::string & str)

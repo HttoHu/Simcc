@@ -208,3 +208,9 @@ namespace Simcc
 		};
 	}
 }
+
+namespace std
+{
+	using namespace Simcc::Lexer;
+	std::string to_string(Simcc::Lexer::CountSign count_sign);
+}

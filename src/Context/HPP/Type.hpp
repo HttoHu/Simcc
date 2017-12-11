@@ -10,6 +10,7 @@ namespace Simcc
 		enum BasicType
 		{
 			INT,LONG,DOUBLE,CHAR,BOOL,STRING,USER,
+			REF,
 		};
 		class Type
 		{
@@ -23,8 +24,9 @@ namespace Simcc
 			void add_member(size_t m);
 			void add_member(const std::string &str);
 			size_t length() { return type_size; }
-		private:
 			BasicType basic_type;
+		private:
+
 			Type() {}
 			static Type* _create_basic_type(const std::string &type_name, size_t length, BasicType bt) 
 			{

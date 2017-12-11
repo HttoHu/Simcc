@@ -5,6 +5,9 @@ size_t Simcc::Lexer::operator_priority(CountSign cs)
 {
 	switch (cs)
 	{
+	case CountSign::PP:
+	case CountSign::MM:
+		return 20;
 	case CountSign::SAdd:
 	case CountSign::SSub:
 	case CountSign::SMul:
@@ -72,4 +75,58 @@ bool Simcc::Lexer::Operator::check(Token * tok, CountSign c)
 {
 	CountSign cs= *(CountSign*)tok->get_value();
 	return !(c - cs);
+}
+
+std::string std::to_string(Simcc::Lexer::CountSign count_sign)
+{
+	switch (count_sign)
+	{
+	case SAdd:
+		return "<+=>";
+	case SSub:
+		return "<-=>";
+	case SMul:
+		return "<*=>";
+	case SDiv:
+		return "</=>";
+	case PP:
+		return "<++>";
+	case MM:
+		return "<-->";
+	case Eq:
+		return "< == >";
+	case Ne:
+		return "< != >";
+	case Ge:
+		return "< >= >";
+	case Gt:
+		return "< > >";
+	case Le:
+		return "< <= >";
+	case Lt:
+		return "< < >";
+	case Simcc::Lexer::Add:
+		return "<+>";
+	case Simcc::Lexer::Sub:
+		return "<->";
+	case Simcc::Lexer::LSB:
+		return "<[>";
+	case Simcc::Lexer::RSB:
+		return "<]>";
+	case Simcc::Lexer::Mul:
+		return "<*>";
+	case Simcc::Lexer::Lk:
+		return "<(>";
+	case Simcc::Lexer::Rk:
+		return "<)>";
+	case Simcc::Lexer::Div:
+		return "</>";
+	case Simcc::Lexer::And:
+		return "<&&>";
+	case Simcc::Lexer::Or:
+		return "<||>";
+	case Simcc::Lexer::Assign:
+		return "<=>";
+		break;
+	}
 }

@@ -1,8 +1,7 @@
 #include "../HPP/Expression.hpp"
-#include "../../Parser/HPP/BasicStmt.hpp"
 #include "../../Lexer/HPP/Lexer.hpp"
 using namespace Simcc;
-
+//#define HIDE
 //***********************************
 bool is_literal(Simcc::Lexer::Tag t)
 {
@@ -11,11 +10,11 @@ bool is_literal(Simcc::Lexer::Tag t)
 		return true;
 	return false;
 }
-std::list<Stmt::Stmt*>  Simcc::Expression::trans_stmt;
+
+std::list<Stmt*>  Simcc::Expression::trans_stmt;
+
 void Simcc::Expression::_clear_trans_stmt()
 {
-	for (auto & a : trans_stmt)
-		delete a;
 	trans_stmt.clear();
 }
 //***********************************
@@ -57,8 +56,8 @@ TokenStream Simcc::Expression::cut_brackets(const TokenStream & ts, size_t start
 		throw std::runtime_error("cut_brackets: ts[start_pos] must be a left braket");
 	}
 }
-
-Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
+#ifndef HIDE
+Action::ActionBase* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 {
 	if (expr_tree == nullptr)
 		return nullptr;
@@ -67,41 +66,17 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 	if (expr_tree->is_leaf())
 	{
 		if (expr_tree->value->get_tag() == Lexer::Id)
-			return static_cast<Lexer::TId*>(expr_tree->value);
+		{
+			Lexer::TId *tmp= static_cast<Lexer::TId*>(expr_tree->value);
+			Action::ActionBase *ret = new Action::ActionBase(tmp,Action::SINGLE);
+			return ret;
+		}
 		else if (is_literal(expr_tree->value->get_tag()))
 		{
-
-			Context::Type *lit_type;
-			switch (expr_tree->value->get_tag())
-			{
-			case Lexer::TLiteralInt:
-				lit_type = Context::Type::find_type("int");
-				break;
-			case Lexer::TLiteralDouble:
-				lit_type = Context::Type::find_type("double");
-				break;
-			case Lexer::TLiteralLong:
-				lit_type = Context::Type::find_type("long");
-				break;
-			case Lexer::TLiteralString:
-				lit_type = Context::Type::find_type("string");
-				break;
-			case Lexer::TLiteralChar:
-				lit_type = Context::Type::find_type("char");
-				break;
-			case Lexer::True:
-				lit_type = Context::Type::find_type("bool");
-				break;
-			case Lexer::False:
-				lit_type = Context::Type::find_type("bool");
-				break;
-			default:
-				throw std::runtime_error("unknow type");
-				break;
-			}
 			Lexer::TId* tmp = Lexer::TId::create_tmp_id();
-			trans_stmt.push_front(new Stmt::CreateVariable(lit_type, tmp, expr_tree->value));
-			return tmp;
+			Action::ActionBase *bs = new Action::ActionBase(tmp,Action::ActionType::SINGLE);
+			trans_stmt.push_front(new CreateVar(bs, expr_tree->value));
+			return bs;
 		}
 		throw std::runtime_error("bad expr");
 	}
@@ -117,77 +92,40 @@ Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 		auto a = expr_tree->left->value;
 		if (a->get_tag() != Id)
 			throw std::runtime_error("bad expr3");
-		trans_stmt.push_back(new Stmt::SingleOS(static_cast<TId*>(a), static_cast<Operator*>(expr_tree->value)));
-		return static_cast<TId*>(a);
+		Action::ActionType at = (cs == PP ? Action::ActionType::FPP : Action::ActionType::FMM);
+		Action::ActionBase *tmp = new Action::ActionBase(static_cast<Lexer::TId*>(a), at);
+		return tmp;
 	}
 	case Sub:
 	case Add:
 	case Mul:
 	case Div:
 	{
-		TId *left_op = trans_expr_tree(expr_tree->left);
-		TId *right_op = trans_expr_tree(expr_tree->right);
+		Action::ActionBase *left_op = trans_expr_tree(expr_tree->left);
+		Action::ActionBase *right_op = trans_expr_tree(expr_tree->right);
 		if (left_op == nullptr || right_op == nullptr)
 			throw std::runtime_error("bad expr");
-		TId *tmp = TId::create_tmp_id();
+		TId *tmp_id = TId::create_tmp_id();
 
-		/* 17 12-5
-		* -remember to add the stmt which creates the tmp variable. In present I am lack of tmp's type info, since I can not get
-		* left_op right_op 's type info. ## and I haven't build a Symbol table yet. <-_-!>
-		* Htto */
+		Action::ActionBase *tmp = new Action::ActionBase(tmp_id, Action::ActionType::SINGLE);
 
-		trans_stmt.push_back(new Stmt::TOS(static_cast<TId*>(tmp), static_cast<TId*>(left_op), static_cast<TId*>(right_op),
-			static_cast<Operator*>(expr_tree->value)));
+		trans_stmt.push_back(new TOPCV (tmp,left_op,cs,right_op));
 		return tmp;
 	}
+	// assign like a=--b 
 	case SAdd:
 	case SSub:
 	case SMul:
 	case SDiv:
-		// assign like a=--b 
 	case Assign:
 	{
-		Token *tok = expr_tree->right->value;
-		if (tok->get_tag() == TOperator)
-		{
-			CountSign cs = *(CountSign*)tok->get_value();
-			switch (cs)
-			{
-			case MM:
-			case PP:
-			case Sub:
-				if (expr_tree->right->have_single_son())
-				{
-					std::cout << "I Hate myself";
-					// a = -b
-					/*
-					a is left 
-					= is op
-					- is action op
-					b is right->left->value 
-					*/
-					//AssignWithAction(Lexer::TId *vid, Lexer::Operator *op, Lexer::Operator * act, Lexer::TId *rid) :action_type(act),
-					trans_stmt.push_back(
-						new Stmt::AssignWithAction(static_cast<TId*>(expr_tree->left->value),
-							static_cast<Operator*>(expr_tree->value),
-							static_cast<Operator*>(expr_tree->right->value),
-							static_cast<TId*>(expr_tree->right->left->value))  );
-					return static_cast<TId*>(expr_tree->left->value);
-				}
-				goto oc;
-			default:
-			{
-			oc:TId  *v = trans_expr_tree(expr_tree->right);
-				trans_stmt.push_back(new Stmt::Assign(static_cast<TId*>(expr_tree->left->value), v,
-					static_cast<Operator*>(expr_tree->value)));
-				break;
-			}
-			}
-		}
+		Action::ActionBase *left=trans_expr_tree(expr_tree->left), *right=trans_expr_tree(expr_tree->right);
+		trans_stmt.push_back(new AssignStmt(left, cs, right));
+		return left;
 	}
 	}
 }
-
+#endif
 ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream & ts)
 {
 	ExprTree::TreeNode *sign = nullptr;
@@ -257,7 +195,7 @@ ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream & ts)
 	}
 
 	expr_tree = current = sign;
-	for (int i = pos; i < ts.size(); i++)
+	for (size_t i = pos; i < ts.size(); i++)
 	{
 		if (ts[i]->get_tag() == Lexer::Endl)
 		{
