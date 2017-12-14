@@ -52,9 +52,40 @@ Simcc::Context::Type::Type(const std::string & type_name, const std::vector<size
 std::string Simcc::Context::Type::to_string() const
 {
 	std::string ret;
-	for (const auto& a : members)
+	if (basic_type == USER)
 	{
-		switch (a->basic_type)
+		for (const auto& a : members)
+		{
+			switch (a->basic_type)
+			{
+			case BasicType::INT:
+				ret += "int\n";
+				break;
+			case BasicType::DOUBLE:
+				ret += "double\n";
+				break;
+			case BasicType::CHAR:
+				ret += "char\n";
+				break;
+			case BasicType::BOOL:
+				ret += "bool\n";
+				break;
+			case BasicType::STRING:
+				ret += "string\n";
+				break;
+			case BasicType::LONG:
+				ret += "long\n";
+				break;
+			case BasicType::USER:
+				ret += a->to_string() + "\n";
+				break;
+			}
+
+		}
+	}
+	else
+	{
+		switch (basic_type)
 		{
 		case BasicType::INT:
 			ret += "int\n";
@@ -74,11 +105,7 @@ std::string Simcc::Context::Type::to_string() const
 		case BasicType::LONG:
 			ret += "long\n";
 			break;
-		case BasicType::USER:
-			ret += a->to_string() + "\n";
-			break;
 		}
-
 	}
 	return ret;
 }

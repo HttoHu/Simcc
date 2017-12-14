@@ -21,7 +21,7 @@ namespace Simcc
 		bool is_single_variable_countsign(CountSign cs);
 		enum Tag
 		{
-			SInt, SDouble, SLong, SChar, SString, SBool,SVAR,
+			SInt, SDouble, SLong, SChar, SString, SBool,SVAR,SREF,
 			TLiteralInt, TLiteralLong, TLiteralDouble, TLiteralChar, TLiteralString,
 			TWhile, TFor, TBreak, TContinue,
 			TIf, TSwitch, TElse, TElif, TCase, TGoto,

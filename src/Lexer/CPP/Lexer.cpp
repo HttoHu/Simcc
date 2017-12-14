@@ -1,8 +1,7 @@
 #include "../HPP/Lexer.hpp"
-
+using namespace Simcc::Environment;
 std::string Simcc::Lexer::content;
 size_t  Simcc::Lexer::index = 0;
-TokenStream Simcc::Lexer::token_stream;
 //============================
 using namespace Simcc::Lexer;
 bool _is_operator(char ch)
@@ -167,6 +166,7 @@ void Simcc::Lexer::read_number()
 }
 void Simcc::Lexer::read_word()
 {
+
 	std::string word;
 	while ((isalnum(content[index]) || content[index] == '_') && index < content.size())
 	{
@@ -189,6 +189,7 @@ void Simcc::Lexer::read_word()
 }
 void Simcc::Lexer::read_symbol()
 {
+	using namespace Environment;
 	std::string tmp(1, content[index]);
 	if (index < content.size() - 1 && _is_operator(content[index + 1]))
 	{

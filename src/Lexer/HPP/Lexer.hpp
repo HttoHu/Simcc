@@ -8,6 +8,10 @@
 typedef std::vector<Simcc::Lexer::Token*> TokenStream;
 namespace Simcc
 {
+	namespace Environment
+	{
+		extern TokenStream token_stream;
+	}
 	namespace Lexer
 	{
 		void read_string();
@@ -19,7 +23,7 @@ namespace Simcc
 		void init_token_stream();
 		void lex_init(const std::string file_name);
 		//======================
-		extern TokenStream token_stream;
+
 		extern std::string content;
 		extern size_t index;
 	}
