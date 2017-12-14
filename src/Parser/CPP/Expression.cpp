@@ -24,27 +24,26 @@ Lexer::TId* Simcc::Expression::expr()
 	size_t length = 0;
 	Lexer::Tag tag = Environment::token_stream[Environment::token_stream_index + length]->get_tag();
 	// ID , operator 
-	while (is_literal(Environment::token_stream[Environment::token_stream_index+length]->get_tag())
-		|| tag == Lexer::TOperator || tag == Lexer::Id|| tag==Lexer::Lk|| tag== Lexer::Rk)
+	while (is_literal(Environment::token_stream[Environment::token_stream_index + length]->get_tag())
+		|| tag == Lexer::TOperator || tag == Lexer::Id || tag == Lexer::Lk || tag == Lexer::Rk)
 	{
 		length++;
-		tag= Environment::token_stream[Environment::token_stream_index + length]->get_tag();
+		tag = Environment::token_stream[Environment::token_stream_index + length]->get_tag();
 	}
 	TokenStream t = sub_token_stream(Environment::token_stream, Environment::token_stream_index, length);
+	if (t.size() == 1)
+	{
+
+	}
 	auto expr_root = set_expr_tree(t);
 	auto ret = trans_expr_tree(expr_root);
-	auto c = ret->content;
-	if (c->get_tag() != Lexer::Id)
-	{
-		throw std::runtime_error("Lexer::TId* Simcc::Expression::expr()");
-	}
 	Environment::token_stream_index += length;
 	for (const auto &a : trans_stmt)
 	{
 		Environment::stmt_stream.push_back(a);
 	}
 	trans_stmt.clear();
-	return static_cast<Lexer::TId*>(c);
+	return ret;
 }
 //***********************************
 TokenStream Simcc::Expression::sub_token_stream(const TokenStream & ts, size_t start_pos, size_t length)
@@ -86,7 +85,7 @@ TokenStream Simcc::Expression::cut_brackets(const TokenStream & ts, size_t start
 	}
 }
 #ifndef HIDE
-Action::ActionBase* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
+Lexer::TId* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr_tree)
 {
 	if (expr_tree == nullptr)
 		return nullptr;
@@ -96,16 +95,13 @@ Action::ActionBase* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr
 	{
 		if (expr_tree->value->get_tag() == Lexer::Id)
 		{
-			Lexer::TId *tmp= static_cast<Lexer::TId*>(expr_tree->value);
-			Action::ActionBase *ret = new Action::ActionBase(tmp,Action::SINGLE);
-			return ret;
+			return static_cast<Lexer::TId*>(expr_tree->value);
 		}
 		else if (is_literal(expr_tree->value->get_tag()))
 		{
 			Lexer::TId* tmp = Lexer::TId::create_tmp_id();
-			Action::ActionBase *bs = new Action::ActionBase(tmp,Action::ActionType::SINGLE);
-			trans_stmt.push_front(new CreateVar(bs->content, expr_tree->value));
-			return bs;
+			trans_stmt.push_front(new CreateVar(tmp, expr_tree->value));
+			return tmp;
 		}
 		throw std::runtime_error("bad expr");
 	}
@@ -115,31 +111,18 @@ Action::ActionBase* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr
 	Lexer::CountSign cs = *(Lexer::CountSign*)expr_tree->value->get_value();
 	switch (cs)
 	{
-	case PP:
-	case MM:
-	{
-		auto a = expr_tree->left->value;
-		if (a->get_tag() != Id)
-			throw std::runtime_error("bad expr3");
-		Action::ActionType at = (cs == PP ? Action::ActionType::FPP : Action::ActionType::FMM);
-		Action::ActionBase *tmp = new Action::ActionBase(static_cast<Lexer::TId*>(a), at);
-		return tmp;
-	}
 	case Sub:
 	case Add:
 	case Mul:
 	case Div:
 	{
-		Action::ActionBase *left_op = trans_expr_tree(expr_tree->left);
-		Action::ActionBase *right_op = trans_expr_tree(expr_tree->right);
+		Lexer::TId *left_op = trans_expr_tree(expr_tree->left);
+		Lexer::TId*right_op = trans_expr_tree(expr_tree->right);
 		if (left_op == nullptr || right_op == nullptr)
 			throw std::runtime_error("bad expr");
 		TId *tmp_id = TId::create_tmp_id();
-
-		Action::ActionBase *tmp = new Action::ActionBase(tmp_id, Action::ActionType::SINGLE);
-
-		trans_stmt.push_back(new TOPCV (tmp_id,left_op,cs,right_op));
-		return tmp;
+		trans_stmt.push_back(new TOPCV(tmp_id, left_op, cs, right_op));
+		return tmp_id;
 	}
 	// assign like a=--b 
 	case SAdd:
@@ -148,15 +131,19 @@ Action::ActionBase* Simcc::Expression::trans_expr_tree(ExprTree::TreeNode * expr
 	case SDiv:
 	case Assign:
 	{
-		Action::ActionBase *left=trans_expr_tree(expr_tree->left), *right=trans_expr_tree(expr_tree->right);
+		Lexer::TId *left = trans_expr_tree(expr_tree->left), *right = trans_expr_tree(expr_tree->right);
 		trans_stmt.push_back(new AssignStmt(left, cs, right));
 		return left;
 	}
 	}
 }
 #endif
-ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream &ts) 
+ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream &ts)
 {
+	if (ts.size() == 1)
+	{
+		return new ExprTree::TreeNode(ts.front());
+	}
 	ExprTree::TreeNode *sign = nullptr;
 	ExprTree::TreeNode *value = nullptr;
 	bool is_first = true;
@@ -200,7 +187,6 @@ ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream &ts)
 			if (Lexer::is_single_variable_countsign(op->count_sign))
 			{
 				sign = new ExprTree::TreeNode(ts[pos]);
-				std::cout << "HEY MIR";
 				sign->insert_left(value);
 				pos++;
 				break;
@@ -215,6 +201,7 @@ ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream &ts)
 			throw std::runtime_error("bad expr");
 	}
 	default:
+	{
 		value = new ExprTree::TreeNode(ts[pos]);
 		pos++;
 		sign = new ExprTree::TreeNode(ts[pos]);
@@ -222,7 +209,8 @@ ExprTree::TreeNode * Simcc::Expression::set_expr_tree(const TokenStream &ts)
 		sign->insert_left(value);
 		break;
 	}
-
+	}
+	// preprocess (expr)...
 	expr_tree = current = sign;
 	for (size_t i = pos; i < ts.size(); i++)
 	{
@@ -299,13 +287,13 @@ void Simcc::Expression::trans_expr_tree_test()
 {
 	Lexer::lex_init("Lex.sic");
 	Lexer::init_token_stream();
-	ExprTree::TreeNode *node=set_expr_tree(Environment::token_stream);
-	
-	node->print(" ",false);
+	ExprTree::TreeNode *node = set_expr_tree(Environment::token_stream);
+
+	node->print(" ", false);
 	trans_expr_tree(node);
-	
+
 	for (const auto & a : trans_stmt)
 	{
-		std::cout << a->to_string()<<std::endl;
+		std::cout << a->to_string() << std::endl;
 	}
 }

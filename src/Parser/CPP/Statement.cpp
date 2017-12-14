@@ -1,5 +1,6 @@
 #include "..\HPP\Statement.hpp"
 #include "../../Context/HPP/Environment.hpp"
+#include "../../Lexer/HPP/Lexer.hpp"
 #include "../HPP/Expression.hpp"
 using namespace Simcc;
 void Simcc::Parser::trans_statement()
@@ -22,11 +23,36 @@ s:	Environment::next_token();
 	}
 	else
 	{
-		Context::Type *t = Context::find_id_info(static_cast<Lexer::TId*>(ftoken)).type;
-		std::cout << t->to_string();
+		Context::Type *t = nullptr;
+		switch (ftoken->get_tag())
+		{
+		case Lexer::SInt:
+			t = Context::Type::find_type("int");
+			break;
+		case Lexer::SBool:
+			t = Context::Type::find_type("bool");
+			break;
+		case Lexer::SString:
+			t = Context::Type::find_type("string");
+			break;
+		case Lexer::SChar:
+			t = Context::Type::find_type("char");
+			break;
+		case Lexer::SDouble:
+			t = Context::Type::find_type("double");
+			break;
+		case Lexer::SREF:
+			t = Context::Type::find_type("ref");
+			break;
+		case Lexer::SLong:
+			t = Context::Type::find_type("long");
+			break;
+		default:
+			t = Context::find_id_info(static_cast<Lexer::TId*>(ftoken)).type;
+			break;
+		}
 		Environment::stmt_stream.push_back(new CreateVar(t,var_name, v));
 	}
-	Environment::next_token();
 	if (Environment::expect(Lexer::Comma))
 		goto s;
 	else

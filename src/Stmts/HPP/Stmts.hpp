@@ -1,5 +1,4 @@
 #pragma once
-#include "VarUnit.hpp"
 #include "../../Context/HPP/SymbolTable.hpp"
 namespace Simcc
 {
@@ -19,16 +18,16 @@ namespace Simcc
 	class TOP :public Stmt
 	{
 	public:
-		TOP(Action::ActionBase *right, Action::ActionBase *l1, Lexer::CountSign cs, Action::ActionBase *l2)
-			:right_v(right), oper1(l1), top_type(cs),oper2(l2) {}
+		TOP(Lexer::TId *right, Lexer::TId *p1, Lexer::CountSign cs, Lexer::TId *p2)
+			:right_v(right), oper1(p1), top_type(cs),oper2(p2) {}
 		std::string to_string()const override
 		{
 			return right_v->to_string() + "=" + oper1->to_string()+std::to_string(top_type)+oper2->to_string();
 		}
 	private:
-		Action::ActionBase *right_v;
-		Action::ActionBase *oper1;
-		Action::ActionBase *oper2;
+		Lexer::TId *right_v;
+		Lexer::TId *oper1;
+		Lexer::TId *oper2;
 		Lexer::CountSign top_type;
 	};
 	class CreateVar :public Stmt
@@ -43,6 +42,10 @@ namespace Simcc
 			id = static_cast<Lexer::TId*>(n);
 			switch (v->get_tag())
 			{
+			case Lexer::TLiteralInt:
+				type = Context::Type::find_type("int");
+				Context::insert_id_info(id, type);
+				break;
 			case Lexer::TLiteralChar:
 				type = Context::Type::find_type("char");
 				Context::insert_id_info(id, type);
@@ -86,7 +89,7 @@ namespace Simcc
 		}
 		std::string to_string()const override
 		{
-			return "<var> "+id->to_string() + "=" + init->to_string();
+			return "<"+type->to_string()+">"+id->to_string() + "=" + init->to_string();
 		}
 	private:
 		Context::Type *type;
@@ -96,14 +99,17 @@ namespace Simcc
 	class TOPCV:public Stmt
 	{
 	public:
-		TOPCV(Lexer::Token *right, Action::ActionBase *l1, Lexer::CountSign cs, Action::ActionBase *l2)
+		TOPCV(Lexer::Token *right, Lexer::TId *l1, Lexer::CountSign cs, Lexer::TId *l2)
 			: oper1(l1), top_type(cs), oper2(l2) {
 			if (right->get_tag() != Lexer::Id)
 			{
 				throw std::runtime_error("TOPCV");
-				right_v = static_cast<Lexer::TId*>( right);
+
 				
 			}
+			right_v = static_cast<Lexer::TId*>(right);
+			auto type = Context::find_id_info(static_cast<Lexer::TId*>(l1)).type;
+			Context::insert_id_info(right_v, type);
 		}
 		std::string to_string()const override
 		{
@@ -111,21 +117,21 @@ namespace Simcc
 		}
 	private:
 		Lexer::TId *right_v;
-		Action::ActionBase *oper1;
-		Action::ActionBase *oper2;
+		Lexer::TId *oper1;
+		Lexer::TId *oper2;
 		Lexer::CountSign top_type;
 	};
 	class AssignStmt :public Stmt
 	{
 	public:
-		AssignStmt(Action::ActionBase *l, Lexer::CountSign o, Action::ActionBase *r) :left(l), op(o), right(r) {}
+		AssignStmt(Lexer::TId *l, Lexer::CountSign o, Lexer::TId *r) :left(l), op(o), right(r) {}
 		std::string to_string()const override
 		{
 			return left->to_string() + std::to_string(op) + right->to_string();
 		}
 	private:
-		Action::ActionBase *left;
+		Lexer::TId *left;
 		Lexer::CountSign op;
-		Action::ActionBase *right;
+		Lexer::TId *right;
 	};
 }
