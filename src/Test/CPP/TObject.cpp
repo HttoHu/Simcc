@@ -246,7 +246,7 @@ Simcc::Runtime::Object* Simcc::Runtime::Basic::Operator(Object * op, CountSign c
 			ret = new Basic(get_value<int64_t>() * op->get_value<int64_t>());
 			break;
 		case 2:
-			ret = new Basic(get_value<char>() * op->get_value<char>()));
+			ret = new Basic(get_value<char>() * op->get_value<char>());
 			break;
 		case 3:
 			throw std::runtime_error("type not matched!");

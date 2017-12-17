@@ -57,11 +57,70 @@ namespace Simcc
 					break;
 				}
 			}
+		/*	ObjectBase &operator=(const ObjectBase &obj)
+			{
+				switch (v.type)
+				{
+				case Int:
+					*static_cast<int*>(data) = *(int32_t*)(v.data);
+					type = Int;
+					return *this;;
+				case Double:
+					*static_cast<double*>(data) = *(double*)(v.data);
+					type = Double;
+					return *this;;
+				case Long:
+					*static_cast<int64_t*>(data) = *(int64_t*)(v.data);
+					type = Long;
+					return *this;
+				case Char:
+					*static_cast<char*>(data) = *(char*)(v.data);
+					type = Char;
+					return *this;;
+				case String:
+					*static_cast<std::string*>(data) = *(std::string*)(v.data);
+					type = String;
+					return *this;
+				case Bool:
+					*static_cast<bool*>(data) = *(bool*)(v.data);
+					type = Bool;
+					return *this;;
+				default:
+					std::cout << "ERROR:" << v.type << "  ";
+					throw std::runtime_error("Simcc::Runtime::ObjectBase(const ObjectBase&) 1");
+				}
+			}*/
+			void delete_data()
+			{
+			switch (type)
+			 {
+			case Int:
+				delete static_cast<int*>(data);
+				return;
+			case Double:
+				delete static_cast<double*>(data);
+				return;
+			case Long:
+				delete static_cast<int64_t*>(data);
+				return;
+			case Char:
+				delete static_cast<char*>(data);
+				return;
+			case String:
+				delete static_cast<std::string*>(data);
+				return;
+			case Bool:
+				delete static_cast<bool*>(data);
+				return;
+			default:
+				throw std::runtime_error("cannot delete the class ObjectBase's value!");
+			}
+			}
 			virtual ObjectBase& operator=(const ObjectBase&v)
 			{
 				if (v.data == data)
 					return *this;
-				delete data;
+				delete_data();
 				switch (v.type)
 				{
 				case Int:
@@ -138,7 +197,7 @@ namespace Simcc
 			}
 			virtual ~ObjectBase() {
 				if (data != nullptr)
-					delete data;
+					delete_data();
 			}
 			template <typename T>
 			T& get_value()const
