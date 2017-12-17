@@ -36,20 +36,7 @@ void Simcc::Lexer::TId::delete_id_table()
 	id_table.clear();
 }
 
-TId * Simcc::Lexer::TId::create_tmp_id()
-{
-	static size_t tmp_index = 0;
-	TId* ret;
-	ret = new TId("tmp" + std::to_string(tmp_index++));
-	return ret;
-}
-
 std::string Simcc::Lexer::TId::to_string() const
 {
 	return "<id:" + id_name + ">";
-}
-
-void * Simcc::Lexer::TId::get_value()
-{
-	return &id_name;
 }

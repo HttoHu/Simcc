@@ -1,50 +1,5 @@
 #include "../HPP/Token.hpp"
 using namespace Simcc::Lexer;
-
-size_t Simcc::Lexer::operator_priority(CountSign cs)
-{
-	switch (cs)
-	{
-	case CountSign::PP:
-	case CountSign::MM:
-		return 20;
-	case CountSign::SAdd:
-	case CountSign::SSub:
-	case CountSign::SMul:
-	case CountSign::SDiv:
-	case CountSign::Assign:
-		return 8;
-	case CountSign::Ne:
-	case CountSign::Eq:
-	case CountSign::Ge:
-	case CountSign::Gt:
-	case CountSign::Le:
-	case CountSign::Lt:
-		return 9;
-	case CountSign::Sub:
-	case CountSign::Add:
-		return 10;
-	case CountSign::Div:
-	case CountSign::Mul:
-		return 11;
-	default:
-		throw std::runtime_error("unknown operator!");
-	}
-}
-
-bool Simcc::Lexer::is_single_variable_countsign(CountSign cs)
-{
-	switch (cs)
-	{
-	case Simcc::Lexer::Not:
-	case Simcc::Lexer::MM:
-	case Simcc::Lexer::PP:
-		return true;
-	default:
-		return false;
-	}
-}
-
 std::unordered_map<std::string, Tag>& Simcc::Lexer::keyword_map()
 {
 	static std::unordered_map<std::string, Tag> ret{
@@ -54,79 +9,21 @@ std::unordered_map<std::string, Tag>& Simcc::Lexer::keyword_map()
 		{ "while",Tag::TWhile },{ "for",Tag::TFor },{ "continue",Tag::TContinue },{ "break",Tag::TBreak },
 		{ "case",Tag::TCase },{ "break",Tag::TBreak },{ "goto",Tag::TBreak },
 		{ "switch",Tag::TSwitch },{ "if",Tag::TIf },{ "else",Tag::TElse } ,{ "elif",Tag::TElif },
-		{"return",Tag::TReturn},{"system",Tag::System},{"var",Tag::SVAR},
+		{"return",Tag::TReturn},{"system",Tag::System}
 	};
 	return ret;
 }
 
-std::unordered_map<std::string,CountSign>& Simcc::Lexer::symbol_map()
+std::unordered_map<std::string, Tag>& Simcc::Lexer::symbol_map()
 {
-	static std::unordered_map<std::string, CountSign> ret{
-		{"+=",CountSign::SAdd},{"-=",SSub},{"*=",SMul}, {"/=",SDiv},
-		{ "+",CountSign::Add },{ "-",CountSign::Sub },{ "*",CountSign::Mul },{ "/",CountSign::Div },
-		{ "&&",CountSign::And },{ "||",CountSign::Or },{ "=",CountSign::Assign },{ ">",CountSign::Gt },{ "<",CountSign::Lt },
-		{ ">=",CountSign::Ge },{ "<=",CountSign::Le },{ "==",CountSign::Eq },{ "!=",CountSign::Ne },
-		{"++",CountSign::PP},{"--",CountSign::MM},
+	static std::unordered_map<std::string, Tag> ret{
+		{ "+",Tag::Add },{ "-",Tag::Sub },{ "*",Tag::Mul },{ "/",Tag::Div },
+		{ "&&",Tag::And },{ "||",Tag::Or },{ "[",Tag::LSB },{ "]",Tag::RSB },
+		{ "(",Tag::Lk },{ ")",Tag::Rk },
+		{ "::",Tag::Place },{ "=",Tag::Assign },{ ">",Tag::Gt },{ "<",Tag::Lt },
+		{ ">=",Tag::Ge },{ "<=",Tag::Le },{ "==",Tag::Eq },{ "!=",Tag::Ne },
+		{",",Tag::Comma},{";",Tag::EndStmt},{".",Tag::MemberPoint},
+		{":",Tag::TTag},{"++",Tag::PP},{"--",Tag::MM},{"#",Tag::Function}
 	};
 	return ret;
-}
-
-bool Simcc::Lexer::Operator::check(Token * tok, CountSign c)
-{
-	CountSign cs= *(CountSign*)tok->get_value();
-	return !(c - cs);
-}
-
-std::string std::to_string(Simcc::Lexer::CountSign count_sign)
-{
-	switch (count_sign)
-	{
-	case SAdd:
-		return "<+=>";
-	case SSub:
-		return "<-=>";
-	case SMul:
-		return "<*=>";
-	case SDiv:
-		return "</=>";
-	case PP:
-		return "<++>";
-	case MM:
-		return "<-->";
-	case Eq:
-		return "< == >";
-	case Ne:
-		return "< != >";
-	case Ge:
-		return "< >= >";
-	case Gt:
-		return "< > >";
-	case Le:
-		return "< <= >";
-	case Lt:
-		return "< < >";
-	case Simcc::Lexer::Add:
-		return "<+>";
-	case Simcc::Lexer::Sub:
-		return "<->";
-	case Simcc::Lexer::LSB:
-		return "<[>";
-	case Simcc::Lexer::RSB:
-		return "<]>";
-	case Simcc::Lexer::Mul:
-		return "<*>";
-	case Simcc::Lexer::Lk:
-		return "<(>";
-	case Simcc::Lexer::Rk:
-		return "<)>";
-	case Simcc::Lexer::Div:
-		return "</>";
-	case Simcc::Lexer::And:
-		return "<&&>";
-	case Simcc::Lexer::Or:
-		return "<||>";
-	case Simcc::Lexer::Assign:
-		return "<=>";
-		break;
-	}
 }

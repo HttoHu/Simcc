@@ -7,44 +7,34 @@ namespace Simcc
 {
 	namespace Lexer
 	{
-
-		enum CountSign
-		{
-			Assign, 
-			Ge, Gt, Le, Lt, Ne, Eq,
-			Add, Sub, Mul, Div,
-			And, Or, Not,
-		    MM,PP,
-			SAdd,SMul,SSub,SDiv,
-		};
-		size_t operator_priority(CountSign cs);
-		bool is_single_variable_countsign(CountSign cs);
 		enum Tag
 		{
-			SInt, SDouble, SLong, SChar, SString, SBool,SVAR,SREF,
+			SInt, SDouble, SLong, SChar, SString, SBool,
 			TLiteralInt, TLiteralLong, TLiteralDouble, TLiteralChar, TLiteralString,
 			TWhile, TFor, TBreak, TContinue,
 			TIf, TSwitch, TElse, TElif, TCase, TGoto,
 			/*else if*/
-			TOperator,
 			TClass, TNamespace, TPublic, TPrivate,
 			TReturn,
 			Symbol,
-			Comma,// ,
-			Place, //::
-			Lk, Rk,// ( and )
-			BlockBegin, BlockEnd, // { }
-			LSB, RSB,// [ ]
 			Id,
+			Assign, Ge, Gt, Le, Lt, Ne, Eq,
+			Add, Sub, Mul, Div, PP, MM,
 			True, False,
 			TTag,
 			MemberPoint, Function,
+			Place, //::
+			And, Or, // && ,||
+			Lk, Rk,// ( and )
+			BlockBegin, BlockEnd, // { }
+			LSB, RSB,// [ ]
+			Comma,// ,
 			Endl,
 			EndStmt,
 			System,
 		};
 		std::unordered_map<std::string, Tag>& keyword_map();
-		std::unordered_map<std::string, CountSign>& symbol_map();
+		std::unordered_map<std::string, Tag>& symbol_map();
 		class Token
 		{
 		public:
@@ -75,24 +65,31 @@ namespace Simcc
 					return "<double>";
 				case SChar:
 					return "<char>";
-				case EndStmt:
-					return "<;>";
-				case BlockBegin:
-					return "{";
-				case BlockEnd:
-					return "}";
-				case Comma:
-					return ",";
-				case Lk:
-					return "(";
-				case Rk:
-					return ")";
+
 				case Function:
 					return "<function>";
 				case TTag:
 					return "<Tag>";
+				case PP:
+					return "<++>";
+				case MM:
+					return "<-->";
 				case Endl:
 					return "<endline>\n";
+				case Assign:
+					return "< = >";
+				case Eq:
+					return "< == >";
+				case Ne:
+					return "< != >";
+				case Ge:
+					return "< >= >";
+				case Gt:
+					return "< > >";
+				case Le:
+					return "< <= >";
+				case Lt:
+					return "< < >";
 				case Simcc::Lexer::TLiteralInt:
 					return "<tint>";
 				case Simcc::Lexer::TLiteralLong:
@@ -119,8 +116,36 @@ namespace Simcc
 					return "<return>";
 				case Simcc::Lexer::Symbol:
 					return "<symbol>";
+				case Simcc::Lexer::Add:
+					return "<+>";
+				case Simcc::Lexer::Sub:
+					return "<->";
+				case Simcc::Lexer::Mul:
+					return "<*>";
+				case Simcc::Lexer::Div:
+					return "</>";
+				case Simcc::Lexer::And:
+					return "<&&>";
+				case Simcc::Lexer::Or:
+					return "<||>";
+				case Simcc::Lexer::Lk:
+					return "<(>";
+				case Simcc::Lexer::Rk:
+					return "<)>";
+				case Simcc::Lexer::BlockBegin:
+					return "<{>";
+				case Simcc::Lexer::BlockEnd:
+					return "<}>";
+				case Simcc::Lexer::LSB:
+					return "<[>";
+				case Simcc::Lexer::RSB:
+					return "<]>";
 				case Simcc::Lexer::MemberPoint:
 					return "<.>";
+				case Simcc::Lexer::Comma:
+					return "<,>";
+				case Simcc::Lexer::EndStmt:
+					return "<;>";
 				default:
 					return "<unknown>";
 					break;
@@ -139,78 +164,5 @@ namespace Simcc
 		private:
 			Tag tag;
 		};
-		class Operator:public Token
-		{
-		public:
-			static bool check(Token *tok, CountSign c);
-		    Operator(CountSign cs):Token(TOperator), count_sign(cs){}
-			std::string to_string()const override
-			{
-				switch (count_sign)
-				{
-				case SAdd:
-					return "<+=>";
-				case SSub:
-					return "<-=>";
-				case SMul:
-					return "<*=>";
-				case SDiv:
-					return "</=>";
-				case PP:
-					return "<++>";
-				case MM:
-					return "<-->";
-				case Eq:
-					return "< == >";
-				case Ne:
-					return "< != >";
-				case Ge:
-					return "< >= >";
-				case Gt:
-					return "< > >";
-				case Le:
-					return "< <= >";
-				case Lt:
-					return "< < >";
-				case Simcc::Lexer::Add:
-					return "<+>";
-				case Simcc::Lexer::Sub:
-					return "<->";
-				case Simcc::Lexer::LSB:
-					return "<[>";
-				case Simcc::Lexer::RSB:
-					return "<]>";
-				case Simcc::Lexer::Mul:
-					return "<*>";
-				case Simcc::Lexer::Lk:
-					return "<(>";
-				case Simcc::Lexer::Rk:
-					return "<)>";
-				case Simcc::Lexer::Div:
-					return "</>";
-				case Simcc::Lexer::And:
-					return "<&&>";
-				case Simcc::Lexer::Or:
-					return "<||>";
-				case Simcc::Lexer::Assign:
-					return "<=>";
-					break;
-				}
-				return "<error>";
-			}
-			void*get_value()override
-			{
-				return (void*)&count_sign;
-			}
-			CountSign count_sign;
-		private:
-
-		};
 	}
-}
-
-namespace std
-{
-	using namespace Simcc::Lexer;
-	std::string to_string(Simcc::Lexer::CountSign count_sign);
 }

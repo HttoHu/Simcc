@@ -1,8 +1,4 @@
 #include "../HPP/Lexer.hpp"
-using namespace Simcc::Environment;
-std::string Simcc::Lexer::content;
-size_t  Simcc::Lexer::index = 0;
-//============================
 using namespace Simcc::Lexer;
 bool _is_operator(char ch)
 {
@@ -15,7 +11,7 @@ bool _is_operator(char ch)
 		return false;
 	}
 }
-void Simcc::Lexer::read_string() {
+void Lexer::read_string() {
 	std::string value;
 	if (content[index] == '\"')
 		index++;
@@ -58,7 +54,7 @@ void Simcc::Lexer::read_string() {
 	index++;
 	token_stream.push_back(new Simcc::Lexer::VString(value));
 }
-void Simcc::Lexer::read_char()
+void Simcc::Lexer::Lexer::read_char()
 {
 	char ch = 0;
 	if (content[index++] != '\'')
@@ -116,7 +112,7 @@ void Simcc::Lexer::read_char()
 		}
 	}
 }
-void Simcc::Lexer::read_number()
+void Simcc::Lexer::Lexer::read_number()
 {
 	int64_t intPart = 0;
 	bool isN = content[index] == '-';
@@ -130,7 +126,7 @@ void Simcc::Lexer::read_number()
 		if (token_stream.back()->get_tag() == TLiteralInt || token_stream.back()->get_tag() == TLiteralDouble ||
 			token_stream.back()->get_tag() == TLiteralLong || token_stream.back()->get_tag() == TLiteralChar||
 			token_stream.back()->get_tag() ==Id)
-			token_stream.push_back(new Operator(Add));
+			token_stream.push_back(new Token(Add));
 		index++;
 	}
 	while (isdigit(content[index]))
@@ -164,9 +160,8 @@ void Simcc::Lexer::read_number()
 		v = -v;
 	token_stream.push_back(new VDouble(v));
 }
-void Simcc::Lexer::read_word()
+void Simcc::Lexer::Lexer::read_word()
 {
-
 	std::string word;
 	while ((isalnum(content[index]) || content[index] == '_') && index < content.size())
 	{
@@ -187,9 +182,8 @@ void Simcc::Lexer::read_word()
 	token_stream.push_back(new Token(result->second));
 
 }
-void Simcc::Lexer::read_symbol()
+void Simcc::Lexer::Lexer::read_symbol()
 {
-	using namespace Environment;
 	std::string tmp(1, content[index]);
 	if (index < content.size() - 1 && _is_operator(content[index + 1]))
 	{
@@ -198,13 +192,13 @@ void Simcc::Lexer::read_symbol()
 	auto result = symbol_map().find(tmp);
 	if (result == symbol_map().end())
 	{
-		token_stream.push_back(new Operator(symbol_map().find(std::string(1, content[index++]))->second));
+		token_stream.push_back(new Token(symbol_map().find(std::string(1, content[index++]))->second));
 		return;
 	}
 	index += tmp.size();
-	token_stream.push_back(new Operator(result->second));
+	token_stream.push_back(new Token(result->second));
 }
-void Simcc::Lexer::debug()
+void Lexer::debug()
 {
 	for (const auto & a : token_stream)
 	{
@@ -212,9 +206,8 @@ void Simcc::Lexer::debug()
 	}
 }
 
-void Simcc::Lexer::init_token_stream()
+void Simcc::Lexer::Lexer::init_token_stream()
 {
-	token_stream.push_back(new EndLine());
 	while (index < content.size())
 	{
 		switch (content[index])
@@ -222,21 +215,9 @@ void Simcc::Lexer::init_token_stream()
 		case '-':
 			read_number();
 			continue;
-		case '(':
-			token_stream.push_back(new Token(Tag::Lk));
-			index++;
-			continue;
-		case ')':
-			token_stream.push_back(new Token(Tag::Rk));
-			index++;
-			continue;
-		case ';':
-			token_stream.push_back(new Token(Tag::EndStmt));
-			index++;
-			continue;
 		case '{':
 			token_stream.push_back(new Token(Tag::BlockBegin));
-			Simcc::Lexer::TId::id_table.push_back(std::map<std::string,TId*>());
+			TId::id_table.push_back(std::map<std::string,TId*>());
 			index++;
 			continue;
 		case '}':
@@ -287,13 +268,4 @@ void Simcc::Lexer::init_token_stream()
 		}
 	}
 	token_stream.push_back(new EndLine());
-}
-
-void Simcc::Lexer::lex_init(const std::string file_name)
-{
-	using namespace std;
-	ifstream ifs(file_name);
-	std::string file_content((istreambuf_iterator<char>(ifs)), istreambuf_iterator<char>());
-	content = file_content;
-	init_token_stream();
 }
