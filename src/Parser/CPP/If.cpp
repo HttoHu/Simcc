@@ -5,7 +5,7 @@ If::If()
 {
 	Environment::match(Lexer::TIf);
 	Environment::match(Lexer::Lk);
-	// ÓÉÓÚ±í´ïÊ½¿ÉÄÜ»áÊ¶±ğifÖĞµÄ )ËùÒÔÎÒÃÇÒ²½«¼ÓÈë(Ê¹µÃ±í´ïÊ½Æ½ºâ.
+	// ç”±äºè¡¨è¾¾å¼å¯èƒ½ä¼šè¯†åˆ«ifä¸­çš„ )æ‰€ä»¥æˆ‘ä»¬ä¹Ÿå°†åŠ å…¥(ä½¿å¾—è¡¨è¾¾å¼å¹³è¡¡.
 	auto cond = new Expression();
 	Environment::match(Lexer::Rk);
 	block.push_back({ cond,new Block() });
@@ -24,7 +24,6 @@ If::If()
 		}
 		else if (Environment::match_noexcept(Lexer::TElse))
 		{
-			std::cout << "SHIT2" << std::endl;
 			Environment::current_pos++;
 			Else = new Block();
 			return;
