@@ -26,5 +26,5 @@ int a=1.2;
 a的类型将是double
 ## 其他
 * 示例在instance里有， 是一个一元二次方程计算器和循环测试
-* Simcc不再更新！请移步至[Merdog](https://www.githu.com/HttoHu/Merdog)
+* Simcc不再更新！请移步至[Merdog](https://www.github.com/HttoHu/Merdog)
 
